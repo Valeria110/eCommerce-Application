@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 # . "${0%/*}/h"
-cd async-race
-npm run lint
+echo '🐶 husky pre-push'
+npm run test
