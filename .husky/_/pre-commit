@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+#. "${0%/*}/h"
+echo '🐶 husky pre-commit'
+npm run format
+npm run lint
