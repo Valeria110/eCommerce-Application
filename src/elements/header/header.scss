@@ -1,13 +1,23 @@
 @import '~bootstrap/scss/bootstrap';
 
+$screen-width-desktop: 1440px;
+$screen-width-tablet: 768px;
+$screen-width-mobile: 375px;
+
 .header.navbar {
-  // font-family: 'Inter', Arial, sans-serif;
-  font-family: 'Inter';
   font-size: 16px;
   font-weight: 400;
   line-height: 19px;
 
   justify-content: space-between;
+
+  margin: 30px 62px;
+  @media (width <= $screen-width-tablet) {
+    margin: 22px 56px;
+  }
+  @media (width <= $screen-width-mobile) {
+    margin: 22px 25px;
+  }
 
   .navbar-brand {
     font-weight: 500;
@@ -22,21 +32,34 @@
   }
 
   .navbar-custom-collapse {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-
     .navbar-nav {
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: center;
+      gap: 35px; // more than in figma
     }
+  }
+
+  .navbar__btnWrapper {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 }
 
+// TODO: think about it
+.btn.dropdown-toggle::after {
+  margin-left: 10px;
+}
+
 button.btn.btn-orange {
+  padding: 10px 16px 10px 16px;
   background-color: $orange-500;
   color: white;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
 
   &:hover {
     background-color: $orange-600;
@@ -49,6 +72,7 @@ button.btn.btn-orange {
 
 .dropdown-orange {
   .dropdown-item {
+    padding: 10px 16px 10px 16px;
     &.active,
     &:active {
       background-color: $orange-600;

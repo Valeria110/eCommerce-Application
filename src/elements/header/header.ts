@@ -24,23 +24,28 @@ export default function header(): HTMLElement {
   collapseDiv.append(ul);
 
   const cartBtn = createButton('', '');
-  const cartImg = Bootstrap.createElement('img', 'd-inline-block align-top');
+  const cartImg = Bootstrap.createElement('img', 'd-inline-block');
   cartImg.src = cartSrc as string;
   cartBtn.prepend(cartImg);
 
   const profileBtn = createButton('', '');
-  const profileImg = Bootstrap.createElement('img', 'd-inline-block align-top');
+  const profileImg = Bootstrap.createElement('img', 'd-inline-block');
   profileImg.src = profileSrc as string;
   profileBtn.prepend(profileImg);
 
   const burgerBtn = createButton('', '');
-  const burgerImg = Bootstrap.createElement('img', 'd-inline-block align-top');
+  const burgerImg = Bootstrap.createElement('img', 'd-inline-block');
   burgerImg.src = burgerSrc as string;
   burgerBtn.prepend(burgerImg);
 
   const logIn = createDropdownWithButton('Log in', ['Log in', 'Sign up', 'Log out'], 'btn-orange');
 
-  const buttonWrapper = Bootstrap.createElement('div', 'd-flex');
+  // TODO: Debag time
+  profileBtn.classList.add('d-none');
+  burgerBtn.classList.add('d-none');
+  // cartBtn.classList.add('disabled');
+
+  const buttonWrapper = Bootstrap.createElement('div', 'navbar__btnWrapper');
   buttonWrapper.append(cartBtn, profileBtn, logIn, burgerBtn);
 
   headerContainer.append(brand, collapseDiv, buttonWrapper);
@@ -99,7 +104,7 @@ function createDropdownWithButton(
     button.addEventListener('click', clickHandler);
   }
 
-  const dropdownMenu = Bootstrap.createElement('ul', 'dropdown-menu');
+  const dropdownMenu = Bootstrap.createElement('ul', 'dropdown-menu dropdown-menu-end');
   dropdownContent.forEach((text) => {
     const newElement = createNavItem(text, false, false, 'dropdown-item');
     dropdownMenu.append(newElement);
