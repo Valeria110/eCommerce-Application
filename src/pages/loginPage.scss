@@ -1,0 +1,86 @@
+$submit-btn-bgc: #fd7e14;
+$submit-btn-bgc-hover: rgba(253, 126, 20, 0.6);
+$submit-btn-bgc-active: #df741b;
+$registration-link-color: #ca6510;
+$placeholder-color: #adb5bd;
+
+.main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  .login-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 32px;
+    width: 306px;
+    height: 413px;
+
+    .main__login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      width: 100%;
+
+      .login-form__header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        .login-form__title {
+          font-size: 32px;
+          font-weight: 600;
+        }
+      }
+
+      .login-form__inputs-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .login-form__input {
+          width: 100%;
+          height: 52px;
+
+          &::placeholder {
+            color: $placeholder-color;
+          }
+        }
+
+        .error {
+          margin-top: 8px;
+          text-align: left;
+        }
+      }
+
+      .login-form__submit-btn {
+        height: 50px;
+        color: #fff;
+        font-weight: 600;
+        background-color: $submit-btn-bgc;
+        border: none;
+        transition: all 0.4s;
+
+        &:active {
+          background-color: $submit-btn-bgc-active !important;
+        }
+      }
+    }
+
+    .login-form-wrapper__registration-link {
+      display: inline-block;
+      margin-right: auto;
+      color: $registration-link-color;
+    }
+  }
+}
+
+@media (hover: hover) {
+  .login-form__submit-btn:hover {
+    background-color: $submit-btn-bgc-hover !important;
+  }
+}
