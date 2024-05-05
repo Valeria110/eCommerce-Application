@@ -1,5 +1,64 @@
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
 
-button.btn.btn-orange{
+.header.navbar {
+  // font-family: 'Inter', Arial, sans-serif;
+  font-family: 'Inter';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+
+  justify-content: space-between;
+
+  .navbar-brand {
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+
+    img {
+      margin-right: 12px;
+      width: 47px;
+    }
+  }
+
+  .navbar-custom-collapse {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+    .navbar-nav {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+}
+
+button.btn.btn-orange {
   background-color: $orange-500;
+  color: white;
+
+  &:hover {
+    background-color: $orange-600;
+  }
+
+  &:active {
+    background-color: $orange-700;
+  }
+}
+
+.dropdown-orange {
+  .dropdown-item {
+    &.active,
+    &:active {
+      background-color: $orange-600;
+    }
+
+    // .nav-link {
+    //   &:active,
+    //   &:focus {
+    //     background-color: $orange-600;
+    //   }
+    // }
+  }
 }
