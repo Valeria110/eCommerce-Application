@@ -1,4 +1,6 @@
 import { isNull } from '../utils/utils';
+import eyeOffIcon from '../img/eye-off-icon.svg';
+import eyeIcon from '../img/eye-icon.svg';
 
 function validateLoginForm(): void {
   const emailInput = document.querySelector('.login-form__email-input');
@@ -53,7 +55,7 @@ function validatePassword(passwordValue: string): void {
   } else if (passwordValue.length < 8) {
     showError(
       passwordInput,
-      `Email should be at least ${passwordInput.minLength} characters; you entered ${passwordValue.length}.`,
+      `Password should be at least ${passwordInput.minLength} characters; you entered ${passwordValue.length}.`,
     );
   } else if (!numberPattern.test(passwordValue)) {
     showError(passwordInput, 'Password must must contain at least one digit (0-9)');
@@ -101,4 +103,19 @@ function canSubmitForm(): void {
   }
 }
 
-export { validateLoginForm };
+function showOrHidePassword() {
+  const passwordInput = document.querySelector('.login-form__password-input');
+  const showPasswordBtn = document.querySelector('.login-form__show-password-btn');
+  isNull<HTMLInputElement>(passwordInput);
+  isNull<HTMLImageElement>(showPasswordBtn);
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    showPasswordBtn.src = eyeIcon as string;
+  } else {
+    passwordInput.type = 'password';
+    showPasswordBtn.src = eyeOffIcon as string;
+  }
+}
+
+export { validateLoginForm, showOrHidePassword };

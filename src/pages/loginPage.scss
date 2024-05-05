@@ -4,6 +4,10 @@ $submit-btn-bgc-active: #df741b;
 $registration-link-color: #ca6510;
 $placeholder-color: #adb5bd;
 
+body {
+  padding: 10px;
+}
+
 .main {
   display: flex;
   justify-content: center;
@@ -17,7 +21,7 @@ $placeholder-color: #adb5bd;
     text-align: center;
     gap: 32px;
     width: 306px;
-    height: 413px;
+    height: auto;
 
     .main__login-form {
       display: flex;
@@ -42,18 +46,29 @@ $placeholder-color: #adb5bd;
         flex-direction: column;
         gap: 16px;
 
-        .login-form__input {
-          width: 100%;
-          height: 52px;
+        .input-wrapper {
+          position: relative;
 
-          &::placeholder {
-            color: $placeholder-color;
+          .login-form__input {
+            width: 100%;
+            height: 52px;
+
+            &::placeholder {
+              color: $placeholder-color;
+            }
           }
-        }
 
-        .error {
-          margin-top: 8px;
-          text-align: left;
+          .error {
+            margin-top: 8px;
+            text-align: left;
+          }
+
+          .login-form__show-password-btn {
+            position: absolute;
+            top: 13px;
+            right: 35px;
+            cursor: pointer;
+          }
         }
       }
 

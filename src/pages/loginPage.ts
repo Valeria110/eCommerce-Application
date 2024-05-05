@@ -1,6 +1,7 @@
 import './loginPage.scss';
 import litHubLogo from '../img/lithub-logo.svg';
-import { validateLoginForm } from '../elements/loginvalidation';
+import eyeOffIcon from '../img/eye-off-icon.svg';
+import { validateLoginForm, showOrHidePassword } from '../elements/loginvalidation';
 
 function loginPage(): void {
   document.body.innerHTML = '';
@@ -54,6 +55,12 @@ function loginPage(): void {
       input.setAttribute('type', 'password');
       input.setAttribute('placeholder', 'Password');
       input.setAttribute('minlength', '8');
+
+      const showPasswordBtn = document.createElement('img');
+      showPasswordBtn.classList.add('login-form__show-password-btn');
+      showPasswordBtn.src = eyeOffIcon as string;
+      showPasswordBtn.addEventListener('click', showOrHidePassword);
+      inputWrapper.appendChild(showPasswordBtn);
     }
 
     input.addEventListener('input', validateLoginForm);
