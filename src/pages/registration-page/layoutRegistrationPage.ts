@@ -1,10 +1,14 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
+import { generateBillingForm } from './layoutBillingForm';
 
 export default function generateLayoutRegistrationPage() {
   document.body.innerHTML = '';
   variablesRegPage.containerForRegistrationForms.append(
     variablesRegPage.registrationForm,
     variablesRegPage.containerForShippingAddressForm,
+    variablesRegPage.buttonForBillingForm,
+    variablesRegPage.containerForBillingForm,
+    variablesRegPage.containerForButtonSignUpAndLogin,
   );
 
   variablesRegPage.registrationForm.append(
@@ -57,6 +61,13 @@ export default function generateLayoutRegistrationPage() {
     variablesRegPage.checkboxDefault,
     variablesRegPage.labelForCheckboxDefault,
   );
+
+  variablesRegPage.containerForButtonSignUpAndLogin.append(
+    variablesRegPage.buttonSignUp,
+    variablesRegPage.buttonToLoginPage,
+  );
+
+  variablesRegPage.buttonForBillingForm.addEventListener('click', generateBillingForm);
 
   return variablesRegPage.containerForRegistrationForms;
 }

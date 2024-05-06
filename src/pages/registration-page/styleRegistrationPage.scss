@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 form .registration-form__input,
 .registration-form__input-content,
 form .registration-form__input-birth,
@@ -35,7 +37,7 @@ form .registration-form__input-password::placeholder {
     font-size: 16px;
     line-height: 125%;
     line-height: 20px;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.4px;
 }
 
 .registration-form__input-birth_icon,
@@ -68,23 +70,36 @@ form .registration-form__input-password::placeholder {
     display: flex;
     flex-direction: column;
     margin-top: 48px;
+    margin-bottom: 32px;
 }
 
-.shipping-from__title {
+.shipping-from__title,
+.billing-from__title {
     margin-bottom: 24px;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 16px;
 }
 
-.shipping-form__checkbox-container {
+.billing-from__title {
+    margin-top: 13px;
+}
+
+.shipping-form__checkbox-container,
+.billing-form__checkbox-container {
     width: 306px;
     display: flex;
     gap: 12px;
     justify-content: flex-start;
 }
 
-.shipping-form__checkbox_label {
+.billing-form__checkbox-container {
+    margin-top: 20px;
+    margin-bottom: 44px;
+}
+
+.shipping-form__checkbox_label,
+.billing-form__checkbox_label {
     white-space: nowrap;
     font-weight: 400;
     font-size: 16px;
@@ -93,6 +108,84 @@ form .registration-form__input-password::placeholder {
     text-align: center;
 }
 
-div .shipping-form__checkbox {
+div .shipping-form__checkbox,
+div .billing-form__checkbox {
+    appearance: none;
     border: 2px solid #fd7e14;
+    outline: none;
+    cursor: pointer;
+}
+
+div .shipping-form__checkbox:checked,
+div .billing-form__checkbox:checked {
+    background-color: #fd7e14;
+    border-color: #fd7e14;
+    box-shadow: none;
+}
+
+div .shipping-form__checkbox:focus,
+div .billing-form__checkbox:focus {
+    border-color: #fd7e14;
+    box-shadow: none;
+}
+
+.billing-form__button {
+    border: 2px solid #fd7e14;
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: 306px;
+    height: 40px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 125%;
+    color: #000;
+    transition: all 0.4s ease;
+    margin-bottom: 48px;
+}
+
+.registration-page__button-signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    padding: 16px 24px;
+    width: 306px;
+    height: 50px;
+    color: white;
+    background-color: #fd7e14;
+    border: 2px solid #fd7e14;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 112%;
+    transition: all 0.4s ease;
+    margin-bottom: 32px;
+}
+
+.registration-page__button-login {
+    margin-bottom: 70px;
+    color: #CA6510;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    cursor: pointer;
+}
+
+@media(hover: hover) {
+    .billing-form__button:hover {
+        background-color: #feb272;
+        border: 2px solid #feb272;
+    }
+
+    .registration-page__button-signup:hover {
+        background-color: #d76b11;
+        border: 2px solid #d76b11;
+    }
 }

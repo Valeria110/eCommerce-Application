@@ -2,12 +2,13 @@ import createElement from '../../elements/bootstrap/createElement';
 import './styleRegistrationPage.scss';
 
 export const containerForRegistrationForms = createElement(
-  'div',
+  'form',
   'd-flex justify-content-center align-items-center flex-column',
 );
 containerForRegistrationForms.style.minHeight = '100vh';
 
 export const registrationForm = createElement('div');
+registrationForm.style.marginTop = '110px';
 export const containerForLogoAndTitleRegistrationPage = createElement(
   'div',
   'd-flex justify-content-center align-items-center flex-column',
@@ -18,7 +19,7 @@ logoRegistrationPage.innerHTML =
 export const titleRegistrationPage = createElement('h2', 'registration-form__title', 'Sign up');
 
 export const containerForInputsRegistrationForm = createElement(
-  'form',
+  'div',
   'd-flex justify-content-center align-items-center flex-column gap-3',
 );
 export const inputForUsername = createElement('input', 'form-control registration-form__input');
@@ -39,7 +40,7 @@ export const iconForInputPassword = createElement('span', 'registration-form__in
 export const containerForShippingAddressForm = createElement('div', 'shipping-from justify-content-start');
 export const titleShippingAddressForm = createElement('h6', 'shipping-from__title', 'Shipping Address');
 export const shippingAddressForm = createElement(
-  'form',
+  'div',
   'd-flex justify-content-center align-items-center flex-column gap-3',
 );
 export const inputForCountry = createElement('input', 'form-control registration-form__input');
@@ -69,4 +70,39 @@ export const labelForCheckboxDefault = createElement(
   'label',
   'form-check-label shipping-form__checkbox_label',
   'Use by default',
+);
+
+export const buttonForBillingForm = createElement('div', 'billing-form__button', 'Add billing address');
+export const containerForBillingForm = createElement('div');
+export const titleBillingForm = createElement('h6', 'billing-from__title', 'Billing Address');
+export const billingAddressForm = createElement(
+  'div',
+  'd-flex justify-content-center align-items-center flex-column gap-3',
+);
+export const inputForCountryBillingForm = createElement('input', 'form-control registration-form__input');
+inputForCountryBillingForm.placeholder = 'Country*';
+export const inputForCityBillingForm = createElement('input', 'form-control registration-form__input');
+inputForCityBillingForm.placeholder = 'City*';
+export const inputForStreetBillingForm = createElement('input', 'form-control registration-form__input');
+inputForStreetBillingForm.placeholder = 'Street*';
+export const inputForPostalCodeBillingForm = createElement('input', 'form-control registration-form__input');
+inputForPostalCodeBillingForm.placeholder = 'Postal code*';
+
+export const containerForCheckboxDefaultBillingForm = createElement('div', 'billing-form__checkbox-container');
+export const checkboxDefaultBillingForm = createElement('input', 'form-check-input billing-form__checkbox');
+checkboxDefaultBillingForm.type = 'checkbox';
+checkboxDefaultBillingForm.id = 'checkDefaultBillingForm';
+export const labelForCheckboxDefaultBillingForm = createElement(
+  'label',
+  'form-check-label billing-form__checkbox_label',
+  'Use by default',
+);
+
+export const containerForButtonSignUpAndLogin = createElement('div');
+export const buttonSignUp = createElement('button', 'registration-page__button-signup', 'Sign up');
+buttonSignUp.type = 'submit';
+export const buttonToLoginPage = createElement(
+  'div',
+  'registration-page__button-login',
+  'Already have an account? Log in',
 );
