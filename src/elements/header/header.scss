@@ -31,19 +31,37 @@ $screen-width-mobile: 375px;
     }
   }
 
-  .navbar-custom-collapse {
+  .header__linkCollapse {
     .navbar-nav {
       display: flex;
       flex-direction: row;
       justify-content: center;
       gap: 35px; // more than in figma
     }
+
+    @media (width <= $screen-width-mobile) {
+      display: none;
+    }
   }
 
-  .navbar__btnWrapper {
+  .header__btnWrapper {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 8px;
+
+    .header__burger {
+      display: none;
+      @media (width <= $screen-width-mobile) {
+        display: flex;
+      }
+    }
+
+    display: flex;
+    .header__loginDropdown {
+      @media (width <= $screen-width-mobile) {
+        display: none;
+      }
+    }
   }
 }
 

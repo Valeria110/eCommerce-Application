@@ -6,6 +6,9 @@ import profileSrc from './../../img/profile-light.svg';
 import burgerSrc from './../../img/burger-menu.svg';
 import './header.scss';
 
+// TODO: during debag
+const isLogined = false;
+
 export default function header(): HTMLElement {
   const headerElement = Bootstrap.createElement('nav', 'header navbar bg-body-tertiary');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid');
@@ -16,7 +19,7 @@ export default function header(): HTMLElement {
   logo.src = logoSrc as string;
   brand.prepend(logo);
 
-  const collapseDiv = Bootstrap.createElement('div', 'navbar-custom-collapse'); // TODO: use this class
+  const collapseDiv = Bootstrap.createElement('div', 'header__linkCollapse'); // TODO: use this class
   const ul = Bootstrap.createElement('ul', 'navbar-nav');
   ul.append(createNavItem('Main', true));
   ul.append(createNavItem('Catalog', false, true));
@@ -33,20 +36,50 @@ export default function header(): HTMLElement {
   profileImg.src = profileSrc as string;
   profileBtn.prepend(profileImg);
 
-  const burgerBtn = createButton('', '');
+  const burgerBtn = createButton('', 'header__burger');
   const burgerImg = Bootstrap.createElement('img', 'd-inline-block');
   burgerImg.src = burgerSrc as string;
   burgerBtn.prepend(burgerImg);
 
-  const logIn = createDropdownWithButton('Log in', ['Log in', 'Sign up', 'Log out'], 'btn-orange');
+  const loginContainer = createDropdownWithButton('Log in', 'btn-orange');
+  const optionsWithoutLogin: HTMLLIElement[] = ['Log in', 'Sign up'].map((text) =>
+    createNavItem(text, false, false, 'dropdown-item'),
+  );
+  const optionsWithLogin: HTMLLIElement[] = ['Log out'].map((text) =>
+    createNavItem(text, false, false, 'dropdown-item'),
+  );
+  loginContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
+  optionsWithoutLogin.forEach((element) => {
+    element.addEventListener('click', () => console.log('выбрали другую опцию'));
+  });
 
   // TODO: Debag time
-  profileBtn.classList.add('d-none');
-  burgerBtn.classList.add('d-none');
+  // profileBtn.classList.add('d-none');
+  // burgerBtn.classList.add('d-none');
   // cartBtn.classList.add('disabled');
 
-  const buttonWrapper = Bootstrap.createElement('div', 'navbar__btnWrapper');
-  buttonWrapper.append(cartBtn, profileBtn, logIn, burgerBtn);
+  const updateLogin = () => {
+    if (!isLogined) {
+      profileBtn.classList.add('d-none');
+      optionsWithLogin.forEach((element) => element.classList.add('d-none'));
+    }
+  };
+  updateLogin();
+
+  loginContainer.button.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (!target) {
+      return;
+    }
+    if (target.classList.contains('dropdown-toggle')) {
+      console.log('Нажата иконка dropdown');
+    } else {
+      console.log('Нажата кнопка');
+    }
+  });
+
+  const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
+  buttonWrapper.append(cartBtn, profileBtn, loginContainer.dropdown, burgerBtn);
 
   headerContainer.append(brand, collapseDiv, buttonWrapper);
   headerElement.append(headerContainer);
@@ -86,12 +119,11 @@ function createButton(textContent: string, className = '', clickHandler?: (event
 
 function createDropdownWithButton(
   textContent: string,
-  dropdownContent: string[],
   classBtnName = '',
   clickHandler?: (event: Event) => void,
-): HTMLDivElement {
+): { dropdown: HTMLDivElement; button: HTMLButtonElement; dropdownMenu: HTMLUListElement } {
   // TODO: Class arguments vague
-  const dropdown = Bootstrap.createElement('div', 'dropdown dropdown-orange');
+  const dropdown = Bootstrap.createElement('div', 'dropdown dropdown-orange header__loginDropdown');
 
   const button = Bootstrap.createElement('button', classBtnName);
   button.type = 'button';
@@ -105,12 +137,8 @@ function createDropdownWithButton(
   }
 
   const dropdownMenu = Bootstrap.createElement('ul', 'dropdown-menu dropdown-menu-end');
-  dropdownContent.forEach((text) => {
-    const newElement = createNavItem(text, false, false, 'dropdown-item');
-    dropdownMenu.append(newElement);
-  });
   dropdown.append(button, dropdownMenu);
-  return dropdown;
+  return { dropdown, button, dropdownMenu };
 }
 
 // <div class="dropdown">
