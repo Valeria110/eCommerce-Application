@@ -65,13 +65,7 @@ $screen-width-mobile: 375px;
   }
 }
 
-// TODO: think about it
-.btn.dropdown-toggle::after {
-  margin-left: 10px;
-}
-
 button.btn.btn-orange {
-  padding: 10px 16px 10px 16px;
   background-color: $orange-500;
   color: white;
 

@@ -1,10 +1,5 @@
+/* eslint-disable @typescript-eslint/indent */
 export default class Bootstrap {
-  private static uniqId = 0;
-
-  static getUniqId() {
-    return this.uniqId++;
-  }
-
   static createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
     className = '',
@@ -20,14 +15,52 @@ export default class Bootstrap {
     return element as HTMLElementTagNameMap[T];
   }
 
-  static createButton(textContent: string, className = '', clickHandler?: (event: Event) => void): HTMLButtonElement {
+  static createDropdownSplitButton(
+    textContent: string,
+    classBtnName = 'btn-orange',
+    classDropdown = 'dropdown-orange',
+  ): {
+    btnGroup: HTMLDivElement;
+    mainBtn: HTMLButtonElement;
+    dropdownBtn: HTMLButtonElement;
+    dropdownMenu: HTMLUListElement;
+  } {
+    const btnGroup = this.createElement('div', 'btn-group');
+    const mainBtn = this.createElement('button', 'btn ' + classBtnName, textContent);
+    const dropdownBtn = this.createElement('button', 'btn dropdown-toggle dropdown-toggle-split ' + classBtnName);
+    dropdownBtn.dataset.bsToggle = 'dropdown';
+    dropdownBtn.setAttribute('aria-expanded', 'false');
+    const dropdownMenu = this.createElement('ul', 'dropdown-menu dropdown-menu-end ' + classDropdown);
+
+    btnGroup.append(mainBtn, dropdownBtn, dropdownMenu);
+    return { btnGroup, mainBtn, dropdownBtn, dropdownMenu };
+  }
+
+  static createNavItem(
+    text = '',
+    isActive = false,
+    isDisabled = false,
+    liClass: 'nav-item' | 'dropdown-item' = 'nav-item',
+  ) {
+    const li = this.createElement('li', liClass);
+    if (isActive) {
+      li.classList.add('active');
+    }
+
+    const a = this.createElement('a', 'nav-link', text);
+    a.href = '#';
+    if (isDisabled) {
+      a.classList.add('disabled');
+    }
+    li.append(a);
+    return li;
+  }
+
+  static createButton(textContent: string, className = ''): HTMLButtonElement {
     const button = Bootstrap.createElement('button', className);
     button.type = 'button';
     button.classList.add('btn');
     button.textContent = textContent;
-    if (typeof clickHandler === 'function') {
-      button.addEventListener('click', clickHandler);
-    }
     return button;
   }
 }
