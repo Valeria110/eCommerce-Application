@@ -1,13 +1,13 @@
 module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   parser: '@typescript-eslint/parser',
-  plugins: ['prettier', 'import', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint', 'prettier'],
   extends: [
     'plugin:prettier/recommended',
-    'prettier',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'airbnb-typescript/base',
+    'prettier',
   ],
   parserOptions: {
     ecmaVersion: 2020,
@@ -22,8 +22,10 @@ module.exports = {
   },
   rules: {
     'no-debugger': 'off',
-    'no-console': 0,
+    'no-console': 'off',
     'class-methods-use-this': 'off',
-    '@typescript-eslint/no-explicit-any': 2,
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-use-before-define': 'off',
   },
 };
