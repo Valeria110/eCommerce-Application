@@ -1,7 +1,7 @@
-
-.registration-form__input,
+form .registration-form__input,
 .registration-form__input-content,
-.registration-form__input-birth {
+form .registration-form__input-birth,
+form .registration-form__input-password {
     border: 1px solid #DEE2E6;
     border-radius: 6px;
     padding: 14px 16px;
@@ -62,4 +62,37 @@ form .registration-form__input-password::placeholder {
     font-weight: 600;
     font-size: 32px;
     color: #000;
+}
+
+.shipping-from {
+    display: flex;
+    flex-direction: column;
+    margin-top: 48px;
+}
+
+.shipping-from__title {
+    margin-bottom: 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.shipping-form__checkbox-container {
+    width: 306px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.shipping-form__checkbox_label {
+    white-space: nowrap;
+    font-weight: 400;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    color: #000;
+    text-align: center;
+}
+
+div .shipping-form__checkbox {
+    border: 2px solid #fd7e14;
 }

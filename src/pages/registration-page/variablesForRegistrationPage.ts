@@ -1,7 +1,10 @@
 import createElement from '../../elements/bootstrap/createElement';
 import './styleRegistrationPage.scss';
 
-export const containerForRegistrationForms = createElement('div', 'd-flex justify-content-center align-items-center');
+export const containerForRegistrationForms = createElement(
+  'div',
+  'd-flex justify-content-center align-items-center flex-column',
+);
 containerForRegistrationForms.style.minHeight = '100vh';
 
 export const registrationForm = createElement('div');
@@ -33,4 +36,37 @@ export const inputForPassword = createElement('input', 'registration-form__input
 inputForPassword.placeholder = 'Password';
 export const iconForInputPassword = createElement('span', 'registration-form__input-password_icon');
 
-export const shippingAddressForm = createElement('div');
+export const containerForShippingAddressForm = createElement('div', 'shipping-from justify-content-start');
+export const titleShippingAddressForm = createElement('h6', 'shipping-from__title', 'Shipping Address');
+export const shippingAddressForm = createElement(
+  'form',
+  'd-flex justify-content-center align-items-center flex-column gap-3',
+);
+export const inputForCountry = createElement('input', 'form-control registration-form__input');
+inputForCountry.placeholder = 'Country*';
+export const inputForCity = createElement('input', 'form-control registration-form__input');
+inputForCity.placeholder = 'City*';
+export const inputForStreet = createElement('input', 'form-control registration-form__input');
+inputForStreet.placeholder = 'Street*';
+export const inputForPostalCode = createElement('input', 'form-control registration-form__input');
+inputForPostalCode.placeholder = 'Postal code*';
+
+export const containerForCheckboxSameAddress = createElement('div', 'shipping-form__checkbox-container mt-2');
+export const checkboxSameAddress = createElement('input', 'form-check-input shipping-form__checkbox');
+checkboxSameAddress.type = 'checkbox';
+checkboxSameAddress.id = 'checkSameAddress';
+export const labelForCheckboxSameAddress = createElement(
+  'label',
+  'form-check-label shipping-form__checkbox_label',
+  'Use the same address for billing and shipping',
+);
+
+export const containerForCheckboxDefault = createElement('div', 'shipping-form__checkbox-container');
+export const checkboxDefault = createElement('input', 'form-check-input shipping-form__checkbox');
+checkboxDefault.type = 'checkbox';
+checkboxDefault.id = 'checkDefault';
+export const labelForCheckboxDefault = createElement(
+  'label',
+  'form-check-label shipping-form__checkbox_label',
+  'Use by default',
+);
