@@ -7,7 +7,7 @@ function loginPage(): void {
   document.body.innerHTML = '';
 
   const main = document.createElement('main');
-  main.classList.add('main');
+  main.classList.add('login-page-main');
   document.body.appendChild(main);
 
   const loginFormWrapper = document.createElement('div');

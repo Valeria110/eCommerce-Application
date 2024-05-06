@@ -6,9 +6,13 @@ $placeholder-color: #adb5bd;
 
 body {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.main {
+.login-page-main {
   display: flex;
   justify-content: center;
   width: 100%;
