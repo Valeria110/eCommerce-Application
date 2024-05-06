@@ -6,6 +6,9 @@ import cartSrc from './../../img/cart.svg';
 import profileSrc from './../../img/profile-light.svg';
 import burgerSrc from './../../img/burger-menu.svg';
 import './header.scss';
+import switchPage from '../switchPage';
+import { Pages } from '../types';
+import UserData from '../UserData';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -14,8 +17,6 @@ enum UserAction {
 }
 
 // TODO: during debag
-const isLogined = false;
-
 export default function header(): HTMLElement {
   const headerElement = Bootstrap.createElement('nav', 'header navbar bg-body-tertiary');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid');
@@ -49,48 +50,67 @@ export default function header(): HTMLElement {
   burgerBtn.prepend(burgerImg);
 
   // ------
-  let defaultActionBtn = UserAction.LogIn;
-  const loginContainer = Bootstrap.createDropdownSplitButton(defaultActionBtn, 'btn-orange');
+  let defaultAction = UserData.isLogined ? UserAction.LogOut : UserAction.LogIn;
+  const changeDefaultActionBtn = (updateAction: UserAction) => {
+    defaultAction = updateAction;
+    actionContainer.mainBtn.textContent = defaultAction;
+  };
+
+  const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange');
   const optionsWithoutLogin: HTMLLIElement[] = [UserAction.LogIn, UserAction.SignUp].map((text) =>
     Bootstrap.createNavItem(text, false, false, 'dropdown-item'),
   );
   const optionsWithLogin: HTMLLIElement[] = [UserAction.LogOut].map((text) =>
     Bootstrap.createNavItem(text, false, false, 'dropdown-item'),
   );
-  loginContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
+  actionContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
   [...optionsWithoutLogin, ...optionsWithLogin].forEach((element) => {
     element.addEventListener('click', () => {
       const convertAction = textToUserAction(element.textContent ?? '');
       if (convertAction) {
-        defaultActionBtn = convertAction;
-        loginContainer.mainBtn.textContent = defaultActionBtn;
-        clickDefaultActionBtn();
+        changeDefaultActionBtn(convertAction);
+        clickDefaultActionBtn(defaultAction);
       }
     });
   });
-
-  const clickDefaultActionBtn = () => {
-    console.log(`run script ${defaultActionBtn}`);
-  };
-
-  const updateLoginContainer = () => {
-    if (!isLogined) {
-      profileBtn.classList.add('d-none');
-      optionsWithLogin.forEach((element) => element.classList.add('d-none'));
-    }
-  };
-  updateLoginContainer();
-
-  loginContainer.mainBtn.addEventListener('click', () => {
-    clickDefaultActionBtn();
+  actionContainer.mainBtn.addEventListener('click', () => {
+    clickDefaultActionBtn(defaultAction);
   });
 
+  const updateOptionsIsLogined = () => {
+    if (!UserData.isLogined) {
+      profileBtn.classList.add('d-none');
+      optionsWithLogin.forEach((element) => element.classList.add('d-none'));
+    } else {
+      optionsWithoutLogin.forEach((element) => element.classList.add('d-none'));
+      // only one option - remove dropdown option
+      if (optionsWithLogin.length <= 1) {
+        actionContainer.dropdownBtn.remove();
+        actionContainer.dropdownMenu.remove();
+      }
+    }
+  };
+  updateOptionsIsLogined();
+
   const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
-  buttonWrapper.append(cartBtn, profileBtn, loginContainer.btnGroup, burgerBtn);
+  buttonWrapper.append(cartBtn, profileBtn, actionContainer.btnGroup, burgerBtn);
 
   headerContainer.append(brand, collapseDiv, buttonWrapper);
   headerElement.append(headerContainer);
   return headerElement;
+}
+
+function clickDefaultActionBtn(chosenActionAction: UserAction) {
+  if (chosenActionAction === UserAction.LogIn) {
+    switchPage(Pages.LogIn);
+  } else if (chosenActionAction === UserAction.SignUp) {
+    switchPage(Pages.SignUp);
+  } else if (chosenActionAction === UserAction.LogOut) {
+    UserData.isLogined = false;
+    switchPage(Pages.Main);
+  } else {
+    console.error('problem with default button');
+  }
 }
 
 function textToUserAction(str: string): UserAction | undefined {
