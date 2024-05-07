@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */ // TODO: delete after
 import Bootstrap from '../bootstrap/Bootstrap';
-import logoSrc from './../../img/logo.svg';
+import logoSrc from './../../img/lithub-logo.svg';
 import cartSrc from './../../img/cart.svg';
 import profileSrc from './../../img/profile-light.svg';
 import burgerSrc from './../../img/burger-menu.svg';
 import './header.scss';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
-import UserData from '../UserData';
+import userData from '../userData';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -32,7 +31,7 @@ export default function header(): HTMLElement {
   ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, 'mx-1'));
   collapseDiv.append(ul);
 
-  let defaultAction = UserData.isLogined ? UserAction.LogOut : UserAction.LogIn;
+  let defaultAction = userData.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const changeDefaultActionBtn = (updateAction: UserAction) => {
     defaultAction = updateAction;
     actionContainer.mainBtn.textContent = defaultAction;
@@ -94,7 +93,7 @@ function updateAvailableOptionsLogined(
   optionsWithLogin: HTMLLIElement[],
   optionsWithoutLogin: HTMLLIElement[],
 ) {
-  if (!UserData.isLogined) {
+  if (!userData.isLogined) {
     profileBtn.classList.add('d-none');
     optionsWithLogin.forEach((element) => element.classList.add('d-none'));
   } else {
@@ -113,7 +112,7 @@ function clickDefaultActionBtn(chosenActionAction: UserAction) {
   } else if (chosenActionAction === UserAction.SignUp) {
     switchPage(Pages.SignUp);
   } else if (chosenActionAction === UserAction.LogOut) {
-    UserData.isLogined = false;
+    userData.isLogined = false;
     switchPage(Pages.Main);
   } else {
     console.error('problem with default button');

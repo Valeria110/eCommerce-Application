@@ -1,11 +1,6 @@
 @import '~bootstrap/scss/bootstrap';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-$screen-width-desktop: 1440px;
-$screen-width-tablet: 768px;
-$screen-width-mobile: 375px;
-
-// TODO: add style for precheck
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,11 +8,11 @@ $screen-width-mobile: 375px;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   padding: 10px;
   max-width: 100%;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
   font-family: 'Inter', sans-serif;
 }

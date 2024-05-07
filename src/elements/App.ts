@@ -1,6 +1,5 @@
-// import demoPage from '../pages/demoPage';
 import error404Page from '../pages/error404Page';
-import loginPage from '../pages/loginPage';
+import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import signUpPage from '../pages/signUpPage';
 import switchPage from './switchPage';
@@ -15,6 +14,7 @@ export default class App {
 document.addEventListener(AppEvents.switchPage, (event) => {
   const newPage = (event as CustomEvent).detail;
   document.body.innerHTML = '';
+  document.body.className = '';
   switch (newPage) {
     case Pages.LogIn:
       document.body.append(loginPage());

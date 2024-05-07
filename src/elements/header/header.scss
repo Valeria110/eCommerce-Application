@@ -1,4 +1,5 @@
-@import './../../global.scss';
+@import './../../breakpoints.scss';
+@import '~bootstrap/scss/bootstrap';
 $screen-burger: $screen-width-tablet - 80px;
 
 .navbar.header {
