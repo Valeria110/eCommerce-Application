@@ -37,7 +37,7 @@ export default function header(): HTMLElement {
     actionContainer.mainBtn.textContent = defaultAction;
   };
 
-  const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange', 'dropdown-orange');
+  const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange border-0', 'dropdown-orange');
   actionContainer.btnGroup.classList.add('header__actionBtn');
   actionContainer.mainBtn.classList.add('btn-style-default');
   const optionsWithoutLogin = [UserAction.LogIn, UserAction.SignUp].map((text) =>
