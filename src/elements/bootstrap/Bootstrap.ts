@@ -1,5 +1,13 @@
-/* eslint-disable @typescript-eslint/indent */
 import './orange.scss';
+import './style-default.scss';
+
+interface DropdownSplitElement {
+  btnGroup: HTMLDivElement;
+  mainBtn: HTMLButtonElement;
+  dropdownBtn: HTMLButtonElement;
+  dropdownMenu: HTMLUListElement;
+}
+
 export default class Bootstrap {
   static createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
@@ -20,12 +28,7 @@ export default class Bootstrap {
     textContent: string,
     classBtnName = 'btn-orange',
     classDropdown = 'dropdown-orange',
-  ): {
-    btnGroup: HTMLDivElement;
-    mainBtn: HTMLButtonElement;
-    dropdownBtn: HTMLButtonElement;
-    dropdownMenu: HTMLUListElement;
-  } {
+  ): DropdownSplitElement {
     const btnGroup = this.createElement('div', 'btn-group');
     const mainBtn = this.createElement('button', 'btn ' + classBtnName, textContent);
     const dropdownBtn = this.createElement('button', 'btn dropdown-toggle dropdown-toggle-split ' + classBtnName);

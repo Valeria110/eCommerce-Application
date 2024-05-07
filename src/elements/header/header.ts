@@ -32,7 +32,6 @@ export default function header(): HTMLElement {
   ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, 'mx-1'));
   collapseDiv.append(ul);
 
-  // ------
   let defaultAction = UserData.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const changeDefaultActionBtn = (updateAction: UserAction) => {
     defaultAction = updateAction;
@@ -42,11 +41,11 @@ export default function header(): HTMLElement {
   const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange', 'dropdown-orange');
   actionContainer.btnGroup.classList.add('header__actionBtn');
   actionContainer.mainBtn.classList.add('btn-style-default');
-  const optionsWithoutLogin: HTMLLIElement[] = [UserAction.LogIn, UserAction.SignUp].map((text) =>
-    Bootstrap.createNavItem(text, 'dropdown-item'),
+  const optionsWithoutLogin = [UserAction.LogIn, UserAction.SignUp].map((text) =>
+    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
   );
-  const optionsWithLogin: HTMLLIElement[] = [UserAction.LogOut].map((text) =>
-    Bootstrap.createNavItem(text, 'dropdown-item'),
+  const optionsWithLogin = [UserAction.LogOut].map((text) =>
+    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
   );
   actionContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
   [...optionsWithoutLogin, ...optionsWithLogin].forEach((element) => {
