@@ -3,11 +3,12 @@ import error404Page from '../pages/error404Page';
 import loginPage from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import signUpPage from '../pages/signUpPage';
+import switchPage from './switchPage';
 import { AppEvents, Pages } from './types';
 
 export default class App {
   start(): void {
-    document.body.append(mainPage());
+    switchPage(Pages.Main);
   }
 }
 
