@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
+import './orange.scss';
 export default class Bootstrap {
   static createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
@@ -37,12 +38,13 @@ export default class Bootstrap {
   }
 
   static createNavItem(
-    text = '',
+    text: string,
+    liClass: 'nav-item' | 'dropdown-item',
     isActive = false,
     isDisabled = false,
-    liClass: 'nav-item' | 'dropdown-item' = 'nav-item',
+    className = '',
   ) {
-    const li = this.createElement('li', liClass);
+    const li = this.createElement('li', liClass + ' ' + className);
     if (isActive) {
       li.classList.add('active');
     }

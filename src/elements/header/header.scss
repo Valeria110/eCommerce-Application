@@ -3,8 +3,9 @@
 $screen-width-desktop: 1440px;
 $screen-width-tablet: 768px;
 $screen-width-mobile: 375px;
+$screen-burger: $screen-width-tablet - 80px;
 
-.header.navbar {
+.navbar.header {
   font-size: 16px;
   font-weight: 400;
   line-height: 19px;
@@ -19,8 +20,9 @@ $screen-width-mobile: 375px;
     margin: 22px 25px;
   }
 
-  .navbar-brand {
+  .header__brand {
     font-weight: 500;
+    font-size: 16px;
 
     display: flex;
     align-items: center;
@@ -36,10 +38,17 @@ $screen-width-mobile: 375px;
       display: flex;
       flex-direction: row;
       justify-content: center;
-      gap: 35px; // more than in figma
+
+      gap: 3.5vw;
+      @media (max-width: $screen-width-tablet) {
+        gap: 2vw;
+      }
+      @media (max-width: #{$screen-width-tablet - 100px}) {
+        gap: 0;
+      }
     }
 
-    @media (width <= $screen-width-mobile) {
+    @media (width <= $screen-burger) {
       display: none;
     }
   }
@@ -47,54 +56,30 @@ $screen-width-mobile: 375px;
   .header__btnWrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-around;
 
     .header__burger {
       display: none;
-      @media (width <= $screen-width-mobile) {
+      @media (width <= $screen-burger) {
         display: flex;
       }
     }
 
-    display: flex;
-    .header__loginDropdown {
-      @media (width <= $screen-width-mobile) {
+    // without figma - add hover, active - color
+    .header__btnImg {
+      &:hover {
+        background-color: $gray-200;
+      }
+
+      &:active {
+        background-color: $gray-300;
+      }
+    }
+
+    .header__actionBtn {
+      @media (width <= $screen-burger) {
         display: none;
       }
     }
-  }
-}
-
-button.btn.btn-orange {
-  background-color: $orange-500;
-  color: white;
-
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 19px;
-
-  &:hover {
-    background-color: $orange-600;
-  }
-
-  &:active {
-    background-color: $orange-700;
-  }
-}
-
-.dropdown-orange {
-  .dropdown-item {
-    padding: 10px 16px 10px 16px;
-    &.active,
-    &:active {
-      background-color: $orange-600;
-    }
-
-    // .nav-link {
-    //   &:active,
-    //   &:focus {
-    //     background-color: $orange-600;
-    //   }
-    // }
   }
 }
