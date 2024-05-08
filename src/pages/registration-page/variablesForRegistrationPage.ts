@@ -59,7 +59,7 @@ export const shippingAddressForm = createElement('div', 'd-flex justify-content-
 export const containerForInputCountry = createElement('div', 'shipping-form__container-list');
 export const inputForCountry = createElement('input', 'form-control registration-form__input');
 inputForCountry.placeholder = 'Country*';
-export const resultsCountries = createElement('div', 'shipping-form__container-list_results');
+export const containerForResultsCountries = createElement('div', 'shipping-form__container-list_results');
 export const errorForInputCountry = createElement('div', 'error-register text-danger');
 
 export const inputForCity = createElement('input', 'form-control registration-form__input');
@@ -98,10 +98,16 @@ export const buttonForBillingForm = createElement('div', 'billing-form__button',
 export const containerForBillingForm = createElement('div');
 export const titleBillingForm = createElement('h6', 'billing-form__title', 'Billing Address');
 export const billingAddressForm = createElement('div', 'd-flex justify-content-center align-items-center flex-column');
+
+export const containerForInputCountryBillingForm = createElement('div', 'shipping-form__container-list');
 export const inputForCountryBillingForm = createElement('input', 'form-control registration-form__input');
 inputForCountryBillingForm.placeholder = 'Country*';
+export const containerResultsCountriesBillingForm = createElement('div', 'shipping-form__container-list_results');
+export const errorForInputCountryBillingForm = createElement('div', 'error-register text-danger');
+
 export const inputForCityBillingForm = createElement('input', 'form-control registration-form__input');
 inputForCityBillingForm.placeholder = 'City*';
+export const errorForInputCityBillingForm = createElement('div', 'error-register text-danger');
 
 export const inputForStreetBillingForm = createElement('input', 'form-control registration-form__input');
 inputForStreetBillingForm.placeholder = 'Street*';
@@ -109,6 +115,7 @@ export const errorForInputStreetBillingForm = createElement('div', 'error-regist
 
 export const inputForPostalCodeBillingForm = createElement('input', 'form-control registration-form__input');
 inputForPostalCodeBillingForm.placeholder = 'Postal code*';
+export const errorForInputPostalCodeBillingForm = createElement('div', 'error-register text-danger');
 
 export const containerForCheckboxDefaultBillingForm = createElement('div', 'billing-form__checkbox-container');
 export const checkboxDefaultBillingForm = createElement('input', 'form-check-input billing-form__checkbox');

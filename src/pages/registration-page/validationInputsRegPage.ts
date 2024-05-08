@@ -125,50 +125,57 @@ export function generateValidationInputStreet(inputStreet: HTMLInputElement, err
   }
 }
 
-export function generateValidationInputCity() {
-  if (variablesRegPage.inputForCity.value === '') {
-    variablesRegPage.errorForInputCity.textContent = 'City must contain at least one character';
-    newStyleForError(variablesRegPage.inputForCity, variablesRegPage.errorForInputCity, true);
-  } else if (
-    ALL_NUMBERS.test(variablesRegPage.inputForCity.value) ||
-    ALL_SPECIAL_CHARACTERS.test(variablesRegPage.inputForCity.value)
-  ) {
-    variablesRegPage.errorForInputCity.textContent = 'City must not contain special characters or numbers';
-    newStyleForError(variablesRegPage.inputForCity, variablesRegPage.errorForInputCity, true);
+export function generateValidationInputCity(inputCity: HTMLInputElement, error: HTMLDivElement) {
+  if (inputCity.value === '') {
+    error.textContent = 'City must contain at least one character';
+    newStyleForError(inputCity, error, true);
+  } else if (ALL_NUMBERS.test(inputCity.value) || ALL_SPECIAL_CHARACTERS.test(inputCity.value)) {
+    error.textContent = 'City must not contain special characters or numbers';
+    newStyleForError(inputCity, error, true);
   } else {
-    newStyleForError(variablesRegPage.inputForCity, variablesRegPage.errorForInputCity, false);
+    newStyleForError(inputCity, error, false);
   }
 }
 
-export function ganarateValidationInputCountry() {
-  if (variablesRegPage.inputForCountry.value === '') {
-    variablesRegPage.errorForInputCountry.textContent = 'This field is required';
-    newStyleForError(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, true);
+export function genarateValidationInputCountry(inputCountry: HTMLInputElement, error: HTMLDivElement) {
+  if (inputCountry.value === '') {
+    error.textContent = 'This field is required';
+    newStyleForError(inputCountry, error, true);
   } else {
-    newStyleForError(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, false);
+    newStyleForError(inputCountry, error, false);
   }
 
   let resultsCountries: string[] = [];
 
-  if (variablesRegPage.inputForCountry.value.length !== 0) {
+  if (inputCountry.value.length !== 0) {
     const countries = Object.keys(ALL_CONTRIES);
     resultsCountries = countries.filter((country) => {
-      return country.toLowerCase().includes(variablesRegPage.inputForCountry.value.toLowerCase());
+      return country.toLowerCase().includes(inputCountry.value.toLowerCase());
     });
   }
 
-  if (resultsCountries.length === 0 && variablesRegPage.inputForCountry.value !== '') {
-    variablesRegPage.errorForInputCountry.textContent = 'Country must be a valid';
-    newStyleForError(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, true);
+  if (resultsCountries.length === 0 && inputCountry.value !== '') {
+    error.textContent = 'Country must be a valid';
+    newStyleForError(inputCountry, error, true);
   }
 
-  variablesRegPage.inputForCity.value = '';
-  variablesRegPage.inputForCity.classList.remove('is-valid');
-  variablesRegPage.inputForStreet.value = '';
-  variablesRegPage.inputForStreet.classList.remove('is-valid');
-  variablesRegPage.inputForPostalCode.value = '';
-  variablesRegPage.inputForPostalCode.classList.remove('is-valid');
-  generateResultsCountries(resultsCountries);
+  if (inputCountry === variablesRegPage.inputForCountry) {
+    variablesRegPage.inputForCity.value = '';
+    variablesRegPage.inputForCity.classList.remove('is-valid');
+    variablesRegPage.inputForStreet.value = '';
+    variablesRegPage.inputForStreet.classList.remove('is-valid');
+    variablesRegPage.inputForPostalCode.value = '';
+    variablesRegPage.inputForPostalCode.classList.remove('is-valid');
+    generateResultsCountries(resultsCountries, inputCountry, variablesRegPage.containerForResultsCountries);
+  } else {
+    variablesRegPage.inputForCityBillingForm.value = '';
+    variablesRegPage.inputForCityBillingForm.classList.remove('is-valid');
+    variablesRegPage.inputForStreetBillingForm.value = '';
+    variablesRegPage.inputForStreetBillingForm.classList.remove('is-valid');
+    variablesRegPage.inputForPostalCodeBillingForm.value = '';
+    variablesRegPage.inputForPostalCodeBillingForm.classList.remove('is-valid');
+    generateResultsCountries(resultsCountries, inputCountry, variablesRegPage.containerResultsCountriesBillingForm);
+  }
 }
 
 export function generateValidationInputPostalCode(
@@ -176,7 +183,11 @@ export function generateValidationInputPostalCode(
   inputPostalCode: HTMLInputElement,
   error: HTMLDivElement,
 ) {
-  if (inputPostalCode.value === '') {
+  const countries = Object.keys(ALL_CONTRIES);
+  if (inputCountry.value === '' || !countries.includes(inputCountry.value)) {
+    error.textContent = 'You need to select a country';
+    newStyleForError(inputPostalCode, error, true);
+  } else if (inputPostalCode.value === '') {
     error.textContent = 'This field is required';
     newStyleForError(inputPostalCode, error, true);
   } else if (!ALL_CONTRIES[inputCountry.value].test(variablesRegPage.inputForPostalCode.value)) {

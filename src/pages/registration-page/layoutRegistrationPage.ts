@@ -63,7 +63,7 @@ export default function generateLayoutRegistrationPage() {
 
   variablesRegPage.containerForInputCountry.append(
     variablesRegPage.inputForCountry,
-    variablesRegPage.resultsCountries,
+    variablesRegPage.containerForResultsCountries,
     variablesRegPage.errorForInputCountry,
   );
 
@@ -101,8 +101,22 @@ export default function generateLayoutRegistrationPage() {
       variablesRegPage.errorForInputStreet,
     ),
   );
-  variablesRegPage.inputForCity.addEventListener('input', validationRegPage.generateValidationInputCity);
-  variablesRegPage.inputForCountry.addEventListener('input', validationRegPage.ganarateValidationInputCountry);
+  variablesRegPage.inputForCity.addEventListener(
+    'input',
+    validationRegPage.generateValidationInputCity.bind(
+      null,
+      variablesRegPage.inputForCity,
+      variablesRegPage.errorForInputCity,
+    ),
+  );
+  variablesRegPage.inputForCountry.addEventListener(
+    'input',
+    validationRegPage.genarateValidationInputCountry.bind(
+      null,
+      variablesRegPage.inputForCountry,
+      variablesRegPage.errorForInputCountry,
+    ),
+  );
   variablesRegPage.inputForPostalCode.addEventListener(
     'input',
     validationRegPage.generateValidationInputPostalCode.bind(
