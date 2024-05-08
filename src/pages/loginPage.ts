@@ -4,6 +4,7 @@ import eyeOffIcon from '../img/eye-off-icon.svg';
 import { validateLoginForm, showOrHidePassword } from '../elements/loginvalidation';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
+import userData from '../elements/userData';
 
 function loginPage(): HTMLElement {
   // Mikhail - replace style on class, so that the body changes only at the moment of the call function
@@ -75,7 +76,10 @@ function loginPage(): HTMLElement {
   const submitFormBtn = document.createElement('button');
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
-  submitFormBtn.addEventListener('click', () => switchPage(Pages.Main));
+  submitFormBtn.addEventListener('click', () => {
+    userData.isLogined = true;
+    switchPage(Pages.Main);
+  });
 
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
