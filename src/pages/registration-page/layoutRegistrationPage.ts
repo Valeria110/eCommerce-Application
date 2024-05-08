@@ -1,5 +1,6 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
 import { generateBillingForm } from './layoutBillingForm';
+import * as validationRegPage from '../registration-page/validationInputsRegPage';
 
 export default function generateLayoutRegistrationPage() {
   document.body.innerHTML = '';
@@ -22,10 +23,15 @@ export default function generateLayoutRegistrationPage() {
   );
 
   variablesRegPage.containerForInputsRegistrationForm.append(
-    variablesRegPage.inputForUsername,
+    variablesRegPage.inputForFirstName,
+    variablesRegPage.errorForInputFirstName,
+    variablesRegPage.inputForLastName,
+    variablesRegPage.errorForInputLastName,
     variablesRegPage.inputForEmail,
+    variablesRegPage.errorForInputEmail,
     variablesRegPage.containerForInputBirth,
     variablesRegPage.containerForInputPassword,
+    variablesRegPage.errorForInputPassword,
   );
 
   variablesRegPage.containerForInputBirth.append(
@@ -44,12 +50,21 @@ export default function generateLayoutRegistrationPage() {
   );
 
   variablesRegPage.shippingAddressForm.append(
-    variablesRegPage.inputForCountry,
+    variablesRegPage.containerForInputCountry,
     variablesRegPage.inputForCity,
+    variablesRegPage.errorForInputCity,
     variablesRegPage.inputForStreet,
+    variablesRegPage.errorForInputStreet,
     variablesRegPage.inputForPostalCode,
+    variablesRegPage.errorForInputPostalCode,
     variablesRegPage.containerForCheckboxSameAddress,
     variablesRegPage.containerForCheckboxDefault,
+  );
+
+  variablesRegPage.containerForInputCountry.append(
+    variablesRegPage.inputForCountry,
+    variablesRegPage.resultsCountries,
+    variablesRegPage.errorForInputCountry,
   );
 
   variablesRegPage.containerForCheckboxSameAddress.append(
@@ -68,6 +83,35 @@ export default function generateLayoutRegistrationPage() {
   );
 
   variablesRegPage.buttonForBillingForm.addEventListener('click', generateBillingForm);
+
+  variablesRegPage.containerForRegistrationForms.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
+
+  variablesRegPage.inputForFirstName.addEventListener('input', validationRegPage.generateValidationInputFirstName);
+  variablesRegPage.inputForLastName.addEventListener('input', validationRegPage.generateValidationInputLastName);
+  variablesRegPage.inputForEmail.addEventListener('input', validationRegPage.generateValidationInputEmail);
+  variablesRegPage.inputForBirthDate.addEventListener('click', validationRegPage.generateValidationBirthDate);
+  variablesRegPage.inputForPassword.addEventListener('input', validationRegPage.generateValidationInputPassword);
+  variablesRegPage.inputForStreet.addEventListener(
+    'input',
+    validationRegPage.generateValidationInputStreet.bind(
+      null,
+      variablesRegPage.inputForStreet,
+      variablesRegPage.errorForInputStreet,
+    ),
+  );
+  variablesRegPage.inputForCity.addEventListener('input', validationRegPage.generateValidationInputCity);
+  variablesRegPage.inputForCountry.addEventListener('input', validationRegPage.ganarateValidationInputCountry);
+  variablesRegPage.inputForPostalCode.addEventListener(
+    'input',
+    validationRegPage.generateValidationInputPostalCode.bind(
+      null,
+      variablesRegPage.inputForCountry,
+      variablesRegPage.inputForPostalCode,
+      variablesRegPage.errorForInputPostalCode,
+    ),
+  );
 
   return variablesRegPage.containerForRegistrationForms;
 }

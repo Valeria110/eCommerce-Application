@@ -3,9 +3,11 @@ import './styleRegistrationPage.scss';
 
 export const containerForRegistrationForms = createElement(
   'form',
-  'd-flex justify-content-center align-items-center flex-column',
+  'd-flex justify-content-center align-items-center flex-column needs-validation',
 );
 containerForRegistrationForms.style.minHeight = '100vh';
+containerForRegistrationForms.setAttribute('autocomplete', 'off');
+containerForRegistrationForms.setAttribute('novalidate', 'true');
 
 export const registrationForm = createElement('div');
 registrationForm.style.marginTop = '110px';
@@ -20,12 +22,23 @@ export const titleRegistrationPage = createElement('h2', 'registration-form__tit
 
 export const containerForInputsRegistrationForm = createElement(
   'div',
-  'd-flex justify-content-center align-items-center flex-column gap-3',
+  'd-flex justify-content-center align-items-center flex-column',
 );
-export const inputForUsername = createElement('input', 'form-control registration-form__input');
-inputForUsername.placeholder = 'Username';
+export const inputForFirstName = createElement('input', 'form-control registration-form__input');
+inputForFirstName.placeholder = 'First name';
+inputForFirstName.required = true;
+export const errorForInputFirstName = createElement('div', 'error-register text-danger');
+
+export const inputForLastName = createElement('input', 'form-control registration-form__input');
+inputForLastName.placeholder = 'Last name';
+inputForLastName.required = true;
+export const errorForInputLastName = createElement('div', 'error-register text-danger');
+
 export const inputForEmail = createElement('input', 'registration-form__input form-control');
 inputForEmail.placeholder = 'Email';
+inputForEmail.type = 'email';
+inputForEmail.required = true;
+export const errorForInputEmail = createElement('div', 'error-register text-danger');
 
 export const containerForInputBirth = createElement('div', 'registration-form__input-content');
 export const inputForBirthDate = createElement('input', 'registration-form__input-birth form-control');
@@ -35,22 +48,31 @@ export const iconForInputBirth = createElement('span', 'registration-form__input
 export const containerForInputPassword = createElement('div', 'registration-form__input-content');
 export const inputForPassword = createElement('input', 'registration-form__input-password form-control');
 inputForPassword.placeholder = 'Password';
+inputForPassword.type = 'password';
 export const iconForInputPassword = createElement('span', 'registration-form__input-password_icon');
+export const errorForInputPassword = createElement('div', 'error-register text-danger');
 
-export const containerForShippingAddressForm = createElement('div', 'shipping-from justify-content-start');
-export const titleShippingAddressForm = createElement('h6', 'shipping-from__title', 'Shipping Address');
-export const shippingAddressForm = createElement(
-  'div',
-  'd-flex justify-content-center align-items-center flex-column gap-3',
-);
+export const containerForShippingAddressForm = createElement('div', 'shipping-form justify-content-start');
+export const titleShippingAddressForm = createElement('h6', 'shipping-form__title', 'Shipping Address');
+export const shippingAddressForm = createElement('div', 'd-flex justify-content-center align-items-center flex-column');
+
+export const containerForInputCountry = createElement('div', 'shipping-form__container-list');
 export const inputForCountry = createElement('input', 'form-control registration-form__input');
 inputForCountry.placeholder = 'Country*';
+export const resultsCountries = createElement('div', 'shipping-form__container-list_results');
+export const errorForInputCountry = createElement('div', 'error-register text-danger');
+
 export const inputForCity = createElement('input', 'form-control registration-form__input');
 inputForCity.placeholder = 'City*';
+export const errorForInputCity = createElement('div', 'error-register text-danger');
+
 export const inputForStreet = createElement('input', 'form-control registration-form__input');
 inputForStreet.placeholder = 'Street*';
+export const errorForInputStreet = createElement('div', 'error-register text-danger');
+
 export const inputForPostalCode = createElement('input', 'form-control registration-form__input');
 inputForPostalCode.placeholder = 'Postal code*';
+export const errorForInputPostalCode = createElement('div', 'error-register text-danger');
 
 export const containerForCheckboxSameAddress = createElement('div', 'shipping-form__checkbox-container mt-2');
 export const checkboxSameAddress = createElement('input', 'form-check-input shipping-form__checkbox');
@@ -74,17 +96,17 @@ export const labelForCheckboxDefault = createElement(
 
 export const buttonForBillingForm = createElement('div', 'billing-form__button', 'Add billing address');
 export const containerForBillingForm = createElement('div');
-export const titleBillingForm = createElement('h6', 'billing-from__title', 'Billing Address');
-export const billingAddressForm = createElement(
-  'div',
-  'd-flex justify-content-center align-items-center flex-column gap-3',
-);
+export const titleBillingForm = createElement('h6', 'billing-form__title', 'Billing Address');
+export const billingAddressForm = createElement('div', 'd-flex justify-content-center align-items-center flex-column');
 export const inputForCountryBillingForm = createElement('input', 'form-control registration-form__input');
 inputForCountryBillingForm.placeholder = 'Country*';
 export const inputForCityBillingForm = createElement('input', 'form-control registration-form__input');
 inputForCityBillingForm.placeholder = 'City*';
+
 export const inputForStreetBillingForm = createElement('input', 'form-control registration-form__input');
 inputForStreetBillingForm.placeholder = 'Street*';
+export const errorForInputStreetBillingForm = createElement('div', 'error-register text-danger');
+
 export const inputForPostalCodeBillingForm = createElement('input', 'form-control registration-form__input');
 inputForPostalCodeBillingForm.placeholder = 'Postal code*';
 
