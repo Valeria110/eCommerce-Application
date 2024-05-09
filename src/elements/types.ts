@@ -1,7 +1,7 @@
 export enum Pages {
   LogIn = 'Log in',
   SignUp = 'Sign up',
-  Main = 'Log out',
+  Main = 'Main',
 }
 
 export enum AppEvents {
