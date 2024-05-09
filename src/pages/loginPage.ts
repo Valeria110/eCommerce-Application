@@ -2,9 +2,13 @@ import './loginPage.scss';
 import litHubLogo from '../img/lithub-logo.svg';
 import eyeOffIcon from '../img/eye-off-icon.svg';
 import { validateLoginForm, showOrHidePassword } from '../elements/loginvalidation';
+import switchPage from '../elements/switchPage';
+import { Pages } from '../elements/types';
+import userData from '../elements/userData';
 
-function loginPage(): void {
-  document.body.innerHTML = '';
+function loginPage(): HTMLElement {
+  // Mikhail - replace style on class, so that the body changes only at the moment of the call function
+  document.body.classList.add('justify-content-center', 'align-items-center');
 
   const main = document.createElement('main');
   main.classList.add('login-page-main');
@@ -71,12 +75,17 @@ function loginPage(): void {
   const submitFormBtn = document.createElement('button');
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
+  submitFormBtn.addEventListener('click', () => {
+    userData.isLogined = true;
+    switchPage(Pages.Main);
+  });
 
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
   registrationLink.href = '#';
   registrationLink.textContent = 'Don’t have an account? Sign up';
   submitFormBtn.textContent = 'Log in';
+  registrationLink.addEventListener('click', () => switchPage(Pages.SignUp));
 
   main.appendChild(loginFormWrapper);
   loginFormWrapper.appendChild(loginForm);
@@ -84,6 +93,8 @@ function loginPage(): void {
   loginForm.appendChild(inputsContainer);
   loginForm.appendChild(submitFormBtn);
   loginFormWrapper.appendChild(registrationLink);
+
+  return main;
 }
 
 export { loginPage };

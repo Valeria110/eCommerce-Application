@@ -8,6 +8,8 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   padding: 10px;
   max-width: 100%;
