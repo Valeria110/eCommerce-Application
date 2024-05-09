@@ -2,7 +2,19 @@ import * as variablesRegPage from '../registration-page/variablesForRegistration
 import { generateBillingForm } from './layoutBillingForm';
 import * as validationRegPage from '../registration-page/validationInputsRegPage';
 
-export default function generateLayoutRegistrationPage() {
+function togglePasswordVisibility() {
+  if (variablesRegPage.inputForPassword.type === 'password') {
+    variablesRegPage.inputForPassword.type = 'text';
+    variablesRegPage.iconForInputPassword.classList.add('registration-form__toggle-password_icon');
+    variablesRegPage.iconForInputPassword.classList.remove('registration-form__input-password_icon');
+  } else {
+    variablesRegPage.inputForPassword.type = 'password';
+    variablesRegPage.iconForInputPassword.classList.remove('registration-form__toggle-password_icon');
+    variablesRegPage.iconForInputPassword.classList.add('registration-form__input-password_icon');
+  }
+}
+
+export default function generateRegistrationPage() {
   document.body.innerHTML = '';
   variablesRegPage.containerForRegistrationForms.append(
     variablesRegPage.registrationForm,
@@ -126,6 +138,8 @@ export default function generateLayoutRegistrationPage() {
       variablesRegPage.errorForInputPostalCode,
     ),
   );
+
+  variablesRegPage.iconForInputPassword.addEventListener('click', togglePasswordVisibility);
 
   return variablesRegPage.containerForRegistrationForms;
 }

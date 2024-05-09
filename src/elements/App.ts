@@ -1,5 +1,5 @@
 import demoPage from '../pages/demoPage';
-import generateLayoutRegistrationPage from '../pages/registration-page/layoutRegistrationPage';
+import generateRegistrationPage from '../pages/registration-page/layoutRegistrationPage';
 
 export default class App {
   start(): void {
@@ -7,6 +7,6 @@ export default class App {
   }
 
   register(): void {
-    document.body.append(generateLayoutRegistrationPage());
+    document.body.append(generateRegistrationPage());
   }
 }
