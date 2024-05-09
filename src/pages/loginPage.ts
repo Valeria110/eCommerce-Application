@@ -8,8 +8,7 @@ import userData from '../elements/userData';
 
 function loginPage(): HTMLElement {
   // Mikhail - replace style on class, so that the body changes only at the moment of the call function
-  document.body.classList.add('justify-content-center');
-  document.body.classList.add('align-items-center');
+  document.body.classList.add('justify-content-center', 'align-items-center');
 
   const main = document.createElement('main');
   main.classList.add('login-page-main');
