@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+$placeholder-color: #ADB5BD;
+$font-family-page: 'Inter', sans-serif;
+$checkboxs-buttons-color: #fd7e14;
 
 form .registration-form__input,
 .registration-form__input-content,
@@ -9,7 +11,7 @@ form .registration-form__input-password {
     padding: 14px 16px;
     width: 306px;
     height: 52px;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     margin-bottom: 16px;
 }
 
@@ -32,13 +34,13 @@ form .registration-form__input-password {
 
 form .registration-form__input-birth {
     font-size: 16px;
-    color: #ADB5BD;
+    color: $placeholder-color;
 }
 
 form .registration-form__input::placeholder,
 form .registration-form__input-birth::placeholder,
 form .registration-form__input-password::placeholder {
-    color: #ADB5BD;
+    color: $placeholder-color;
     font-weight: 400;
     font-size: 16px;
     line-height: 125%;
@@ -61,6 +63,19 @@ form .registration-form__input-password::placeholder {
     transition: 0.2s;
 }
 
+.registration-form__input-birth::-webkit-calendar-picker-indicator {
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='25' viewBox='0 0 18 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z' fill='%23ADB5BD' /%3E%3C/svg%3E");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 0;
+    margin-right: 34px;
+    transition: 0.2s;
+}
+
 .registration-form__input-password_icon {
     background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 19"%3E%3Cpath d="M10.83 6L14 9.16V9C14 8.20435 13.6839 7.44129 13.1213 6.87868C12.5587 6.31607 11.7956 6 11 6H10.83ZM6.53 6.8L8.08 8.35C8.03 8.56 8 8.77 8 9C8 9.79565 8.31607 10.5587 8.87868 11.1213C9.44129 11.6839 10.2044 12 11 12C11.22 12 11.44 11.97 11.65 11.92L13.2 13.47C12.53 13.8 11.79 14 11 14C9.67392 14 8.40215 13.4732 7.46447 12.5355C6.52678 11.5979 6 10.3261 6 9C6 8.21 6.2 7.47 6.53 6.8ZM1 1.27L3.28 3.55L3.73 4C2.08 5.3 0.78 7 0 9C1.73 13.39 6 16.5 11 16.5C12.55 16.5 14.03 16.2 15.38 15.66L15.81 16.08L18.73 19L20 17.73L2.27 0M11 4C12.3261 4 13.5979 4.52678 14.5355 5.46447C15.4732 6.40215 16 7.67392 16 9C16 9.64 15.87 10.26 15.64 10.82L18.57 13.75C20.07 12.5 21.27 10.86 22 9C20.27 4.61 16 1.5 11 1.5C9.6 1.5 8.26 1.75 7 2.2L9.17 4.35C9.74 4.13 10.35 4 11 4Z" fill="%23ADB5BD" /%3E%3C/svg%3E');
 }
@@ -70,12 +85,11 @@ form .registration-form__input-password::placeholder {
 }
 
 .registration-form__title {
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     margin-bottom: 48px;
     margin-top: 20px;
     font-weight: 600;
     font-size: 32px;
-    color: #000;
 }
 
 .shipping-form {
@@ -87,7 +101,7 @@ form .registration-form__input-password::placeholder {
 .shipping-form__title,
 .billing-form__title {
     margin-bottom: 24px;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     font-weight: 600;
     font-size: 16px;
 }
@@ -115,43 +129,41 @@ form .registration-form__input-password::placeholder {
     white-space: nowrap;
     font-weight: 400;
     font-size: 16px;
-    font-family: 'Inter', sans-serif;
-    color: #000;
+    font-family: $font-family-page;
     text-align: center;
 }
 
 div .shipping-form__checkbox,
 div .billing-form__checkbox {
     appearance: none;
-    border: 2px solid #fd7e14;
+    border: 2px solid $checkboxs-buttons-color;
     outline: none;
     cursor: pointer;
 }
 
 div .shipping-form__checkbox:checked,
 div .billing-form__checkbox:checked {
-    background-color: #fd7e14;
-    border-color: #fd7e14;
+    background-color: $checkboxs-buttons-color;
+    border-color: $checkboxs-buttons-color;
     box-shadow: none;
 }
 
 div .shipping-form__checkbox:focus,
 div .billing-form__checkbox:focus {
-    border-color: #fd7e14;
+    border-color: $checkboxs-buttons-color;
     box-shadow: none;
 }
 
 .billing-form__button {
-    border: 2px solid #fd7e14;
+    border: 2px solid $checkboxs-buttons-color;
     border-radius: 6px;
     padding: 10px 12px;
     width: 306px;
     height: 40px;
-    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     font-weight: 400;
     font-size: 16px;
     line-height: 125%;
@@ -170,9 +182,9 @@ div .billing-form__checkbox:focus {
     width: 306px;
     height: 50px;
     color: white;
-    background-color: #fd7e14;
-    border: 2px solid #fd7e14;
-    font-family: 'Inter', sans-serif;
+    background-color: $checkboxs-buttons-color;
+    border: 2px solid $checkboxs-buttons-color;
+    font-family: $font-family-page;
     font-weight: 600;
     font-size: 16px;
     line-height: 112%;
@@ -183,7 +195,7 @@ div .billing-form__checkbox:focus {
 .registration-page__button-login {
     margin-bottom: 70px;
     color: #CA6510;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     font-weight: 400;
     font-size: 16px;
     text-decoration: underline;
@@ -194,7 +206,7 @@ div .billing-form__checkbox:focus {
 div .error-register {
     width: 306px;
     font-size: 16px;
-    font-family: 'Inter', sans-serif;
+    font-family: $font-family-page;
     font-weight: 400;
     display: none;
 }

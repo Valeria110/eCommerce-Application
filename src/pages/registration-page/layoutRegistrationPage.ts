@@ -1,6 +1,7 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
 import { generateBillingForm } from './layoutBillingForm';
 import * as validationRegPage from '../registration-page/validationInputsRegPage';
+import { generateCopyAddress } from '../registration-page/validationInputsRegPage';
 
 function togglePasswordVisibility() {
   if (variablesRegPage.inputForPassword.type === 'password') {
@@ -140,6 +141,7 @@ export default function generateRegistrationPage() {
   );
 
   variablesRegPage.iconForInputPassword.addEventListener('click', togglePasswordVisibility);
+  variablesRegPage.checkboxSameAddress.addEventListener('click', generateCopyAddress);
 
   return variablesRegPage.containerForRegistrationForms;
 }
