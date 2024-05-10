@@ -43,6 +43,7 @@ export default function generateRegistrationPage() {
     variablesRegPage.inputForEmail,
     variablesRegPage.errorForInputEmail,
     variablesRegPage.containerForInputBirth,
+    variablesRegPage.errorForInputBirth,
     variablesRegPage.containerForInputPassword,
     variablesRegPage.errorForInputPassword,
   );
@@ -104,7 +105,7 @@ export default function generateRegistrationPage() {
   variablesRegPage.inputForFirstName.addEventListener('input', validationRegPage.generateValidationInputFirstName);
   variablesRegPage.inputForLastName.addEventListener('input', validationRegPage.generateValidationInputLastName);
   variablesRegPage.inputForEmail.addEventListener('input', validationRegPage.generateValidationInputEmail);
-  variablesRegPage.inputForBirthDate.addEventListener('click', validationRegPage.generateValidationBirthDate);
+  variablesRegPage.inputForBirthDate.addEventListener('click', validationRegPage.replaceInputType);
   variablesRegPage.inputForPassword.addEventListener('input', validationRegPage.generateValidationInputPassword);
   variablesRegPage.inputForStreet.addEventListener(
     'input',

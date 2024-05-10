@@ -86,8 +86,38 @@ export function generateValidationInputEmail() {
   }
 }
 
-export function generateValidationBirthDate() {
+const MIN_AGE = 13;
+const MAX_AGE = 100;
+
+function generateValidationBirthDate() {
+  const selectedDate = new Date(variablesRegPage.inputForBirthDate.value);
+  const currentDate = new Date();
+  const ageDifference = currentDate.getFullYear() - selectedDate.getFullYear();
+  console.log();
+
+  if (variablesRegPage.inputForBirthDate.value === '') {
+    variablesRegPage.errorForInputBirth.textContent = 'This field is required';
+    newStyleForError(variablesRegPage.inputForBirthDate, variablesRegPage.errorForInputBirth, true);
+    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+  } else if (ageDifference < MIN_AGE) {
+    variablesRegPage.errorForInputBirth.textContent = 'Minimum age must be at least 13 years';
+    newStyleForError(variablesRegPage.inputForBirthDate, variablesRegPage.errorForInputBirth, true);
+    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+  } else if (ageDifference > MAX_AGE) {
+    variablesRegPage.errorForInputBirth.textContent = 'Age cannot exceed 100 years';
+    newStyleForError(variablesRegPage.inputForBirthDate, variablesRegPage.errorForInputBirth, true);
+    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+  } else {
+    variablesRegPage.containerForInputBirth.style.marginBottom = '16px';
+    newStyleForError(variablesRegPage.inputForBirthDate, variablesRegPage.errorForInputBirth, false);
+  }
+}
+
+export function replaceInputType() {
   variablesRegPage.inputForBirthDate.type = 'date';
+  variablesRegPage.iconForInputBirth.style.display = 'none';
+  variablesRegPage.inputForBirthDate.removeEventListener('click', replaceInputType);
+  variablesRegPage.inputForBirthDate.addEventListener('input', generateValidationBirthDate);
 }
 
 export function generateValidationInputPassword() {

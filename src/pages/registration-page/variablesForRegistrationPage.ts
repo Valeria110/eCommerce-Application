@@ -44,6 +44,7 @@ export const containerForInputBirth = createElement('div', 'registration-form__i
 export const inputForBirthDate = createElement('input', 'registration-form__input-birth form-control');
 inputForBirthDate.placeholder = 'Birth date';
 export const iconForInputBirth = createElement('span', 'registration-form__input-birth_icon');
+export const errorForInputBirth = createElement('div', 'error-register text-danger');
 
 export const containerForInputPassword = createElement('div', 'registration-form__input-content');
 export const inputForPassword = createElement('input', 'registration-form__input-password form-control');
