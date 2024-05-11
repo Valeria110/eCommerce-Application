@@ -3,6 +3,8 @@ import './error404Page.scss';
 import errImg from '../img/error-img.png';
 import homeIcon from '../img/home-icon.svg';
 import header from '../elements/header/header';
+import switchPage from '../elements/switchPage';
+import { Pages } from '../elements/types';
 
 function error404Page(): HTMLElement[] {
   const headerElem = header();
@@ -36,6 +38,9 @@ function error404Page(): HTMLElement[] {
   const homeBtnText = Bootstrap.createElement('span', 'home-btn__text', 'Go to homepage');
   homeBtnContent.append(homeBtnIcon, homeBtnText);
   homeBtn.append(homeBtnContent);
+  homeBtn.addEventListener('click', () => {
+    switchPage(Pages.Main);
+  });
 
   errorContentBlock.append(errorTitle, errorDesc, homeBtn);
   errorWrapper.append(errorImg, errorContentBlock);
