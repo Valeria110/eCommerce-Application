@@ -2,14 +2,12 @@ import error404Page from '../pages/error404Page';
 import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import signUpPage from '../pages/signUpPage';
-import switchPage from './switchPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
 
 export default class App {
   start(): void {
-    switchPage(Pages.Main);
-    changePageRoute(Pages.Main);
+    handleLocation();
   }
 }
 
