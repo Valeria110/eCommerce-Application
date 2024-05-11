@@ -11,12 +11,17 @@ interface DropdownSplitElement {
 export default class Bootstrap {
   static createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
-    className = '',
+    className: string | string[] = '',
     textContent?: string,
   ): HTMLElementTagNameMap[T] {
     const element = document.createElement(tagName);
-    if (className) {
+    if (typeof className === 'string') {
       element.className = className;
+    }
+    if (Array.isArray(className)) {
+      className.forEach((classItem) => {
+        element.classList.add(classItem);
+      });
     }
     if (textContent !== undefined) {
       element.textContent = textContent;

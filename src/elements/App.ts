@@ -1,4 +1,4 @@
-import error404Page from '../pages/error404Page';
+import { error404Page } from '../pages/error404Page';
 import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import signUpPage from '../pages/signUpPage';
@@ -29,14 +29,14 @@ document.addEventListener(AppEvents.switchPage, (event) => {
       changePageRoute(Pages.Main);
       break;
     default:
-      document.body.append(error404Page());
+      error404Page().forEach((element) => {
+        document.body.append(element);
+      });
       changePageRoute(Pages.Error404);
       break;
   }
 });
 
-window.addEventListener('popstate', () => {
-  handleLocation();
-});
+window.addEventListener('popstate', handleLocation);
 
 window.addEventListener('DOMContentLoaded', handleLocation);
