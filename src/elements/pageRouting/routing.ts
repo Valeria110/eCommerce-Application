@@ -23,19 +23,18 @@ const routes = ['/login', '/main', '/sign_up'];
 async function handleLocation() {
   const pathname = window.location.pathname;
 
-  if (!routes.includes(pathname)) {
-    changePageRoute(Pages.Error404);
+  if (pathname === '/') {
+    switchPage(Pages.Main);
+  } else if (!routes.includes(pathname)) {
     switchPage(Pages.Error404);
   } else {
     switch (pathname) {
       case '/login':
         switchPage(Pages.LogIn);
         break;
-
       case '/main':
         switchPage(Pages.Main);
         break;
-
       case '/sign_up':
         switchPage(Pages.SignUp);
         break;
