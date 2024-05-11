@@ -1,10 +1,22 @@
 import createElement from '../../elements/bootstrap/createElement';
-import { checkboxSameAddress, inputForCountry, inputForCountryBillingForm } from './variablesForRegistrationPage';
+import { generateValidationInputPostalCode, newStyleForError } from './validationInputsRegPage';
+import {
+  checkboxSameAddress,
+  errorForInputCountry,
+  errorForInputCountryBillingForm,
+  errorForInputPostalCode,
+  errorForInputPostalCodeBillingForm,
+  inputForCountry,
+  inputForCountryBillingForm,
+  inputForPostalCode,
+  inputForPostalCodeBillingForm,
+} from './variablesForRegistrationPage';
 
 export function generateResultsCountries(
   resultsCountries: string[],
   inputCountry: HTMLInputElement,
   containerResultsCountries: HTMLDivElement,
+  error: HTMLDivElement,
 ) {
   const isChecked = checkboxSameAddress.checked;
 
@@ -26,17 +38,27 @@ export function generateResultsCountries(
 
     foundContry.addEventListener('click', () => {
       inputCountry.value = foundContry.textContent as string;
-      inputCountry.classList.add('is-valid');
+      newStyleForError(inputCountry, error, false);
       inputCountry.classList.remove('openList');
       containerResultsCountries.innerHTML = '';
       containerResultsCountries.style.border = '0px';
+      if (inputCountry === inputForCountry) {
+        generateValidationInputPostalCode(inputForCountry, inputForPostalCode, errorForInputPostalCode);
+      } else {
+        generateValidationInputPostalCode(
+          inputForCountryBillingForm,
+          inputForPostalCodeBillingForm,
+          errorForInputPostalCodeBillingForm,
+        );
+      }
+
       if (isChecked) {
         if (inputCountry === inputForCountry) {
           inputForCountryBillingForm.value = foundContry.textContent as string;
-          inputForCountryBillingForm.classList.add('is-valid');
+          newStyleForError(inputForCountryBillingForm, errorForInputCountryBillingForm, false);
         } else {
           inputForCountry.value = foundContry.textContent as string;
-          inputForCountry.classList.add('is-valid');
+          newStyleForError(inputForCountry, errorForInputCountry, false);
         }
       }
     });

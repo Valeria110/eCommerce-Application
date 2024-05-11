@@ -5,7 +5,6 @@ export const containerForRegistrationForms = createElement(
   'form',
   'd-flex justify-content-center align-items-center flex-column needs-validation',
 );
-containerForRegistrationForms.style.minHeight = '100vh';
 containerForRegistrationForms.setAttribute('autocomplete', 'off');
 containerForRegistrationForms.setAttribute('novalidate', 'true');
 
@@ -43,7 +42,6 @@ export const errorForInputEmail = createElement('div', 'error-register text-dang
 export const containerForInputBirth = createElement('div', 'registration-form__input-content');
 export const inputForBirthDate = createElement('input', 'registration-form__input-birth form-control');
 inputForBirthDate.placeholder = 'Birth date';
-export const iconForInputBirth = createElement('span', 'registration-form__input-birth_icon');
 export const errorForInputBirth = createElement('div', 'error-register text-danger');
 
 export const containerForInputPassword = createElement('div', 'registration-form__input-content');
@@ -129,7 +127,7 @@ export const labelForCheckboxDefaultBillingForm = createElement(
 );
 
 export const containerForButtonSignUpAndLogin = createElement('div');
-export const buttonSignUp = createElement('button', 'registration-page__button-signup', 'Sign up');
+export const buttonSignUp = createElement('button', 'registration-page__button-signup btn disabled', 'Sign up');
 buttonSignUp.type = 'submit';
 export const buttonToLoginPage = createElement(
   'div',

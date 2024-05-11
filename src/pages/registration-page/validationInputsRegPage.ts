@@ -6,6 +6,7 @@ const ALL_NUMBERS = /\d/;
 const ALL_SPECIAL_CHARACTERS = /[!@#$%^&*()_+\-=[\]{};':"`\\|,.<>~/?]/;
 const ALL_UPPERCASE_LETTERS = /[A-Z]/;
 const ALL_LOWERCASE_LETTERS = /[a-z]/;
+const LENGTH_VALID_ALL_INPUTS = 13;
 const ALL_CONTRIES: Record<string, RegExp> = {
   'Germany (DE)': /^\d{5}$/,
   'United States (US)': /^\d{5}(-\d{4})?$/,
@@ -24,7 +25,7 @@ const ALL_CONTRIES: Record<string, RegExp> = {
   'Canada (CA)': /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
 };
 
-function newStyleForError(input: HTMLInputElement, error: HTMLDivElement, isInvalid: boolean) {
+export function newStyleForError(input: HTMLInputElement, error: HTMLDivElement, isInvalid: boolean) {
   if (isInvalid === true) {
     error.style.display = 'block';
     error.style.marginTop = '0.25rem';
@@ -39,6 +40,7 @@ function newStyleForError(input: HTMLInputElement, error: HTMLDivElement, isInva
     input.classList.remove('is-invalid');
     input.classList.add('is-valid');
   }
+  disabledFalse();
 }
 
 export function generateValidationInputFirstName() {
@@ -115,7 +117,6 @@ function generateValidationBirthDate() {
 
 export function replaceInputType() {
   variablesRegPage.inputForBirthDate.type = 'date';
-  variablesRegPage.iconForInputBirth.style.display = 'none';
   variablesRegPage.inputForBirthDate.removeEventListener('click', replaceInputType);
   variablesRegPage.inputForBirthDate.addEventListener('input', generateValidationBirthDate);
 }
@@ -211,6 +212,7 @@ export function generateValidationInputCity(inputCity: HTMLInputElement, error: 
 
 export function genarateValidationInputCountry(inputCountry: HTMLInputElement, error: HTMLDivElement) {
   const isEmpty = inputCountry.value === '';
+  const countries = Object.keys(ALL_CONTRIES);
 
   if (isEmpty) {
     error.textContent = 'This field is required';
@@ -222,7 +224,6 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
   let resultsCountries: string[] = [];
 
   if (inputCountry.value.length !== 0) {
-    const countries = Object.keys(ALL_CONTRIES);
     resultsCountries = countries.filter((country) => {
       return country.toLowerCase().includes(inputCountry.value.toLowerCase());
     });
@@ -231,24 +232,25 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
   if (resultsCountries.length === 0 && !isEmpty) {
     error.textContent = 'Country must be a valid';
     newStyleForError(inputCountry, error, true);
+  } else {
+    error.textContent = 'Country must be a valid';
+    newStyleForError(inputCountry, error, true);
   }
 
   if (inputCountry === variablesRegPage.inputForCountry) {
-    variablesRegPage.inputForCity.value = '';
-    variablesRegPage.inputForCity.classList.remove('is-valid');
-    variablesRegPage.inputForStreet.value = '';
-    variablesRegPage.inputForStreet.classList.remove('is-valid');
-    variablesRegPage.inputForPostalCode.value = '';
-    variablesRegPage.inputForPostalCode.classList.remove('is-valid');
-    generateResultsCountries(resultsCountries, inputCountry, variablesRegPage.containerForResultsCountries);
+    generateResultsCountries(
+      resultsCountries,
+      inputCountry,
+      variablesRegPage.containerForResultsCountries,
+      variablesRegPage.errorForInputCountry,
+    );
   } else {
-    variablesRegPage.inputForCityBillingForm.value = '';
-    variablesRegPage.inputForCityBillingForm.classList.remove('is-valid');
-    variablesRegPage.inputForStreetBillingForm.value = '';
-    variablesRegPage.inputForStreetBillingForm.classList.remove('is-valid');
-    variablesRegPage.inputForPostalCodeBillingForm.value = '';
-    variablesRegPage.inputForPostalCodeBillingForm.classList.remove('is-valid');
-    generateResultsCountries(resultsCountries, inputCountry, variablesRegPage.containerResultsCountriesBillingForm);
+    generateResultsCountries(
+      resultsCountries,
+      inputCountry,
+      variablesRegPage.containerResultsCountriesBillingForm,
+      variablesRegPage.errorForInputCountryBillingForm,
+    );
   }
 }
 
@@ -299,12 +301,21 @@ export function generateValidationInputPostalCode(
   }
 }
 
-function copyFieldValue(shippingInput: HTMLInputElement, billingInput: HTMLInputElement) {
+function copyFieldValue(
+  shippingInput: HTMLInputElement,
+  billingInput: HTMLInputElement,
+  errorInputShippingForm: HTMLDivElement,
+  errorInputBillingForm: HTMLDivElement,
+) {
   if (shippingInput.value !== '' && !shippingInput.classList.contains('is-invalid')) {
     billingInput.value = shippingInput.value;
+    billingInput.classList.remove('is-invalid');
     billingInput.classList.add('is-valid');
   } else if (shippingInput.classList.contains('is-invalid')) {
+    billingInput.classList.remove('is-invalid');
     billingInput.classList.add('is-invalid');
+    errorInputBillingForm.textContent = errorInputShippingForm.textContent;
+    newStyleForError(billingInput, errorInputBillingForm, true);
   }
 }
 
@@ -313,9 +324,45 @@ export function generateCopyAddress() {
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
 
   if (isChecked) {
-    copyFieldValue(variablesRegPage.inputForCountry, variablesRegPage.inputForCountryBillingForm);
-    copyFieldValue(variablesRegPage.inputForCity, variablesRegPage.inputForCityBillingForm);
-    copyFieldValue(variablesRegPage.inputForStreet, variablesRegPage.inputForStreetBillingForm);
-    copyFieldValue(variablesRegPage.inputForPostalCode, variablesRegPage.inputForPostalCodeBillingForm);
+    copyFieldValue(
+      variablesRegPage.inputForCountry,
+      variablesRegPage.inputForCountryBillingForm,
+      variablesRegPage.errorForInputCountry,
+      variablesRegPage.errorForInputCountryBillingForm,
+    );
+    copyFieldValue(
+      variablesRegPage.inputForCity,
+      variablesRegPage.inputForCityBillingForm,
+      variablesRegPage.errorForInputCity,
+      variablesRegPage.errorForInputCityBillingForm,
+    );
+    copyFieldValue(
+      variablesRegPage.inputForStreet,
+      variablesRegPage.inputForStreetBillingForm,
+      variablesRegPage.errorForInputStreet,
+      variablesRegPage.errorForInputStreetBillingForm,
+    );
+    copyFieldValue(
+      variablesRegPage.inputForPostalCode,
+      variablesRegPage.inputForPostalCodeBillingForm,
+      variablesRegPage.errorForInputPostalCode,
+      variablesRegPage.errorForInputPostalCodeBillingForm,
+    );
+  }
+}
+
+export function disabledFalse() {
+  if (document.body.contains(variablesRegPage.billingAddressForm)) {
+    if (document.querySelectorAll('.is-valid').length === LENGTH_VALID_ALL_INPUTS) {
+      variablesRegPage.buttonSignUp.classList.remove('disabled');
+    }
+  }
+
+  if (document.querySelectorAll('.is-valid').length === 9) {
+    variablesRegPage.buttonSignUp.classList.remove('disabled');
+  }
+
+  if (document.querySelectorAll('.is-invalid').length > 0) {
+    variablesRegPage.buttonSignUp.classList.add('disabled');
   }
 }

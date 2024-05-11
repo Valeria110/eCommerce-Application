@@ -2,6 +2,8 @@ import * as variablesRegPage from '../registration-page/variablesForRegistration
 import { generateBillingForm } from './layoutBillingForm';
 import * as validationRegPage from '../registration-page/validationInputsRegPage';
 import { generateCopyAddress } from '../registration-page/validationInputsRegPage';
+import switchPage from '../../elements/switchPage';
+import { Pages } from '../../elements/types';
 
 function togglePasswordVisibility() {
   if (variablesRegPage.inputForPassword.type === 'password') {
@@ -16,7 +18,7 @@ function togglePasswordVisibility() {
 }
 
 export default function generateRegistrationPage() {
-  document.body.innerHTML = '';
+  document.body.style.height = 'auto';
   variablesRegPage.containerForRegistrationForms.append(
     variablesRegPage.registrationForm,
     variablesRegPage.containerForShippingAddressForm,
@@ -48,10 +50,7 @@ export default function generateRegistrationPage() {
     variablesRegPage.errorForInputPassword,
   );
 
-  variablesRegPage.containerForInputBirth.append(
-    variablesRegPage.inputForBirthDate,
-    variablesRegPage.iconForInputBirth,
-  );
+  variablesRegPage.containerForInputBirth.append(variablesRegPage.inputForBirthDate);
 
   variablesRegPage.containerForInputPassword.append(
     variablesRegPage.inputForPassword,
@@ -100,6 +99,7 @@ export default function generateRegistrationPage() {
 
   variablesRegPage.containerForRegistrationForms.addEventListener('submit', (event) => {
     event.preventDefault();
+    console.log(123);
   });
 
   variablesRegPage.inputForFirstName.addEventListener('input', validationRegPage.generateValidationInputFirstName);
@@ -143,6 +143,15 @@ export default function generateRegistrationPage() {
 
   variablesRegPage.iconForInputPassword.addEventListener('click', togglePasswordVisibility);
   variablesRegPage.checkboxSameAddress.addEventListener('click', generateCopyAddress);
+  variablesRegPage.buttonToLoginPage.addEventListener('click', () => {
+    switchPage(Pages.LogIn);
+    document.body.style.height = '';
+  });
+
+  variablesRegPage.buttonSignUp.addEventListener('click', () => {
+    switchPage(Pages.Main);
+    document.body.style.height = '';
+  });
 
   return variablesRegPage.containerForRegistrationForms;
 }

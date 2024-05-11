@@ -2,17 +2,13 @@ import generateRegistrationPage from '../pages/registration-page/layoutRegistrat
 import error404Page from '../pages/error404Page';
 import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
-import signUpPage from '../pages/signUpPage';
 import switchPage from './switchPage';
 import { AppEvents, Pages } from './types';
 
 export default class App {
   start(): void {
-    switchPage(Pages.Main);
-  }
-
-  register(): void {
-    document.body.append(generateRegistrationPage());
+    // switchPage(Pages.Main); // TODO: return back
+    switchPage(Pages.SignUp);
   }
 }
 
@@ -25,7 +21,7 @@ document.addEventListener(AppEvents.switchPage, (event) => {
       document.body.append(loginPage());
       break;
     case Pages.SignUp:
-      document.body.append(signUpPage());
+      document.body.append(generateRegistrationPage());
       break;
     case Pages.Main:
       document.body.append(mainPage());

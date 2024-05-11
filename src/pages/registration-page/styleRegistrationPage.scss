@@ -172,17 +172,14 @@ div .billing-form__checkbox:focus {
   margin-top: 15px;
 }
 
-.registration-page__button-signup {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+div .registration-page__button-signup {
   border-radius: 6px;
   padding: 16px 24px;
   width: 306px;
   height: 50px;
-  color: white;
-  background-color: $checkboxs-buttons-color;
-  border: 2px solid $checkboxs-buttons-color;
+  color: white !important;
+  background-color: $checkboxs-buttons-color !important;
+  border: 2px solid $checkboxs-buttons-color !important;
   font-family: $font-family-page;
   font-weight: 600;
   font-size: 16px;
@@ -252,11 +249,18 @@ div .error-register {
   }
 
   .registration-page__button-signup:hover {
-    background-color: #d76b11;
-    border: 2px solid #d76b11;
+    background-color: #d76b11 !important;
+    border: 2px solid #d76b11 !important;
   }
 
   .shipping-form__list-element:hover {
     color: #c75b00;
+  }
+}
+
+@media(max-width: 500px) {
+  .shipping-form__checkbox_label {
+    white-space: wrap;
+    text-align: start;
   }
 }
