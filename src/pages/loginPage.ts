@@ -7,7 +7,6 @@ import { Pages } from '../elements/types';
 import userData from '../elements/userData';
 
 function loginPage(): HTMLElement {
-  // Mikhail - replace style on class, so that the body changes only at the moment of the call function
   document.body.classList.add('justify-content-center', 'align-items-center');
 
   const main = document.createElement('main');
@@ -21,7 +20,10 @@ function loginPage(): HTMLElement {
   loginForm.setAttribute('novalidate', '');
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    validateLoginForm();
+    if (validateLoginForm()) {
+      userData.isLogined = true;
+      switchPage(Pages.Main);
+    }
   });
 
   const loginFormHeader = document.createElement('div');
@@ -76,8 +78,10 @@ function loginPage(): HTMLElement {
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
   submitFormBtn.addEventListener('click', () => {
-    userData.isLogined = true;
-    switchPage(Pages.Main);
+    if (validateLoginForm()) {
+      userData.isLogined = true;
+      switchPage(Pages.Main);
+    }
   });
 
   const registrationLink = document.createElement('a');

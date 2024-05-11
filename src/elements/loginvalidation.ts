@@ -2,20 +2,20 @@ import { isNull } from '../utils/utils';
 import eyeOffIcon from '../img/eye-off-icon.svg';
 import eyeIcon from '../img/eye-icon.svg';
 
-function validateLoginForm(): void {
+function validateLoginForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
   const passwordInput = document.querySelector('.login-form__password-input');
   isNull<HTMLInputElement>(emailInput);
   isNull<HTMLInputElement>(passwordInput);
 
-  validateInputs(emailInput.value.trim(), passwordInput.value.trim());
+  return validateInputs(emailInput.value.trim(), passwordInput.value.trim());
 }
 
-function validateInputs(emailValue: string, passwordValue: string): void {
+function validateInputs(emailValue: string, passwordValue: string): boolean {
   validateEmail(emailValue);
   validatePassword(passwordValue);
 
-  canSubmitForm();
+  return canSubmitForm();
 }
 
 function validateEmail(emailValue: string): void {
@@ -86,7 +86,7 @@ function showError(input: HTMLInputElement, errorMessage: string) {
   submitBtn.classList.add('disabled');
 }
 
-function canSubmitForm(): void {
+function canSubmitForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
   const passwordInput = document.querySelector('.login-form__password-input');
   const submitBtn = document.querySelector('.login-form__submit-btn');
@@ -98,9 +98,10 @@ function canSubmitForm(): void {
 
   if (!isEmailValid || !isPasswordValid || (!isEmailValid && !isPasswordValid)) {
     submitBtn.classList.add('disabled');
-  } else {
-    submitBtn.classList.remove('disabled');
+    return false;
   }
+  submitBtn.classList.remove('disabled');
+  return true;
 }
 
 function showOrHidePassword() {
