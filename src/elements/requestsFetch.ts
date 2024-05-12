@@ -19,7 +19,10 @@ class RequestFetch {
   }
 
   async getCustomersToken(username: string, password: string) {
-    const url = `${this.authUrl}/oauth/${this.projectKey}/customers/token?grant_type=password&username=${username}&password=${password}`;
+    const encodedUsername = encodeURIComponent(username);
+    const encodedPassword = encodeURIComponent(password);
+
+    const url = `${this.authUrl}/oauth/${this.projectKey}/customers/token?grant_type=password&username=${encodedUsername}&password=${encodedPassword}`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {

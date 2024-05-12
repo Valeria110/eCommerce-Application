@@ -22,7 +22,7 @@ export default function mainPage() {
     // simple@gmail.com
     // simple
     // TODO: Doesn't work with test@gmail.com
-    const status = requestFetch.getCustomersToken('simple@gmail.com', 'simple');
+    const status = requestFetch.getCustomersToken('test@gmail.com', 'TestTest1#');
     console.log(`status = ${status}`);
   });
 
