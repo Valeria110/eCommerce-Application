@@ -1,19 +1,11 @@
+import requestFetch from '../elements/requestsFetch';
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import header from '../elements/header/header';
-import { testSDK, fetchToken, checkCustomer } from '../elements/requests';
+import { testSDK, checkCustomer } from '../elements/requests';
 
 export default function mainPage() {
   const div = Bootstrap.createElement('div');
   div.append(header());
-
-  // console.log(`env API_URL = ${process.env.API_URL}`);
-  // console.log(`env CTP_PROJECT_KEY = ${process.env.CTP_PROJECT_KEY}`);
-
-  // const btnProducts = Bootstrap.createButton('get products', 'btn-primary m-2');
-  // btnProducts.addEventListener('click', () => console.log(getProducts()));
-
-  // const btnToken = Bootstrap.createButton('get token', 'btn-primary m-2');
-  // btnToken.addEventListener('click', () => console.log(getToken()));
 
   const btnTest = Bootstrap.createButton('test sdk', 'btn-warning m-2');
   btnTest.addEventListener('click', () => {
@@ -24,7 +16,14 @@ export default function mainPage() {
   const btnSignUp = Bootstrap.createButton('fetch token', 'btn-success m-2');
   btnSignUp.addEventListener('click', () => {
     console.log('==== sign up =====');
-    fetchToken('simple@gmail.com', 'simple');
+    // test@gmail.com
+    // TestTest1#
+
+    // simple@gmail.com
+    // simple
+    // TODO: Doesn't work with test@gmail.com
+    const status = requestFetch.getCustomersToken('simple@gmail.com', 'simple');
+    console.log(`status = ${status}`);
   });
 
   const btnCheckCustomer = Bootstrap.createButton('check customer by email', 'btn-warning m-2');
