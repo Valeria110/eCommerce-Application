@@ -19,6 +19,8 @@ class RequestFetch {
   }
 
   async getCustomersToken(username: string, password: string) {
+    // TODO: Обрабатывать когда можно войти а когда нет
+
     const encodedUsername = encodeURIComponent(username);
     const encodedPassword = encodeURIComponent(password);
 
@@ -31,14 +33,41 @@ class RequestFetch {
       },
     });
 
+    const obj = await response.json();
+    if (!response.ok) {
+      // throw new Error(`HTTP error! status: ${response.status}, message: ${text.message}`);
+      console.error(`HTTP error! status: ${response.status}, message: ${obj.message}`);
+      if (obj.error === 'invalid_customer_account_credentials') {
+        console.error('catch invalid_customer_account_credentials');
+        // TODO: Проверить есть ли у нас такой пользователь или нет
+      }
+    }
+
+    console.log(obj);
+
+    return response.ok;
+  }
+
+  async isExistCustomer(email: string) {
+    const encodedEmail = encodeURIComponent(email);
+
+    const url = `${this.authUrl}/${this.projectKey}/customers?where=email="${encodedEmail}"`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Basic ${this.base64Auth}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const text = await response.json();
-    console.log(text);
+    const customers = await response.json();
 
-    return response.ok;
+    // Если массив результатов не пуст, значит, клиент существует
+    return customers.results.length > 0;
   }
 }
 
