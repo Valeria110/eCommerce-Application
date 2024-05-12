@@ -2,13 +2,19 @@
 $title-color: #adb5bd;
 
 .error-wrapper {
-  width: 490px;
+  width: 100%;
+  max-width: 490px;
   gap: 11px;
   height: auto;
   margin: auto;
 
+  .error-wrapper__img {
+    width: 100%;
+  }
+
   .error-content-block {
-    width: 430px;
+    width: 100%;
+    max-width: 430px;
 
     .error-content-block__title {
       margin-bottom: 16px;
