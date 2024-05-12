@@ -4,8 +4,8 @@
   "description": "",
   "main": "webpack.base.config.js",
   "scripts": {
-    "start": "webpack serve --open --mode development --config ./webpack.config.js",
-    "build": "webpack --mode production --config ./webpack.config.js",
+    "start": "webpack serve --open --mode development --config ./webpack.config.js --env mode=dev",
+    "build": "webpack --mode production --config ./webpack.config.js --env mode=prod",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
@@ -50,7 +50,10 @@
     "webpack-merge": "^5.10.0"
   },
   "dependencies": {
+    "@commercetools/platform-sdk": "^7.8.0",
+    "@commercetools/sdk-client-v2": "^2.5.0",
     "bootstrap": "^5.3.3",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "node-fetch": "^3.3.2"
   }
 }
