@@ -1,6 +1,6 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import header from '../elements/header/header';
-import { testSDK, getUserToken } from '../elements/requests';
+import { testSDK, fetchToken, checkCustomer } from '../elements/requests';
 
 export default function mainPage() {
   const div = Bootstrap.createElement('div');
@@ -17,14 +17,22 @@ export default function mainPage() {
 
   const btnTest = Bootstrap.createButton('test sdk', 'btn-warning m-2');
   btnTest.addEventListener('click', () => {
+    console.log('==== test sdk =====');
     testSDK();
   });
 
-  const btnSignUp = Bootstrap.createButton('withPasswordFlow', 'btn-warning m-2');
+  const btnSignUp = Bootstrap.createButton('fetch token', 'btn-warning m-2');
   btnSignUp.addEventListener('click', () => {
-    getUserToken('test@gmail.com', 'TestTest1#');
+    console.log('==== sign up =====');
+    fetchToken('test@gmail.com', 'TestTest1#');
   });
 
-  div.append(btnTest, btnSignUp);
+  const btnCheckCustomer = Bootstrap.createButton('check customer by email', 'btn-warning m-2');
+  btnCheckCustomer.addEventListener('click', () => {
+    console.log('==== check customer =====');
+    checkCustomer('test11111@gmail.com');
+  });
+
+  div.append(btnTest, btnSignUp, btnCheckCustomer);
   return div;
 }
