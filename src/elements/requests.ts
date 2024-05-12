@@ -18,12 +18,18 @@ const fetchToken = async (username: string, password: string) => {
   const authUrl = process.env.CTP_AUTH_URL;
   const projectKey = process.env.CTP_PROJECT_KEY;
 
-  const url = `${authUrl}/oauth/${projectKey}/customers/token?grant_type=password&username=${username}&password=${password}`;
+  const CTP_CLIENT_ID = process.env.CTP_CLIENT_ID;
+  const CTP_CLIENT_SECRET = process.env.CTP_CLIENT_SECRET;
+  // const authString = `${CTP_CLIENT_ID}:${CTP_CLIENT_SECRET}`;
+  const base64Auth = btoa(`${CTP_CLIENT_ID}:${CTP_CLIENT_SECRET}`);
+
+  const url = `https://auth.europe-west1.gcp.commercetools.com/oauth/ecommerce-application-229-key/customers/token?grant_type=password&username=${username}&password=${password}`;
   console.log('try url ', url);
   console.log(`username = ${username}, 'password' = ${password}`);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
+      Authorization: `Basic ${base64Auth}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });

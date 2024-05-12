@@ -21,10 +21,10 @@ export default function mainPage() {
     testSDK();
   });
 
-  const btnSignUp = Bootstrap.createButton('fetch token', 'btn-warning m-2');
+  const btnSignUp = Bootstrap.createButton('fetch token', 'btn-success m-2');
   btnSignUp.addEventListener('click', () => {
     console.log('==== sign up =====');
-    fetchToken('test@gmail.com', 'TestTest1#');
+    fetchToken('simple@gmail.com', 'simple');
   });
 
   const btnCheckCustomer = Bootstrap.createButton('check customer by email', 'btn-warning m-2');
