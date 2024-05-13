@@ -53,7 +53,7 @@ class RequestFetch {
     return this.#customerToken;
   }
 
-  get isCustomerLogined() {
+  get isLogined() {
     return this.customerToken !== undefined;
   }
 
@@ -173,5 +173,5 @@ class RequestFetch {
   }
 }
 
-const request = new RequestFetch();
-export default request;
+const requestsAPI = new RequestFetch();
+export default requestsAPI;

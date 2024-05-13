@@ -118,4 +118,4 @@ function showOrHidePassword() {
   }
 }
 
-export { validateLoginForm, showOrHidePassword };
+export { validateLoginForm, showOrHidePassword, showError };

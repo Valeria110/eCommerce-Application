@@ -6,7 +6,7 @@ import burgerSrc from './../../img/burger-menu.svg';
 import './header.scss';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
-import userData from '../userData';
+import requestsAPI from '../requestsAPI';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -31,7 +31,7 @@ export default function header(): HTMLElement {
   ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, 'mx-1'));
   collapseDiv.append(ul);
 
-  let defaultAction = userData.isLogined ? UserAction.LogOut : UserAction.LogIn;
+  let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const changeDefaultActionBtn = (updateAction: UserAction) => {
     defaultAction = updateAction;
     actionContainer.mainBtn.textContent = defaultAction;
@@ -93,7 +93,7 @@ function updateAvailableOptionsLogined(
   optionsWithLogin: HTMLLIElement[],
   optionsWithoutLogin: HTMLLIElement[],
 ) {
-  if (!userData.isLogined) {
+  if (!requestsAPI.isLogined) {
     profileBtn.classList.add('d-none');
     optionsWithLogin.forEach((element) => element.classList.add('d-none'));
   } else {
@@ -112,7 +112,7 @@ function clickDefaultActionBtn(chosenActionAction: UserAction) {
   } else if (chosenActionAction === UserAction.SignUp) {
     switchPage(Pages.SignUp);
   } else if (chosenActionAction === UserAction.LogOut) {
-    userData.isLogined = false;
+    requestsAPI.authCustomersLogout();
     switchPage(Pages.Main);
   } else {
     console.error('problem with default button');
