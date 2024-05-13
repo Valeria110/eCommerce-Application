@@ -16,9 +16,9 @@ export default function mainPage() {
     // simple
     // TODO: Doesn't work with test@gmail.com
     requestFetch
-      .getCustomersToken('test@gmail.com', 'TestTest1#')
-      .then((status) => {
-        console.log(`status then = ${status}`);
+      .authCustomersToken('test________@gmail.com', 'TestTest1#_')
+      .then((obj) => {
+        console.log(`obj then = ${JSON.stringify(obj)}`);
       })
       .catch((error) => {
         console.error(`Error: ${error}`);
@@ -44,12 +44,6 @@ export default function mainPage() {
     requestFetch.getProducts();
   });
 
-  const btnProjectToken = Bootstrap.createButton('project token', 'btn-orange m-2');
-  btnProjectToken.addEventListener('click', () => {
-    console.log('==== project token =====');
-    requestFetch.getNewProjectToken();
-  });
-
-  div.append(btnProjectToken, btnSignIn, btnCustomerExist, btnProducts);
+  div.append(btnSignIn, btnCustomerExist, btnProducts);
   return div;
 }

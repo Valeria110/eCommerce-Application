@@ -15,7 +15,7 @@ class RequestFetch {
 
   projectToken: string | undefined = '';
 
-  accessToken: string | undefined = ''; // Bearer ${BEARER_TOKEN}
+  customerToken: string | undefined = ''; // Bearer ${BEARER_TOKEN}
 
   constructor() {
     this.authUrl = process.env.CTP_AUTH_URL ?? '';
@@ -24,13 +24,17 @@ class RequestFetch {
     this.projectClientID = process.env.CTP_CLIENT_ID ?? '';
     this.projectClientSecret = process.env.CTP_CLIENT_SECRET ?? '';
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
-    this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
 
+    if (!(this.authUrl && this.host && this.projectClientID && this.projectClientSecret && this.projectKey)) {
+      throw new Error('The variables .env is not defined correct. Check if exist this file.');
+    }
+
+    this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
     this.scope = `manage_project:${this.projectKey}`;
-    this.getNewProjectToken();
+    this.authProjectToken();
   }
 
-  async getNewProjectToken() {
+  private async authProjectToken() {
     const response = await fetch(`${this.authUrl}/oauth/token`, {
       method: 'POST',
       headers: {
@@ -47,18 +51,17 @@ class RequestFetch {
       this.projectToken = obj.access_token;
     }
 
-    console.log(obj);
-
     return response.ok;
   }
 
-  async getCustomersToken(username: string, password: string) {
-    // TODO: Обрабатывать когда можно войти а когда нет
-
-    const encodedUsername = encodeURIComponent(username);
+  async authCustomersToken(
+    email: string,
+    password: string,
+  ): Promise<{ isOk: boolean; field: 'login' | 'password' | undefined; message: string }> {
+    const encodedEmail = encodeURIComponent(email);
     const encodedPassword = encodeURIComponent(password);
 
-    const url = `${this.authUrl}/oauth/${this.projectKey}/customers/token?grant_type=password&username=${encodedUsername}&password=${encodedPassword}`;
+    const url = `${this.authUrl}/oauth/${this.projectKey}/customers/token?grant_type=password&username=${encodedEmail}&password=${encodedPassword}`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -68,24 +71,35 @@ class RequestFetch {
     });
 
     const obj = await response.json();
+
+    let field: 'login' | 'password' | undefined = undefined;
+    let message = '';
     if (!response.ok) {
-      // throw new Error(`HTTP error! status: ${response.status}, message: ${text.message}`);
-      console.error(`HTTP error! status: ${response.status}, message: ${obj.message}`);
       if (obj.error === 'invalid_customer_account_credentials') {
-        console.error('catch invalid_customer_account_credentials');
-        // TODO: Проверить есть ли у нас такой пользователь или нет
+        // Let's try to understand the user's problems
+        if (await this.isExistCustomer(email)) {
+          field = 'password';
+          message = 'Wrong password. Try to remember it';
+        } else {
+          field = 'login';
+          message = 'This user does not exist. Try to sign up';
+        }
+      } else {
+        console.error(`HTTP error! status: ${response.status}, message: ${obj.message}`);
+        field = 'login';
+        message = 'Something wrong, please contact our support center';
       }
     } else {
-      this.accessToken = obj.access_token;
+      this.customerToken = obj.access_token;
     }
 
     console.log(obj);
 
-    return response.ok;
+    return { isOk: response.ok, field, message };
   }
 
-  async isExistCustomer(email: string) {
-    const whereEmailEqual = encodeURIComponent(`lowercaseEmail="${email}"`);
+  async isExistCustomer(email: string): Promise<boolean> {
+    const whereEmailEqual = encodeURIComponent(`lowercaseEmail="${email.toLowerCase()}"`);
 
     const url = `${this.host}/${this.projectKey}/customers?where=${whereEmailEqual}`;
     const response = await fetch(url, {
@@ -103,10 +117,11 @@ class RequestFetch {
   }
 
   async getProducts() {
+    // use customer token for this
     try {
       const response = await fetch(`${this.host}/${this.projectKey}/products`, {
         headers: {
-          Authorization: `Bearer ${this.projectToken}`,
+          Authorization: `Bearer ${this.customerToken}`,
         },
       });
 
@@ -116,7 +131,6 @@ class RequestFetch {
       console.log(obj.results);
       return response.ok;
     } catch (error) {
-      console.error(`Ошибка при выполнении GET-запроса: ${error}`);
       return false;
     }
   }
