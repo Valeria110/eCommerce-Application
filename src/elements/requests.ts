@@ -1,3 +1,5 @@
+const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
+
 class RequestFetch {
   base64Auth: string;
 
@@ -15,7 +17,7 @@ class RequestFetch {
 
   projectToken: string | undefined = '';
 
-  customerToken: string | undefined = ''; // Bearer ${BEARER_TOKEN}
+  #customerToken: string | undefined; // use only get set customerToken
 
   constructor() {
     this.authUrl = process.env.CTP_AUTH_URL ?? '';
@@ -32,6 +34,27 @@ class RequestFetch {
     this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
     this.scope = `manage_project:${this.projectKey}`;
     this.authProjectToken();
+
+    const cacheCustomerToken = localStorage.getItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
+    this.customerToken = cacheCustomerToken ? cacheCustomerToken : undefined;
+  }
+
+  set customerToken(value: string | undefined) {
+    this.#customerToken = value;
+    console.log(`set customerToken ${value}`);
+    if (value) {
+      localStorage.setItem(LOCAL_STORAGE_CUSTOMER_TOKEN, value);
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
+    }
+  }
+
+  get customerToken(): string | undefined {
+    return this.#customerToken;
+  }
+
+  get isCustomerLogined() {
+    return this.customerToken !== undefined;
   }
 
   private async authProjectToken() {
@@ -54,7 +77,7 @@ class RequestFetch {
     return response.ok;
   }
 
-  async authCustomersToken(
+  async authCustomersLogin(
     email: string,
     password: string,
   ): Promise<{ isOk: boolean; field: 'login' | 'password' | undefined; message: string }> {
@@ -96,6 +119,10 @@ class RequestFetch {
     console.log(obj);
 
     return { isOk: response.ok, field, message };
+  }
+
+  authCustomersLogout() {
+    this.customerToken = undefined;
   }
 
   async isExistCustomer(email: string): Promise<boolean> {
@@ -146,5 +173,5 @@ class RequestFetch {
   }
 }
 
-const requestFetch = new RequestFetch();
-export default requestFetch;
+const request = new RequestFetch();
+export default request;

@@ -1,4 +1,4 @@
-import requestFetch from '../elements/requestsFetch';
+import request from '../elements/requests';
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import header from '../elements/header/header';
 
@@ -15,8 +15,8 @@ export default function mainPage() {
     // simple@gmail.com
     // simple
     // TODO: Doesn't work with test@gmail.com
-    requestFetch
-      .authCustomersToken('test________@gmail.com', 'TestTest1#_')
+    request
+      .authCustomersLogin('test@gmail.com', 'TestTest1#')
       .then((obj) => {
         console.log(`obj then = ${JSON.stringify(obj)}`);
       })
@@ -28,7 +28,7 @@ export default function mainPage() {
   const btnCustomerExist = Bootstrap.createButton('exist customer', 'btn-success m-2');
   btnCustomerExist.addEventListener('click', () => {
     console.log('==== exist customer =====');
-    requestFetch
+    request
       .isExistCustomer('test111@gmail.com')
       .then((isExist) => {
         console.log(`is Exist = ${isExist}`);
@@ -41,7 +41,7 @@ export default function mainPage() {
   const btnProducts = Bootstrap.createButton('get products', 'btn-success m-2');
   btnProducts.addEventListener('click', () => {
     console.log('==== products =====');
-    requestFetch.getProducts();
+    request.getProducts();
   });
 
   div.append(btnSignIn, btnCustomerExist, btnProducts);
