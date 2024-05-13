@@ -1,9 +1,9 @@
 class RequestFetch {
   base64Auth: string;
 
-  CTP_CLIENT_ID: string;
+  projectClientID: string;
 
-  CTP_CLIENT_SECRET: string;
+  projectClientSecret: string;
 
   authUrl: string;
 
@@ -11,19 +11,45 @@ class RequestFetch {
 
   host: string;
 
-  projectToken: string;
+  scope: string;
+
+  projectToken: string | undefined = '';
 
   accessToken: string | undefined = ''; // Bearer ${BEARER_TOKEN}
 
   constructor() {
-    // TODO: Check env
-    this.CTP_CLIENT_ID = process.env.CTP_CLIENT_ID ?? '';
-    this.CTP_CLIENT_SECRET = process.env.CTP_CLIENT_SECRET ?? '';
-    this.base64Auth = btoa(`${this.CTP_CLIENT_ID}:${this.CTP_CLIENT_SECRET}`);
     this.authUrl = process.env.CTP_AUTH_URL ?? '';
     this.host = process.env.CTP_API_URL ?? '';
-    this.projectToken = process.env.CTP_ACCESS_TOKEN ?? '';
+
+    this.projectClientID = process.env.CTP_CLIENT_ID ?? '';
+    this.projectClientSecret = process.env.CTP_CLIENT_SECRET ?? '';
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
+    this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
+
+    this.scope = `manage_project:${this.projectKey}`;
+    this.getNewProjectToken();
+  }
+
+  async getNewProjectToken() {
+    const response = await fetch(`${this.authUrl}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${this.base64Auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `grant_type=client_credentials&scope=${this.scope}`,
+    });
+
+    const obj = await response.json();
+    if (!response.ok) {
+      console.error(`Problem get project token! status: ${response.status}, message: ${obj.message}`);
+    } else {
+      this.projectToken = obj.access_token;
+    }
+
+    console.log(obj);
+
+    return response.ok;
   }
 
   async getCustomersToken(username: string, password: string) {
@@ -59,25 +85,20 @@ class RequestFetch {
   }
 
   async isExistCustomer(email: string) {
-    console.log(email, this.projectToken);
-    const whereEmailEqual = 'lowercaseEmail%3D%22test%40gmail.com%22';
+    const whereEmailEqual = encodeURIComponent(`lowercaseEmail="${email}"`);
 
     const url = `${this.host}/${this.projectKey}/customers?where=${whereEmailEqual}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer  ${this.projectToken}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.projectToken}`,
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    await this.checkResponse(response);
 
     const customers = await response.json();
 
-    // Если массив результатов не пуст, значит, клиент существует
     return customers.results.length > 0;
   }
 
@@ -89,18 +110,24 @@ class RequestFetch {
         },
       });
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          console.error('Нужно обновить токен');
-        }
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
+      await this.checkResponse(response);
+
       const obj = await response.json();
       console.log(obj.results);
       return response.ok;
     } catch (error) {
       console.error(`Ошибка при выполнении GET-запроса: ${error}`);
       return false;
+    }
+  }
+
+  private async checkResponse(response: Response) {
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.error('We should update token');
+      } else {
+        console.error(`Error HTTP: ${response.status}`);
+      }
     }
   }
 }

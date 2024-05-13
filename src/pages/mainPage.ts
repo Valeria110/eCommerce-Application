@@ -25,17 +25,11 @@ export default function mainPage() {
       });
   });
 
-  const btnCustomerExist = Bootstrap.createButton('exist customer', 'btn-warning m-2');
+  const btnCustomerExist = Bootstrap.createButton('exist customer', 'btn-success m-2');
   btnCustomerExist.addEventListener('click', () => {
     console.log('==== exist customer =====');
-    // test@gmail.com
-    // TestTest1#
-
-    // simple@gmail.com
-    // simple
-    // TODO: Doesn't work with test@gmail.com
     requestFetch
-      .isExistCustomer('test@gmail.com')
+      .isExistCustomer('test111@gmail.com')
       .then((isExist) => {
         console.log(`is Exist = ${isExist}`);
       })
@@ -50,6 +44,12 @@ export default function mainPage() {
     requestFetch.getProducts();
   });
 
-  div.append(btnSignIn, btnCustomerExist, btnProducts);
+  const btnProjectToken = Bootstrap.createButton('project token', 'btn-orange m-2');
+  btnProjectToken.addEventListener('click', () => {
+    console.log('==== project token =====');
+    requestFetch.getNewProjectToken();
+  });
+
+  div.append(btnProjectToken, btnSignIn, btnCustomerExist, btnProducts);
   return div;
 }
