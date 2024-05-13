@@ -3,7 +3,8 @@ import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import signUpPage from '../pages/signUpPage';
 import { AppEvents, Pages } from './types';
-import { changePageRoute, handleLocation } from './pageRouting/routing';
+import { changePageRoute, handleLocation, isUserLogined } from './pageRouting/routing';
+import userData from './userData';
 
 export default class App {
   start(): void {
@@ -38,5 +39,10 @@ document.addEventListener(AppEvents.switchPage, (event) => {
 });
 
 window.addEventListener('popstate', handleLocation);
-
 window.addEventListener('DOMContentLoaded', handleLocation);
+
+if (!sessionStorage.getItem('isUserLogined')) {
+  sessionStorage.setItem('isUserLogined', String(userData.isLogined));
+} else {
+  userData.isLogined = isUserLogined();
+}

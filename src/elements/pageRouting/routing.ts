@@ -4,7 +4,11 @@ import { Pages } from '../types';
 function changePageRoute(page: Pages) {
   switch (page) {
     case Pages.LogIn:
-      history.pushState({ state: 'login_page' }, 'Login Page', '/login');
+      if (isUserLogined()) {
+        history.pushState({ state: 'main_page' }, 'Main Page', '/main');
+      } else {
+        history.pushState({ state: 'login_page' }, 'Login Page', '/login');
+      }
       break;
     case Pages.Main:
       history.pushState({ state: 'main_page' }, 'Main Page', '/main');
@@ -20,7 +24,7 @@ function changePageRoute(page: Pages) {
 
 const routes = ['/login', '/main', '/sign_up'];
 
-async function handleLocation() {
+function handleLocation() {
   const pathname = window.location.pathname;
 
   if (pathname === '/') {
@@ -30,7 +34,11 @@ async function handleLocation() {
   } else {
     switch (pathname) {
       case '/login':
-        switchPage(Pages.LogIn);
+        if (isUserLogined()) {
+          switchPage(Pages.Main);
+        } else {
+          switchPage(Pages.LogIn);
+        }
         break;
       case '/main':
         switchPage(Pages.Main);
@@ -42,4 +50,9 @@ async function handleLocation() {
   }
 }
 
-export { changePageRoute, handleLocation };
+function isUserLogined(): boolean {
+  const isLogined = sessionStorage.getItem('isUserLogined');
+  return isLogined === 'true';
+}
+
+export { changePageRoute, handleLocation, isUserLogined };
