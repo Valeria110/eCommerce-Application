@@ -6,7 +6,7 @@ export default function mainPage() {
   const div = Bootstrap.createElement('div');
   div.append(header());
 
-  const btnSignIn = Bootstrap.createButton('fetch token', 'btn-success m-2');
+  const btnSignIn = Bootstrap.createButton('fetch user token', 'btn-success m-2');
   btnSignIn.addEventListener('click', () => {
     console.log('==== sign in =====');
     // test@gmail.com
@@ -16,7 +16,7 @@ export default function mainPage() {
     // simple
     // TODO: Doesn't work with test@gmail.com
     requestFetch
-      .getCustomersToken('test@gmail.com', 'TestTest1#' + 'wrong')
+      .getCustomersToken('test@gmail.com', 'TestTest1#')
       .then((status) => {
         console.log(`status then = ${status}`);
       })
@@ -44,6 +44,12 @@ export default function mainPage() {
       });
   });
 
-  div.append(btnSignIn, btnCustomerExist);
+  const btnProducts = Bootstrap.createButton('get products', 'btn-success m-2');
+  btnProducts.addEventListener('click', () => {
+    console.log('==== products =====');
+    requestFetch.getProducts();
+  });
+
+  div.append(btnSignIn, btnCustomerExist, btnProducts);
   return div;
 }
