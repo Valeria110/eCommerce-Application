@@ -1,3 +1,4 @@
+import requestsAPI from '../requestsAPI';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
 
@@ -50,9 +51,8 @@ function handleLocation() {
   }
 }
 
-function isUserLogined(): boolean {
-  const isLogined = sessionStorage.getItem('isUserLogined');
-  return isLogined === 'true';
+function isUserLogined() {
+  return requestsAPI.isLogined;
 }
 
-export { changePageRoute, handleLocation, isUserLogined };
+export { changePageRoute, handleLocation };

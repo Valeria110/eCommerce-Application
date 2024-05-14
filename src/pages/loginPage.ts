@@ -1,10 +1,10 @@
 import './loginPage.scss';
 import litHubLogo from '../img/lithub-logo.svg';
 import eyeOffIcon from '../img/eye-off-icon.svg';
-import { validateLoginForm, showOrHidePassword } from '../elements/loginvalidation';
+import { validateLoginForm, showOrHidePassword, showError } from '../elements/loginvalidation';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
-import userData from '../elements/userData';
+import request from '../elements/requestsAPI';
 
 function loginPage(): HTMLElement {
   document.body.classList.add('justify-content-center', 'align-items-center');
@@ -19,10 +19,11 @@ function loginPage(): HTMLElement {
   loginForm.classList.add('main__login-form');
   loginForm.setAttribute('novalidate', '');
   loginForm.addEventListener('submit', (e) => {
+    console.log('Сработал сабмит'); //TODO: temt
     e.preventDefault();
     if (validateLoginForm()) {
-      userData.isLogined = true;
-      switchPage(Pages.Main);
+      // userData.isLogined = true;
+      // switchPage(Pages.Main);
     }
   });
 
@@ -77,12 +78,8 @@ function loginPage(): HTMLElement {
   const submitFormBtn = document.createElement('button');
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
-  submitFormBtn.addEventListener('click', () => {
-    if (validateLoginForm()) {
-      userData.isLogined = true;
-      switchPage(Pages.Main);
-    }
-  });
+
+  submitFormBtn.addEventListener('click', () => handleServerLogin(inputsContainer));
 
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
@@ -99,6 +96,32 @@ function loginPage(): HTMLElement {
   loginFormWrapper.appendChild(registrationLink);
 
   return main;
+}
+
+function handleServerLogin(inputsContainer: HTMLDivElement) {
+  const loginField = inputsContainer.querySelector('.login-form__email-input') as HTMLInputElement;
+  const passwordField = inputsContainer.querySelector('.login-form__password-input') as HTMLInputElement;
+
+  if (loginField && passwordField) {
+    console.log('try login', loginField.value, passwordField.value);
+
+    request
+      .authCustomersLogin(loginField.value, passwordField.value)
+      .then((serverAnswer) => {
+        if (serverAnswer.isOk) {
+          switchPage(Pages.Main);
+        } else {
+          if (serverAnswer.field === 'login') {
+            showError(loginField, serverAnswer.message);
+          } else if (serverAnswer.field === 'password') {
+            showError(passwordField, serverAnswer.message);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(`Error: ${error}`);
+      });
+  }
 }
 
 export { loginPage };

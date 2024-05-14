@@ -1,7 +1,6 @@
 import { isNull } from '../utils/utils';
 import eyeOffIcon from '../img/eye-off-icon.svg';
 import eyeIcon from '../img/eye-icon.svg';
-import userData from './userData';
 
 function validateLoginForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
@@ -104,8 +103,6 @@ function canSubmitForm(): boolean {
     submitBtn.classList.add('disabled');
     return false;
   }
-  userData.isLogined = true;
-  sessionStorage.setItem('isUserLogined', String(userData.isLogined));
   submitBtn.classList.remove('disabled');
   return true;
 }
@@ -125,4 +122,4 @@ function showOrHidePassword() {
   }
 }
 
-export { validateLoginForm, showOrHidePassword };
+export { validateLoginForm, showOrHidePassword, showError };
