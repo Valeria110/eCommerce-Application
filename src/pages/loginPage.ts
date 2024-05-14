@@ -19,11 +19,9 @@ function loginPage(): HTMLElement {
   loginForm.classList.add('main__login-form');
   loginForm.setAttribute('novalidate', '');
   loginForm.addEventListener('submit', (e) => {
-    console.log('Сработал сабмит'); //TODO: temt
     e.preventDefault();
     if (validateLoginForm()) {
-      // userData.isLogined = true;
-      // switchPage(Pages.Main);
+      handleServerLogin(inputsContainer);
     }
   });
 
