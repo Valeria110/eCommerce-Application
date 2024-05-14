@@ -1,74 +1,69 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
-import {
-  genarateValidationInputCountry,
-  generateValidationInputCity,
-  generateValidationInputPostalCode,
-  generateValidationInputStreet,
-} from './validationInputsRegPage';
+import * as validationRegPage from './validationInputsShippingAndBillingAddressForms';
 
 export function generateBillingForm() {
-  variablesRegPage.buttonForBillingForm.style.display = 'none';
-  variablesRegPage.containerForBillingForm.append(
-    variablesRegPage.titleBillingForm,
-    variablesRegPage.billingAddressForm,
-    variablesRegPage.containerForCheckboxDefaultBillingForm,
+  const {
+    buttonForBillingForm,
+    containerForBillingForm,
+    titleBillingForm,
+    billingAddressForm,
+    containerForCheckboxDefaultBillingForm,
+    inputForStreetBillingForm,
+    errorForInputStreetBillingForm,
+    inputForCountryBillingForm,
+    errorForInputCountryBillingForm,
+    inputForCityBillingForm,
+    errorForInputCityBillingForm,
+    inputForPostalCodeBillingForm,
+    errorForInputPostalCodeBillingForm,
+  } = variablesRegPage;
+
+  const {
+    containerForInputCountryBillingForm,
+    containerResultsCountriesBillingForm,
+    checkboxDefaultBillingForm,
+    labelForCheckboxDefaultBillingForm,
+  } = variablesRegPage;
+
+  buttonForBillingForm.style.display = 'none';
+
+  containerForBillingForm.append(titleBillingForm, billingAddressForm, containerForCheckboxDefaultBillingForm);
+
+  containerForInputCountryBillingForm.append(
+    inputForCountryBillingForm,
+    containerResultsCountriesBillingForm,
+    errorForInputCountryBillingForm,
   );
 
-  variablesRegPage.billingAddressForm.append(
-    variablesRegPage.containerForInputCountryBillingForm,
-    variablesRegPage.inputForCityBillingForm,
-    variablesRegPage.errorForInputCityBillingForm,
-    variablesRegPage.inputForStreetBillingForm,
-    variablesRegPage.errorForInputStreetBillingForm,
-    variablesRegPage.inputForPostalCodeBillingForm,
-    variablesRegPage.errorForInputPostalCodeBillingForm,
+  billingAddressForm.append(
+    containerForInputCountryBillingForm,
+    inputForCityBillingForm,
+    errorForInputCityBillingForm,
+    inputForStreetBillingForm,
+    errorForInputStreetBillingForm,
+    inputForPostalCodeBillingForm,
+    errorForInputPostalCodeBillingForm,
   );
 
-  variablesRegPage.containerForInputCountryBillingForm.append(
-    variablesRegPage.inputForCountryBillingForm,
-    variablesRegPage.containerResultsCountriesBillingForm,
-    variablesRegPage.errorForInputCountryBillingForm,
+  containerForCheckboxDefaultBillingForm.append(checkboxDefaultBillingForm, labelForCheckboxDefaultBillingForm);
+
+  inputForStreetBillingForm.addEventListener('input', () =>
+    validationRegPage.generateValidationInputStreet(inputForStreetBillingForm, errorForInputStreetBillingForm),
   );
 
-  variablesRegPage.containerForCheckboxDefaultBillingForm.append(
-    variablesRegPage.checkboxDefaultBillingForm,
-    variablesRegPage.labelForCheckboxDefaultBillingForm,
+  inputForCountryBillingForm.addEventListener('input', () =>
+    validationRegPage.genarateValidationInputCountry(inputForCountryBillingForm, errorForInputCountryBillingForm),
   );
 
-  variablesRegPage.inputForStreetBillingForm.addEventListener(
-    'input',
-    generateValidationInputStreet.bind(
-      null,
-      variablesRegPage.inputForStreetBillingForm,
-      variablesRegPage.errorForInputStreetBillingForm,
-    ),
+  inputForCityBillingForm.addEventListener('input', () =>
+    validationRegPage.generateValidationInputCity(inputForCityBillingForm, errorForInputCityBillingForm),
   );
 
-  variablesRegPage.inputForCountryBillingForm.addEventListener(
-    'input',
-    genarateValidationInputCountry.bind(
-      null,
-      variablesRegPage.inputForCountryBillingForm,
-      variablesRegPage.errorForInputCountryBillingForm,
-    ),
-  );
-
-  variablesRegPage.inputForCityBillingForm.addEventListener(
-    'input',
-    generateValidationInputCity.bind(
-      null,
-      variablesRegPage.inputForCityBillingForm,
-      variablesRegPage.errorForInputCityBillingForm,
-    ),
-  );
-
-  variablesRegPage.inputForPostalCodeBillingForm.addEventListener(
-    'input',
-    generateValidationInputPostalCode.bind(
-      null,
-      variablesRegPage.inputForCountryBillingForm,
-      variablesRegPage.inputForPostalCodeBillingForm,
-      variablesRegPage.errorForInputPostalCodeBillingForm,
+  inputForPostalCodeBillingForm.addEventListener('input', () =>
+    validationRegPage.generateValidationInputPostalCode(
+      inputForCountryBillingForm,
+      inputForPostalCodeBillingForm,
+      errorForInputPostalCodeBillingForm,
     ),
   );
 }

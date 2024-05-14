@@ -1,16 +1,13 @@
 import createElement from '../../elements/bootstrap/createElement';
-import { generateValidationInputPostalCode, newStyleForError } from './validationInputsRegPage';
-import {
-  checkboxSameAddress,
-  errorForInputCountry,
-  errorForInputCountryBillingForm,
-  errorForInputPostalCode,
-  errorForInputPostalCodeBillingForm,
-  inputForCountry,
-  inputForCountryBillingForm,
-  inputForPostalCode,
-  inputForPostalCodeBillingForm,
-} from './variablesForRegistrationPage';
+import { applyNewStyleForError } from './validationInputsRegistrationForm';
+import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
+import { generateValidationInputPostalCode } from './validationInputsShippingAndBillingAddressForms';
+
+function clearResultsAndStyles(inputCountry: HTMLInputElement, containerResultsCountries: HTMLDivElement) {
+  inputCountry.classList.remove('openList', 'is-valid');
+  containerResultsCountries.innerHTML = '';
+  containerResultsCountries.style.border = '0px';
+}
 
 export function generateResultsCountries(
   resultsCountries: string[],
@@ -18,13 +15,10 @@ export function generateResultsCountries(
   containerResultsCountries: HTMLDivElement,
   error: HTMLDivElement,
 ) {
-  const isChecked = checkboxSameAddress.checked;
+  const isChecked = variablesRegPage.checkboxSameAddress.checked;
 
   if (!resultsCountries.length) {
-    inputCountry.classList.remove('openList');
-    inputCountry.classList.remove('is-valid');
-    containerResultsCountries.innerHTML = '';
-    containerResultsCountries.style.border = '0px';
+    clearResultsAndStyles(inputCountry, containerResultsCountries);
     return;
   }
 
@@ -38,27 +32,35 @@ export function generateResultsCountries(
 
     foundContry.addEventListener('click', () => {
       inputCountry.value = foundContry.textContent as string;
-      newStyleForError(inputCountry, error, false);
+      applyNewStyleForError(inputCountry, error, false);
       inputCountry.classList.remove('openList');
       containerResultsCountries.innerHTML = '';
       containerResultsCountries.style.border = '0px';
-      if (inputCountry === inputForCountry) {
-        generateValidationInputPostalCode(inputForCountry, inputForPostalCode, errorForInputPostalCode);
+      if (inputCountry === variablesRegPage.inputForCountry) {
+        generateValidationInputPostalCode(
+          variablesRegPage.inputForCountry,
+          variablesRegPage.inputForPostalCode,
+          variablesRegPage.errorForInputPostalCode,
+        );
       } else {
         generateValidationInputPostalCode(
-          inputForCountryBillingForm,
-          inputForPostalCodeBillingForm,
-          errorForInputPostalCodeBillingForm,
+          variablesRegPage.inputForCountryBillingForm,
+          variablesRegPage.inputForPostalCodeBillingForm,
+          variablesRegPage.errorForInputPostalCodeBillingForm,
         );
       }
 
       if (isChecked) {
-        if (inputCountry === inputForCountry) {
-          inputForCountryBillingForm.value = foundContry.textContent as string;
-          newStyleForError(inputForCountryBillingForm, errorForInputCountryBillingForm, false);
+        if (inputCountry === variablesRegPage.inputForCountry) {
+          variablesRegPage.inputForCountryBillingForm.value = foundContry.textContent as string;
+          applyNewStyleForError(
+            variablesRegPage.inputForCountryBillingForm,
+            variablesRegPage.errorForInputCountryBillingForm,
+            false,
+          );
         } else {
-          inputForCountry.value = foundContry.textContent as string;
-          newStyleForError(inputForCountry, errorForInputCountry, false);
+          variablesRegPage.inputForCountry.value = foundContry.textContent as string;
+          applyNewStyleForError(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, false);
         }
       }
     });

@@ -1,157 +1,152 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
-import { generateBillingForm } from './layoutBillingForm';
-import * as validationRegPage from '../registration-page/validationInputsRegPage';
-import { generateCopyAddress } from '../registration-page/validationInputsRegPage';
+import * as validationShippingAndBillingForms from '../registration-page/validationInputsShippingAndBillingAddressForms';
+import * as validationRegistrationForms from '../registration-page/validationInputsRegistrationForm';
 import switchPage from '../../elements/switchPage';
+import { generateBillingForm } from '../registration-page/layoutBillingForm';
+import { generateCopyAddress } from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import { Pages } from '../../elements/types';
 
 function togglePasswordVisibility() {
-  if (variablesRegPage.inputForPassword.type === 'password') {
-    variablesRegPage.inputForPassword.type = 'text';
-    variablesRegPage.iconForInputPassword.classList.add('registration-form__toggle-password_icon');
-    variablesRegPage.iconForInputPassword.classList.remove('registration-form__input-password_icon');
-  } else {
-    variablesRegPage.inputForPassword.type = 'password';
-    variablesRegPage.iconForInputPassword.classList.remove('registration-form__toggle-password_icon');
-    variablesRegPage.iconForInputPassword.classList.add('registration-form__input-password_icon');
-  }
+  const { inputForPassword, iconForInputPassword } = variablesRegPage;
+  const isPasswordVisible = inputForPassword.type === 'password';
+
+  inputForPassword.type = isPasswordVisible ? 'text' : 'password';
+  iconForInputPassword.classList.toggle('registration-form__toggle-password_icon', isPasswordVisible);
+  iconForInputPassword.classList.toggle('registration-form__input-password_icon', !isPasswordVisible);
 }
 
 export default function generateRegistrationPage() {
+  const {
+    containerForRegistrationForms,
+    registrationForm,
+    containerForShippingAddressForm,
+    buttonForBillingForm,
+    containerForBillingForm,
+    containerForButtonSignUpAndLogin,
+    buttonSignUp,
+    buttonToLoginPage,
+    containerForLogoAndTitleRegistrationPage,
+    containerForInputsRegistrationForm,
+    logoRegistrationPage,
+    titleRegistrationPage,
+    inputForFirstName,
+    errorForInputFirstName,
+    inputForLastName,
+    errorForInputLastName,
+    inputForEmail,
+    errorForInputEmail,
+    containerForInputBirth,
+    errorForInputBirth,
+    containerForInputPassword,
+    errorForInputPassword,
+    inputForBirthDate,
+    inputForPassword,
+    iconForInputPassword,
+    titleShippingAddressForm,
+    shippingAddressForm,
+    containerForInputCountry,
+    inputForCity,
+    errorForInputCity,
+    inputForStreet,
+    errorForInputStreet,
+    inputForPostalCode,
+    errorForInputPostalCode,
+    containerForCheckboxSameAddress,
+    containerForCheckboxDefault,
+    inputForCountry,
+    containerForResultsCountries,
+    errorForInputCountry,
+    checkboxSameAddress,
+    labelForCheckboxSameAddress,
+    checkboxDefault,
+    labelForCheckboxDefault,
+  } = variablesRegPage;
+
   document.body.style.height = 'auto';
-  variablesRegPage.containerForRegistrationForms.append(
-    variablesRegPage.registrationForm,
-    variablesRegPage.containerForShippingAddressForm,
-    variablesRegPage.buttonForBillingForm,
-    variablesRegPage.containerForBillingForm,
-    variablesRegPage.containerForButtonSignUpAndLogin,
+
+  containerForRegistrationForms.append(
+    registrationForm,
+    containerForShippingAddressForm,
+    buttonForBillingForm,
+    containerForBillingForm,
+    containerForButtonSignUpAndLogin,
   );
 
-  variablesRegPage.registrationForm.append(
-    variablesRegPage.containerForLogoAndTitleRegistrationPage,
-    variablesRegPage.containerForInputsRegistrationForm,
+  containerForInputsRegistrationForm.append(
+    inputForFirstName,
+    errorForInputFirstName,
+    inputForLastName,
+    errorForInputLastName,
+    inputForEmail,
+    errorForInputEmail,
+    containerForInputBirth,
+    errorForInputBirth,
+    containerForInputPassword,
+    errorForInputPassword,
   );
 
-  variablesRegPage.containerForLogoAndTitleRegistrationPage.append(
-    variablesRegPage.logoRegistrationPage,
-    variablesRegPage.titleRegistrationPage,
+  shippingAddressForm.append(
+    containerForInputCountry,
+    inputForCity,
+    errorForInputCity,
+    inputForStreet,
+    errorForInputStreet,
+    inputForPostalCode,
+    errorForInputPostalCode,
+    containerForCheckboxSameAddress,
+    containerForCheckboxDefault,
   );
 
-  variablesRegPage.containerForInputsRegistrationForm.append(
-    variablesRegPage.inputForFirstName,
-    variablesRegPage.errorForInputFirstName,
-    variablesRegPage.inputForLastName,
-    variablesRegPage.errorForInputLastName,
-    variablesRegPage.inputForEmail,
-    variablesRegPage.errorForInputEmail,
-    variablesRegPage.containerForInputBirth,
-    variablesRegPage.errorForInputBirth,
-    variablesRegPage.containerForInputPassword,
-    variablesRegPage.errorForInputPassword,
-  );
+  registrationForm.append(containerForLogoAndTitleRegistrationPage, containerForInputsRegistrationForm);
+  containerForLogoAndTitleRegistrationPage.append(logoRegistrationPage, titleRegistrationPage);
+  containerForInputBirth.append(inputForBirthDate);
+  containerForInputPassword.append(inputForPassword, iconForInputPassword);
+  containerForShippingAddressForm.append(titleShippingAddressForm, shippingAddressForm);
+  containerForInputCountry.append(inputForCountry, containerForResultsCountries, errorForInputCountry);
+  containerForCheckboxSameAddress.append(checkboxSameAddress, labelForCheckboxSameAddress);
+  containerForCheckboxDefault.append(checkboxDefault, labelForCheckboxDefault);
+  containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToLoginPage);
 
-  variablesRegPage.containerForInputBirth.append(variablesRegPage.inputForBirthDate);
-
-  variablesRegPage.containerForInputPassword.append(
-    variablesRegPage.inputForPassword,
-    variablesRegPage.iconForInputPassword,
-  );
-
-  variablesRegPage.containerForShippingAddressForm.append(
-    variablesRegPage.titleShippingAddressForm,
-    variablesRegPage.shippingAddressForm,
-  );
-
-  variablesRegPage.shippingAddressForm.append(
-    variablesRegPage.containerForInputCountry,
-    variablesRegPage.inputForCity,
-    variablesRegPage.errorForInputCity,
-    variablesRegPage.inputForStreet,
-    variablesRegPage.errorForInputStreet,
-    variablesRegPage.inputForPostalCode,
-    variablesRegPage.errorForInputPostalCode,
-    variablesRegPage.containerForCheckboxSameAddress,
-    variablesRegPage.containerForCheckboxDefault,
-  );
-
-  variablesRegPage.containerForInputCountry.append(
-    variablesRegPage.inputForCountry,
-    variablesRegPage.containerForResultsCountries,
-    variablesRegPage.errorForInputCountry,
-  );
-
-  variablesRegPage.containerForCheckboxSameAddress.append(
-    variablesRegPage.checkboxSameAddress,
-    variablesRegPage.labelForCheckboxSameAddress,
-  );
-
-  variablesRegPage.containerForCheckboxDefault.append(
-    variablesRegPage.checkboxDefault,
-    variablesRegPage.labelForCheckboxDefault,
-  );
-
-  variablesRegPage.containerForButtonSignUpAndLogin.append(
-    variablesRegPage.buttonSignUp,
-    variablesRegPage.buttonToLoginPage,
-  );
-
-  variablesRegPage.buttonForBillingForm.addEventListener('click', generateBillingForm);
-
-  variablesRegPage.containerForRegistrationForms.addEventListener('submit', (event) => {
-    event.preventDefault();
-    console.log(123);
-  });
-
-  variablesRegPage.inputForFirstName.addEventListener('input', validationRegPage.generateValidationInputFirstName);
-  variablesRegPage.inputForLastName.addEventListener('input', validationRegPage.generateValidationInputLastName);
-  variablesRegPage.inputForEmail.addEventListener('input', validationRegPage.generateValidationInputEmail);
-  variablesRegPage.inputForBirthDate.addEventListener('click', validationRegPage.replaceInputType);
-  variablesRegPage.inputForPassword.addEventListener('input', validationRegPage.generateValidationInputPassword);
-  variablesRegPage.inputForStreet.addEventListener(
+  inputForFirstName.addEventListener('input', validationRegistrationForms.generateValidationInputFirstName);
+  inputForLastName.addEventListener('input', validationRegistrationForms.generateValidationInputLastName);
+  inputForEmail.addEventListener('input', validationRegistrationForms.generateValidationInputEmail);
+  inputForPassword.addEventListener('input', validationRegistrationForms.generateValidationInputPassword);
+  inputForStreet.addEventListener(
     'input',
-    validationRegPage.generateValidationInputStreet.bind(
-      null,
-      variablesRegPage.inputForStreet,
-      variablesRegPage.errorForInputStreet,
-    ),
+    validationShippingAndBillingForms.generateValidationInputStreet.bind(null, inputForStreet, errorForInputStreet),
   );
-  variablesRegPage.inputForCity.addEventListener(
+  inputForCity.addEventListener(
     'input',
-    validationRegPage.generateValidationInputCity.bind(
-      null,
-      variablesRegPage.inputForCity,
-      variablesRegPage.errorForInputCity,
-    ),
+    validationShippingAndBillingForms.generateValidationInputCity.bind(null, inputForCity, errorForInputCity),
   );
-  variablesRegPage.inputForCountry.addEventListener(
+  inputForCountry.addEventListener(
     'input',
-    validationRegPage.genarateValidationInputCountry.bind(
-      null,
-      variablesRegPage.inputForCountry,
-      variablesRegPage.errorForInputCountry,
-    ),
+    validationShippingAndBillingForms.genarateValidationInputCountry.bind(null, inputForCountry, errorForInputCountry),
   );
-  variablesRegPage.inputForPostalCode.addEventListener(
+  inputForPostalCode.addEventListener(
     'input',
-    validationRegPage.generateValidationInputPostalCode.bind(
+    validationShippingAndBillingForms.generateValidationInputPostalCode.bind(
       null,
-      variablesRegPage.inputForCountry,
-      variablesRegPage.inputForPostalCode,
-      variablesRegPage.errorForInputPostalCode,
+      inputForCountry,
+      inputForPostalCode,
+      errorForInputPostalCode,
     ),
   );
 
-  variablesRegPage.iconForInputPassword.addEventListener('click', togglePasswordVisibility);
-  variablesRegPage.checkboxSameAddress.addEventListener('click', generateCopyAddress);
-  variablesRegPage.buttonToLoginPage.addEventListener('click', () => {
+  buttonForBillingForm.addEventListener('click', generateBillingForm);
+  iconForInputPassword.addEventListener('click', togglePasswordVisibility);
+  checkboxSameAddress.addEventListener('click', generateCopyAddress);
+  inputForBirthDate.addEventListener('click', validationRegistrationForms.replaceInputType);
+  buttonToLoginPage.addEventListener('click', () => {
     switchPage(Pages.LogIn);
     document.body.style.height = '';
   });
 
-  variablesRegPage.buttonSignUp.addEventListener('click', () => {
+  containerForRegistrationForms.addEventListener('submit', (event) => {
+    event.preventDefault();
     switchPage(Pages.Main);
     document.body.style.height = '';
   });
 
-  return variablesRegPage.containerForRegistrationForms;
+  return containerForRegistrationForms;
 }
