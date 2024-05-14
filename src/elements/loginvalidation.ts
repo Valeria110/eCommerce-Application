@@ -22,6 +22,7 @@ function validateInputs(emailValue: string, passwordValue: string): boolean {
 function validateEmail(emailValue: string): void {
   const emailInput = document.querySelector('.login-form__email-input');
   isNull<HTMLInputElement>(emailInput);
+  const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
 
   if (emailValue === '') {
     showError(emailInput, 'This field is required');
@@ -32,7 +33,7 @@ function validateEmail(emailValue: string): void {
       emailInput,
       `Email should be at least ${emailInput.minLength} characters; you entered ${emailValue.length}.`,
     );
-  } else if (!emailValue.endsWith('.com')) {
+  } else if (!emailRegex.test(emailInput.value)) {
     showError(emailInput, 'Email address must contain a domain name (e.g., example.com).');
   } else if (emailInput.validity.valid) {
     const error = emailInput.nextElementSibling;
@@ -59,13 +60,15 @@ function validatePassword(passwordValue: string): void {
       `Password should be at least ${passwordInput.minLength} characters; you entered ${passwordValue.length}.`,
     );
   } else if (!numberPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one digit (0-9)');
+    showError(passwordInput, 'Password must contain at least one digit (0-9)');
   } else if (!uppercaseLetterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one uppercase letter (A-Z)');
+    showError(passwordInput, 'Password must contain at least one uppercase letter (A-Z)');
   } else if (!lowercaseLetterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one lowercase letter (a-z)');
+    showError(passwordInput, 'Password must contain at least one lowercase letter (a-z)');
   } else if (!specialCharacterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one special character (e.g., !@#$%^&*)');
+    showError(passwordInput, 'Password must contain at least one special character (e.g., !@#$%^&*)');
+  } else if (passwordValue.includes(' ')) {
+    showError(passwordInput, 'Password must not contain any spaces');
   } else if (passwordInput.validity.valid) {
     const error = passwordInput.nextElementSibling;
     isNull<HTMLDivElement>(error);
