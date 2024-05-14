@@ -19,11 +19,9 @@ function loginPage(): HTMLElement {
   loginForm.classList.add('main__login-form');
   loginForm.setAttribute('novalidate', '');
   loginForm.addEventListener('submit', (e) => {
-    console.log('Сработал сабмит'); //TODO: temt
     e.preventDefault();
     if (validateLoginForm()) {
-      // userData.isLogined = true;
-      // switchPage(Pages.Main);
+      handleServerLogin(inputsContainer);
     }
   });
 
@@ -79,7 +77,11 @@ function loginPage(): HTMLElement {
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
 
-  submitFormBtn.addEventListener('click', () => handleServerLogin(inputsContainer));
+  submitFormBtn.addEventListener('click', () => {
+    if (validateLoginForm()) {
+      handleServerLogin(inputsContainer);
+    }
+  });
 
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
