@@ -113,6 +113,7 @@ function clickDefaultActionBtn(chosenActionAction: UserAction) {
     switchPage(Pages.SignUp);
   } else if (chosenActionAction === UserAction.LogOut) {
     userData.isLogined = false;
+    sessionStorage.setItem('isUserLogined', String(userData.isLogined));
     switchPage(Pages.Main);
   } else {
     console.error('problem with default button');

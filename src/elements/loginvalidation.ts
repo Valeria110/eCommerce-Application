@@ -1,26 +1,28 @@
 import { isNull } from '../utils/utils';
 import eyeOffIcon from '../img/eye-off-icon.svg';
 import eyeIcon from '../img/eye-icon.svg';
+import userData from './userData';
 
-function validateLoginForm(): void {
+function validateLoginForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
   const passwordInput = document.querySelector('.login-form__password-input');
   isNull<HTMLInputElement>(emailInput);
   isNull<HTMLInputElement>(passwordInput);
 
-  validateInputs(emailInput.value.trim(), passwordInput.value.trim());
+  return validateInputs(emailInput.value.trim(), passwordInput.value.trim());
 }
 
-function validateInputs(emailValue: string, passwordValue: string): void {
+function validateInputs(emailValue: string, passwordValue: string): boolean {
   validateEmail(emailValue);
   validatePassword(passwordValue);
 
-  canSubmitForm();
+  return canSubmitForm();
 }
 
 function validateEmail(emailValue: string): void {
   const emailInput = document.querySelector('.login-form__email-input');
   isNull<HTMLInputElement>(emailInput);
+  const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
 
   if (emailValue === '') {
     showError(emailInput, 'This field is required');
@@ -31,7 +33,7 @@ function validateEmail(emailValue: string): void {
       emailInput,
       `Email should be at least ${emailInput.minLength} characters; you entered ${emailValue.length}.`,
     );
-  } else if (!emailValue.endsWith('.com')) {
+  } else if (!emailRegex.test(emailInput.value)) {
     showError(emailInput, 'Email address must contain a domain name (e.g., example.com).');
   } else if (emailInput.validity.valid) {
     const error = emailInput.nextElementSibling;
@@ -58,13 +60,15 @@ function validatePassword(passwordValue: string): void {
       `Password should be at least ${passwordInput.minLength} characters; you entered ${passwordValue.length}.`,
     );
   } else if (!numberPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one digit (0-9)');
+    showError(passwordInput, 'Password must contain at least one digit (0-9)');
   } else if (!uppercaseLetterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one uppercase letter (A-Z)');
+    showError(passwordInput, 'Password must contain at least one uppercase letter (A-Z)');
   } else if (!lowercaseLetterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one lowercase letter (a-z)');
+    showError(passwordInput, 'Password must contain at least one lowercase letter (a-z)');
   } else if (!specialCharacterPattern.test(passwordValue)) {
-    showError(passwordInput, 'Password must must contain at least one special character (e.g., !@#$%^&*)');
+    showError(passwordInput, 'Password must contain at least one special character (e.g., !@#$%^&*)');
+  } else if (passwordValue.includes(' ')) {
+    showError(passwordInput, 'Password must not contain any spaces');
   } else if (passwordInput.validity.valid) {
     const error = passwordInput.nextElementSibling;
     isNull<HTMLDivElement>(error);
@@ -86,7 +90,7 @@ function showError(input: HTMLInputElement, errorMessage: string) {
   submitBtn.classList.add('disabled');
 }
 
-function canSubmitForm(): void {
+function canSubmitForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
   const passwordInput = document.querySelector('.login-form__password-input');
   const submitBtn = document.querySelector('.login-form__submit-btn');
@@ -96,11 +100,14 @@ function canSubmitForm(): void {
   const isEmailValid = emailInput.classList.contains('is-valid');
   const isPasswordValid = passwordInput.classList.contains('is-valid');
 
-  if (!isEmailValid || !isPasswordValid || (!isEmailValid && !isPasswordValid)) {
+  if (!isEmailValid || !isPasswordValid) {
     submitBtn.classList.add('disabled');
-  } else {
-    submitBtn.classList.remove('disabled');
+    return false;
   }
+  userData.isLogined = true;
+  sessionStorage.setItem('isUserLogined', String(userData.isLogined));
+  submitBtn.classList.remove('disabled');
+  return true;
 }
 
 function showOrHidePassword() {
