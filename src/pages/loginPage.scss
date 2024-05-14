@@ -1,17 +1,10 @@
+@import '../utils/utils.scss';
+
 $submit-btn-bgc: #fd7e14;
 $submit-btn-bgc-hover: rgba(253, 126, 20, 0.6);
 $submit-btn-bgc-active: #df741b;
 $registration-link-color: #ca6510;
 $placeholder-color: #adb5bd;
-
-// Mikhail - replace style on class, so that the body changes only at the moment of the call function
-// body {
-// padding: 10px;
-// display: flex;
-// flex-direction: column;
-// align-items: center;
-// justify-content: center;
-// }
 
 .login-page-main {
   display: flex;
@@ -78,16 +71,7 @@ $placeholder-color: #adb5bd;
       }
 
       .login-form__submit-btn {
-        height: 50px;
-        color: #fff;
-        font-weight: 600;
-        background-color: $submit-btn-bgc;
-        border: none;
-        transition: all 0.4s;
-
-        &:active {
-          background-color: $submit-btn-bgc-active !important;
-        }
+        @include btn-styles;
       }
     }
 
@@ -96,11 +80,5 @@ $placeholder-color: #adb5bd;
       margin-right: auto;
       color: $registration-link-color;
     }
-  }
-}
-
-@media (hover: hover) {
-  .login-form__submit-btn:hover {
-    background-color: $submit-btn-bgc-hover !important;
   }
 }
