@@ -1,7 +1,7 @@
 import './loginPage.scss';
 import litHubLogo from '../img/lithub-logo.svg';
 import eyeOffIcon from '../img/eye-off-icon.svg';
-import { validateLoginForm, showOrHidePassword, showError } from '../elements/loginvalidation';
+import { validateLoginForm, showOrHidePassword, showError } from '../elements/loginValidation';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
 import request from '../elements/requestsAPI';
@@ -55,6 +55,10 @@ function loginPage(): HTMLElement {
       input.setAttribute('type', 'email');
       input.setAttribute('placeholder', 'Email');
       input.setAttribute('minlength', '8');
+
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/\s/g, '');
+      });
     }
 
     if (i === 1) {

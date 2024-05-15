@@ -50,7 +50,9 @@ class RequestFetch {
 
     (async () => {
       await this.authProjectToken();
-      await this.updateUserData();
+      if (this.#customerData.email) {
+        await this.updateUserData();
+      }
       document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     })();
   }
