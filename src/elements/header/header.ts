@@ -14,6 +14,8 @@ enum UserAction {
   LogOut = 'Log out',
 }
 
+let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
+
 export default function header(): HTMLElement {
   const headerElement = Bootstrap.createElement('nav', 'header navbar');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid px-0');
@@ -24,39 +26,17 @@ export default function header(): HTMLElement {
   logo.src = logoSrc as string;
   brand.prepend(logo);
 
-  const collapseDiv = createLinksMenu('header__linkCollapse');
-
-  let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
-  const changeDefaultActionBtn = (updateAction: UserAction) => {
-    defaultAction = updateAction;
-    actionContainer.mainBtn.textContent = defaultAction;
-  };
-
-  const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange border-0', 'dropdown-orange');
-  actionContainer.btnGroup.classList.add('header__actionBtn');
-  actionContainer.mainBtn.classList.add('btn-style-default');
-  const optionsWithoutLogin = [UserAction.LogIn, UserAction.SignUp].map((text) =>
-    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
-  );
-  const optionsWithLogin = [UserAction.LogOut].map((text) =>
-    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
-  );
-  actionContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
-  [...optionsWithoutLogin, ...optionsWithLogin].forEach((element) => {
-    element.addEventListener('click', () => {
-      const convertAction = textToUserAction(element.textContent ?? '');
-      if (convertAction) {
-        changeDefaultActionBtn(convertAction);
-        clickDefaultActionBtn(defaultAction);
-      }
-    });
-  });
-  actionContainer.mainBtn.addEventListener('click', () => {
-    clickDefaultActionBtn(defaultAction);
-  });
+  const menuLinks = createLinksMenu('header__linkCollapse');
+  const menuLinksBurger = createLinksMenu('');
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-3');
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
+  if (!requestsAPI.isLogined) {
+    profileBtn.classList.add('d-none');
+  }
+
+  const actionContainer = createActionContainer();
+  const actionContainerBurger = createActionContainer();
 
   const burgerOffCanvasID = 'burgerOffCanvas';
   const burgerBtn = createButtonImg(burgerSrc as string, 'header__burger p-0');
@@ -65,19 +45,57 @@ export default function header(): HTMLElement {
   burgerBtn.setAttribute('aria-controls', 'burger right side panel');
 
   const containerOffCanvas = Bootstrap.createElement('div', 'Body');
-  const menuLinks = createLinksMenu('');
-  containerOffCanvas.append(menuLinks);
+  containerOffCanvas.append(menuLinksBurger, actionContainerBurger.btnGroup);
 
   const burgerOffCanvas = Bootstrap.createOffCanvas(burgerOffCanvasID, 'Header', containerOffCanvas);
-
-  updateAvailableOptionsLogined(actionContainer, profileBtn, optionsWithLogin, optionsWithoutLogin);
 
   const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
   buttonWrapper.append(profileBtn, cartBtn, actionContainer.btnGroup, burgerBtn);
 
-  headerContainer.append(brand, collapseDiv, buttonWrapper, burgerOffCanvas);
+  headerContainer.append(brand, menuLinks, buttonWrapper, burgerOffCanvas);
   headerElement.append(headerContainer);
   return headerElement;
+}
+
+function createActionContainer() {
+  const optionsWithoutLogin = [UserAction.LogIn, UserAction.SignUp].map((text) =>
+    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
+  );
+  const optionsWithLogin = [UserAction.LogOut].map((text) =>
+    Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
+  );
+
+  const actionContainer = Bootstrap.createDropdownSplitButton(defaultAction, 'btn-orange border-0', 'dropdown-orange');
+  actionContainer.btnGroup.classList.add('header__actionBtn');
+  actionContainer.mainBtn.classList.add('btn-style-default');
+  actionContainer.dropdownMenu.append(...optionsWithoutLogin, ...optionsWithLogin);
+
+  if (!requestsAPI.isLogined) {
+    optionsWithLogin.forEach((element) => element.classList.add('d-none'));
+  } else {
+    optionsWithoutLogin.forEach((element) => element.classList.add('d-none'));
+    if (optionsWithLogin.length <= 1) {
+      // if only one option - remove dropdown option
+      actionContainer.dropdownBtn.remove();
+      actionContainer.dropdownMenu.remove();
+    }
+  }
+
+  [...optionsWithoutLogin, ...optionsWithLogin].forEach((element) => {
+    element.addEventListener('click', () => {
+      const convertAction = textToUserAction(element.textContent ?? '');
+      if (convertAction) {
+        defaultAction = convertAction;
+        actionContainer.mainBtn.textContent = convertAction;
+
+        clickDefaultActionBtn(defaultAction);
+      }
+    });
+  });
+  actionContainer.mainBtn.addEventListener('click', () => {
+    clickDefaultActionBtn(defaultAction);
+  });
+  return actionContainer;
 }
 
 function createLinksMenu(className = '') {
@@ -96,30 +114,6 @@ function createButtonImg(imgSrc: string, classNameBtn = '') {
   img.src = imgSrc;
   btn.prepend(img);
   return btn;
-}
-
-function updateAvailableOptionsLogined(
-  actionContainer: {
-    btnGroup: HTMLDivElement;
-    mainBtn: HTMLButtonElement;
-    dropdownBtn: HTMLButtonElement;
-    dropdownMenu: HTMLUListElement;
-  },
-  profileBtn: HTMLButtonElement,
-  optionsWithLogin: HTMLLIElement[],
-  optionsWithoutLogin: HTMLLIElement[],
-) {
-  if (!requestsAPI.isLogined) {
-    profileBtn.classList.add('d-none');
-    optionsWithLogin.forEach((element) => element.classList.add('d-none'));
-  } else {
-    optionsWithoutLogin.forEach((element) => element.classList.add('d-none'));
-    if (optionsWithLogin.length <= 1) {
-      // if only one option - remove dropdown option
-      actionContainer.dropdownBtn.remove();
-      actionContainer.dropdownMenu.remove();
-    }
-  }
 }
 
 function clickDefaultActionBtn(chosenActionAction: UserAction) {
