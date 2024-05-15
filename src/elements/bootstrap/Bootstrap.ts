@@ -1,4 +1,4 @@
-import './orange.scss';
+import './color-default.scss';
 import './style-default.scss';
 
 interface DropdownSplitElement {

@@ -9,6 +9,20 @@ button.btn.btn-orange {
 
   &:active {
     background-color: $orange-700;
+    color: white;
+  }
+}
+
+button.btn.btn-gray {
+  background: rgba(200, 200, 200, 0.15);
+  color: rgba(0, 0, 0, 0.4);
+
+  &:hover {
+    background: rgba(200, 200, 200, 0.31);
+  }
+
+  &:active {
+    background: rgba(200, 200, 200, 0.39);
   }
 }
 
@@ -22,6 +36,6 @@ button.btn.btn-orange {
   }
 }
 
-a.a-orange-300{
+a.a-orange-300 {
   color: $orange-300;
 }
