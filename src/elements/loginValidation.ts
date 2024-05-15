@@ -5,7 +5,6 @@ import eyeIcon from '../img/eye-icon.svg';
 function validateLoginForm(): boolean {
   const emailInput = document.querySelector('.login-form__email-input');
   const passwordInput = document.querySelector('.login-form__password-input');
-  console.log(`$${(emailInput as HTMLInputElement).value}$`);
   isNull<HTMLInputElement>(emailInput);
   isNull<HTMLInputElement>(passwordInput);
 
