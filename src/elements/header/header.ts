@@ -24,12 +24,7 @@ export default function header(): HTMLElement {
   logo.src = logoSrc as string;
   brand.prepend(logo);
 
-  const collapseDiv = Bootstrap.createElement('div', 'header__linkCollapse');
-  const ul = Bootstrap.createElement('ul', 'navbar-nav');
-  ul.append(Bootstrap.createNavItem('Main', 'nav-item', true, false, 'mx-1'));
-  ul.append(Bootstrap.createNavItem('Catalog', 'nav-item', false, true, 'mx-1'));
-  ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, 'mx-1'));
-  collapseDiv.append(ul);
+  const collapseDiv = createLinksMenu('header__linkCollapse');
 
   let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const changeDefaultActionBtn = (updateAction: UserAction) => {
@@ -62,16 +57,37 @@ export default function header(): HTMLElement {
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-3');
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
+
+  const burgerOffCanvasID = 'burgerOffCanvas';
   const burgerBtn = createButtonImg(burgerSrc as string, 'header__burger p-0');
+  burgerBtn.dataset.bsToggle = 'offcanvas';
+  burgerBtn.dataset.bsTarget = `#${burgerOffCanvasID}`;
+  burgerBtn.setAttribute('aria-controls', 'burger right side panel');
+
+  const containerOffCanvas = Bootstrap.createElement('div', 'Body');
+  const menuLinks = createLinksMenu('');
+  containerOffCanvas.append(menuLinks);
+
+  const burgerOffCanvas = Bootstrap.createOffCanvas(burgerOffCanvasID, 'Header', containerOffCanvas);
 
   updateAvailableOptionsLogined(actionContainer, profileBtn, optionsWithLogin, optionsWithoutLogin);
 
   const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
   buttonWrapper.append(profileBtn, cartBtn, actionContainer.btnGroup, burgerBtn);
 
-  headerContainer.append(brand, collapseDiv, buttonWrapper);
+  headerContainer.append(brand, collapseDiv, buttonWrapper, burgerOffCanvas);
   headerElement.append(headerContainer);
   return headerElement;
+}
+
+function createLinksMenu(className = '') {
+  const collapseDiv = Bootstrap.createElement('div', className);
+  const ul = Bootstrap.createElement('ul', 'navbar-nav');
+  ul.append(Bootstrap.createNavItem('Main', 'nav-item', true, false, 'mx-1'));
+  ul.append(Bootstrap.createNavItem('Catalog', 'nav-item', false, true, 'mx-1'));
+  ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, 'mx-1'));
+  collapseDiv.append(ul);
+  return collapseDiv;
 }
 
 function createButtonImg(imgSrc: string, classNameBtn = '') {
