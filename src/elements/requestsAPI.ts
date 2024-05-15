@@ -57,6 +57,11 @@ class RequestFetch {
     return this.customerToken !== undefined;
   }
 
+  get userData() {
+    // TODO: Replace real data
+    return { fullName: 'Sasha Ivanova', mail: 'test@gmail.com' };
+  }
+
   private async authProjectToken() {
     const response = await fetch(`${this.authUrl}/oauth/token`, {
       method: 'POST',

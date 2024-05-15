@@ -1,5 +1,4 @@
 import Bootstrap from '../bootstrap/Bootstrap';
-import logoSrc from './../../img/lithub-logo.svg';
 import cartSrc from './../../img/cart.svg';
 import profileSrc from './../../img/profile-light.svg';
 import burgerSrc from './../../img/burger-menu.svg';
@@ -7,6 +6,10 @@ import './header.scss';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
 import requestsAPI from '../requestsAPI';
+import logoSrc from './../../img/lithub-logo.svg';
+import userPhotoSrc from './../../img/placeholderUser.png';
+import editIconSrc from './../../img/edit-icon.svg';
+import exitIconSrc from './../../img/exit-icon.svg';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -36,7 +39,6 @@ export default function header(): HTMLElement {
   }
 
   const actionContainer = createActionContainer();
-  const actionContainerBurger = createActionContainer();
 
   const burgerOffCanvasID = 'burgerOffCanvas';
   const burgerBtn = createButtonImg(burgerSrc as string, 'header__burger p-0');
@@ -44,10 +46,16 @@ export default function header(): HTMLElement {
   burgerBtn.dataset.bsTarget = `#${burgerOffCanvasID}`;
   burgerBtn.setAttribute('aria-controls', 'burger right side panel');
 
-  const containerOffCanvas = Bootstrap.createElement('div', 'Body');
-  containerOffCanvas.append(menuLinksBurger, actionContainerBurger.btnGroup);
+  const userCard = createUserCard();
+  const containerOffCanvas = Bootstrap.createElement('div', 'd-flex flex-column');
+  const logoutBtnBurger = Bootstrap.createButton('Logout', 'btn-orange border-0');
+  const exitImg = Bootstrap.createElement('img', 'ms-1');
+  exitImg.src = exitIconSrc as string;
+  logoutBtnBurger.append(exitImg);
 
-  const burgerOffCanvas = Bootstrap.createOffCanvas(burgerOffCanvasID, 'Header', containerOffCanvas);
+  containerOffCanvas.append(userCard, menuLinksBurger, logoutBtnBurger);
+
+  const burgerOffCanvas = Bootstrap.createOffCanvas(burgerOffCanvasID, '', containerOffCanvas);
 
   const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
   buttonWrapper.append(profileBtn, cartBtn, actionContainer.btnGroup, burgerBtn);
@@ -127,6 +135,28 @@ function clickDefaultActionBtn(chosenActionAction: UserAction) {
   } else {
     console.error('problem with default button');
   }
+}
+function createUserCard() {
+  const div = Bootstrap.createElement('div', 'userCard');
+
+  const img = Bootstrap.createElement('img', 'rounded-circle userCard__img');
+  img.alt = 'Logo';
+  img.src = userPhotoSrc as string;
+
+  const divRight = Bootstrap.createElement('div');
+  const fileName = Bootstrap.createElement('p', 'userCard__fullName my-1', requestsAPI.userData.fullName);
+  const mail = Bootstrap.createElement('p', 'userCard__contactInfo my-1', requestsAPI.userData.mail);
+
+  const editLink = Bootstrap.createElement('a', 'icon-link text-decoration-none a-orange-300 mt-1 disabled', 'edit');
+  editLink.href = '#';
+  const editIcon = Bootstrap.createElement('img');
+  editIcon.src = editIconSrc as string;
+  editLink.prepend(editIcon);
+
+  divRight.append(fileName, mail, editLink);
+
+  div.append(img, divRight);
+  return div;
 }
 
 function textToUserAction(str: string): UserAction | undefined {
