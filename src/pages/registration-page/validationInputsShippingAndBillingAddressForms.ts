@@ -4,6 +4,25 @@ import { generateResultsCountries } from './listCountries';
 import { applyNewStyleForError } from './validationInputsRegistrationForm';
 import { ALL_CONTRIES, ALL_NUMBERS, ALL_SPECIAL_CHARACTERS } from './validationRegex';
 
+export function splitStreetNameAndNumber(street: string): { name: string; number: string } {
+  const words = street.trim().split(' ');
+  let name = '';
+  let number = '';
+
+  for (let i = 0; i < words.length; i++) {
+    if (!isNaN(Number(words[i]))) {
+      name = words.slice(0, i).join(' ');
+      number = words.slice(i).join(' ');
+      break;
+    }
+  }
+  if (number === '') {
+    name = street;
+  }
+
+  return { name, number };
+}
+
 export function generateValidationInputStreet(inputStreet: HTMLInputElement, error: HTMLDivElement) {
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
   const isEmpty = inputStreet.value === '';

@@ -7,7 +7,7 @@ import { AppEvents, Pages } from './types';
 
 export default class App {
   start(): void {
-    switchPage(Pages.Main);
+    switchPage(Pages.SignUp); // мэин
   }
 }
 

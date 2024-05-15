@@ -5,6 +5,7 @@ import switchPage from '../../elements/switchPage';
 import { generateBillingForm } from '../registration-page/layoutBillingForm';
 import { generateCopyAddress } from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import { Pages } from '../../elements/types';
+import requestsAPI from '../../elements/requestsAPI';
 
 function togglePasswordVisibility() {
   const { inputForPassword, iconForInputPassword } = variablesRegPage;
@@ -142,10 +143,28 @@ export default function generateRegistrationPage() {
     document.body.style.height = '';
   });
 
-  containerForRegistrationForms.addEventListener('submit', (event) => {
+  containerForRegistrationForms.addEventListener('submit', async (event) => {
     event.preventDefault();
     switchPage(Pages.Main);
     document.body.style.height = '';
+    const customerInfo = await requestsAPI.registerCustomer(
+      inputForEmail.value.trim(),
+      inputForFirstName.value.trim(),
+      inputForLastName.value.trim(),
+      inputForPassword.value.trim(),
+      inputForBirthDate.value,
+    );
+    const customerId = customerInfo.customer.id;
+    requestsAPI.addAddress(
+      customerId,
+      inputForFirstName.value.trim(),
+      inputForLastName.value.trim(),
+      inputForStreet.value,
+      inputForPostalCode.value,
+      inputForCity.value,
+      inputForCountry.value,
+      inputForEmail.value.trim(),
+    );
   });
 
   return containerForRegistrationForms;

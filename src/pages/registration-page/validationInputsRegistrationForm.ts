@@ -22,7 +22,7 @@ export function applyNewStyleForError(input: HTMLInputElement, error: HTMLDivEle
     input.classList.remove('is-invalid');
     input.classList.add('is-valid');
   }
-  activateSubmitButton();
+  // activateSubmitButton();
 }
 
 export function generateValidationInputFirstName() {

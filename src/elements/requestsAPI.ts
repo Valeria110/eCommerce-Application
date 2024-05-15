@@ -1,3 +1,5 @@
+import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
+
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 
 class RequestFetch {
@@ -170,6 +172,70 @@ class RequestFetch {
         console.error(`Error HTTP: ${response.status}`);
       }
     }
+  }
+
+  async registerCustomer(email: string, firstName: string, lastName: string, password: string, dateOfBirth: string) {
+    const url = `${this.host}/${this.projectKey}/me/signup`;
+    const bodyRequest = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+      dateOfBirth: dateOfBirth,
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    return response.json();
+  }
+
+  async addAddress(
+    id: string,
+    firstName: string,
+    lastName: string,
+    street: string,
+    postalCode: string,
+    city: string,
+    country: string,
+    email: string,
+  ) {
+    const streetObj = splitStreetNameAndNumber(street);
+    const url = `${this.host}/${this.projectKey}/customers/${id}`;
+    const bodyRequest = {
+      version: 1,
+      actions: [
+        {
+          action: 'addAddress',
+          address: {
+            title: 'My Address',
+            firstName: firstName,
+            lastName: lastName,
+            streetName: streetObj.name,
+            streetNumber: streetObj.number,
+            postalCode: postalCode,
+            city: city,
+            country: country.split(' ')[country.split(' ').length - 1].replace('(', '').replace(')', ''),
+            email: email,
+          },
+        },
+      ],
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    return response.json();
   }
 }
 
