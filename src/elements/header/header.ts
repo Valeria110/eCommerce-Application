@@ -4,7 +4,7 @@ import profileSrc from './../../img/profile-light.svg';
 import burgerSrc from './../../img/burger-menu.svg';
 import './header.scss';
 import switchPage from '../switchPage';
-import { Pages } from '../types';
+import { AppEvents, Pages } from '../types';
 import requestsAPI from '../requestsAPI';
 import logoSrc from './../../img/lithub-logo.svg';
 import userPhotoSrc from './../../img/placeholderUser.png';
@@ -85,7 +85,12 @@ function createRightPanel() {
     });
   });
 
-  const btnWrapper = Bootstrap.createElement('div', 'd-flex justify-content-evenly');
+  const btnWrapper = Bootstrap.createElement('div', 'd-flex');
+  if (requestsAPI.isLogined) {
+    btnWrapper.classList.add('justify-content-start');
+  } else {
+    btnWrapper.classList.add('justify-content-evenly');
+  }
   btnWrapper.append(logoutBtn, loginBtn, signUpBtn);
 
   const menuLinks = createLinksMenu('', 'my-2');
@@ -173,16 +178,26 @@ function createUserCard() {
   img.src = userPhotoSrc as string;
 
   const divRight = Bootstrap.createElement('div');
-  const fileName = Bootstrap.createElement('p', 'userCard__fullName my-1', requestsAPI.userData.fullName);
-  const mail = Bootstrap.createElement('p', 'userCard__contactInfo my-1', requestsAPI.userData.mail);
+  const userName = Bootstrap.createElement(
+    'p',
+    'userCard__fullName my-1',
+    `${requestsAPI.customerData.firstName} ${requestsAPI.customerData.lastName}`,
+  );
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    userName.textContent = `${requestsAPI.customerData.firstName} ${requestsAPI.customerData.lastName}`;
+  });
+  const email = Bootstrap.createElement('p', 'userCard__contactInfo my-1', requestsAPI.customerData.email);
 
   const editLink = Bootstrap.createElement('a', 'icon-link text-decoration-none a-orange-300 mt-1 disabled', 'edit');
   editLink.href = '#';
+  editLink.addEventListener('click', (event) => {
+    event.preventDefault();
+  });
   const editIcon = Bootstrap.createElement('img');
   editIcon.src = editIconSrc as string;
   editLink.prepend(editIcon);
 
-  divRight.append(fileName, mail, editLink);
+  divRight.append(userName, email, editLink);
 
   div.append(img, divRight);
   return div;
