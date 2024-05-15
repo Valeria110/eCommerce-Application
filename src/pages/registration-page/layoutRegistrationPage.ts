@@ -155,7 +155,8 @@ export default function generateRegistrationPage() {
       inputForBirthDate.value,
     );
     const customerId = customerInfo.customer.id;
-    requestsAPI.addAddress(
+
+    await requestsAPI.addAddress(
       customerId,
       inputForFirstName.value.trim(),
       inputForLastName.value.trim(),
@@ -165,6 +166,8 @@ export default function generateRegistrationPage() {
       inputForCountry.value,
       inputForEmail.value.trim(),
     );
+    const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+    await requestsAPI.setShippingAddress(shippingAddressId, customerId);
   });
 
   return containerForRegistrationForms;

@@ -237,6 +237,45 @@ class RequestFetch {
 
     return response.json();
   }
+
+  async setShippingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: 2,
+      actions: [
+        {
+          action: 'addShippingAddressId',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    return response.json();
+  }
+
+  async getCustomerAddressData(id: string, num: number) {
+    const url = `${this.host}/${this.projectKey}/customers/${id}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+    return result.addresses[num].id;
+  }
 }
 
 const requestsAPI = new RequestFetch();
