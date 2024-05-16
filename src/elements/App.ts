@@ -8,6 +8,7 @@ import { AppEvents, Pages } from './types';
 export default class App {
   start(): void {
     switchPage(Pages.SignUp); // мэин
+    localStorage.setItem('version', '1');
   }
 }
 

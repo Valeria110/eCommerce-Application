@@ -208,7 +208,7 @@ class RequestFetch {
     const streetObj = splitStreetNameAndNumber(street);
     const url = `${this.host}/${this.projectKey}/customers/${id}`;
     const bodyRequest = {
-      version: 1,
+      version: Number(localStorage.getItem('version')),
       actions: [
         {
           action: 'addAddress',
@@ -235,13 +235,15 @@ class RequestFetch {
       body: JSON.stringify(bodyRequest),
     });
 
-    return response.json();
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
   }
 
   async setShippingAddress(idAddress: string, idCustomer: string) {
     const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
     const bodyRequest = {
-      version: 2,
+      version: Number(localStorage.getItem('version')),
       actions: [
         {
           action: 'addShippingAddressId',
@@ -259,7 +261,35 @@ class RequestFetch {
       body: JSON.stringify(bodyRequest),
     });
 
-    return response.json();
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setBillingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'addBillingAddressId',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
   }
 
   async getCustomerAddressData(id: string, num: number) {

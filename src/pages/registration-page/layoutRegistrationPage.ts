@@ -168,6 +168,21 @@ export default function generateRegistrationPage() {
     );
     const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
     await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+
+    if (containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)) {
+      await requestsAPI.addAddress(
+        customerId,
+        inputForFirstName.value.trim(),
+        inputForLastName.value.trim(),
+        variablesRegPage.inputForStreetBillingForm.value,
+        variablesRegPage.inputForPostalCodeBillingForm.value,
+        variablesRegPage.inputForCityBillingForm.value,
+        variablesRegPage.inputForCountryBillingForm.value,
+        inputForEmail.value.trim(),
+      );
+      const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+      await requestsAPI.setBillingAddress(billingAddressId, customerId);
+    }
   });
 
   return containerForRegistrationForms;
