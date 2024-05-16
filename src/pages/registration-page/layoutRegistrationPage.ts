@@ -145,44 +145,81 @@ export default function generateRegistrationPage() {
 
   containerForRegistrationForms.addEventListener('submit', async (event) => {
     event.preventDefault();
-    switchPage(Pages.Main);
     document.body.style.height = '';
-    const customerInfo = await requestsAPI.registerCustomer(
-      inputForEmail.value.trim(),
-      inputForFirstName.value.trim(),
-      inputForLastName.value.trim(),
-      inputForPassword.value.trim(),
-      inputForBirthDate.value,
-    );
-    const customerId = customerInfo.customer.id;
+    try {
+      const customerInfo = await requestsAPI.registerCustomer(
+        inputForEmail.value.trim(),
+        inputForFirstName.value.trim(),
+        inputForLastName.value.trim(),
+        inputForPassword.value.trim(),
+        inputForBirthDate.value,
+      );
 
-    await requestsAPI.addAddress(
-      customerId,
-      inputForFirstName.value.trim(),
-      inputForLastName.value.trim(),
-      inputForStreet.value,
-      inputForPostalCode.value,
-      inputForCity.value,
-      inputForCountry.value,
-      inputForEmail.value.trim(),
-    );
-    const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
-    await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      const customerId = customerInfo.customer.id;
 
-    if (containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)) {
       await requestsAPI.addAddress(
         customerId,
         inputForFirstName.value.trim(),
         inputForLastName.value.trim(),
-        variablesRegPage.inputForStreetBillingForm.value,
-        variablesRegPage.inputForPostalCodeBillingForm.value,
-        variablesRegPage.inputForCityBillingForm.value,
-        variablesRegPage.inputForCountryBillingForm.value,
+        inputForStreet.value,
+        inputForPostalCode.value,
+        inputForCity.value,
+        inputForCountry.value,
         inputForEmail.value.trim(),
       );
-      const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
-      await requestsAPI.setBillingAddress(billingAddressId, customerId);
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+
+      if (containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)) {
+        await requestsAPI.addAddress(
+          customerId,
+          inputForFirstName.value.trim(),
+          inputForLastName.value.trim(),
+          variablesRegPage.inputForStreetBillingForm.value,
+          variablesRegPage.inputForPostalCodeBillingForm.value,
+          variablesRegPage.inputForCityBillingForm.value,
+          variablesRegPage.inputForCountryBillingForm.value,
+          inputForEmail.value.trim(),
+        );
+        const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+        await requestsAPI.setBillingAddress(billingAddressId, customerId);
+      }
+
+      if (checkboxDefault.checked) {
+        await requestsAPI.addAddress(
+          customerId,
+          inputForFirstName.value.trim(),
+          inputForLastName.value.trim(),
+          inputForStreet.value,
+          inputForPostalCode.value,
+          inputForCity.value,
+          inputForCountry.value,
+          inputForEmail.value.trim(),
+        );
+        const shippingDefAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+        await requestsAPI.setDefShippingAddress(shippingDefAddressId, customerId);
+      }
+
+      if (variablesRegPage.checkboxDefaultBillingForm.checked) {
+        await requestsAPI.addAddress(
+          customerId,
+          inputForFirstName.value.trim(),
+          inputForLastName.value.trim(),
+          variablesRegPage.inputForStreetBillingForm.value,
+          variablesRegPage.inputForPostalCodeBillingForm.value,
+          variablesRegPage.inputForCityBillingForm.value,
+          variablesRegPage.inputForCountryBillingForm.value,
+          inputForEmail.value.trim(),
+        );
+        const billingDefAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+        await requestsAPI.setDefBillingAddress(billingDefAddressId, customerId);
+      }
+    } catch (error) {
+      errorForInputEmail.textContent = 'There is already an existing customer with the provided email';
+      validationRegistrationForms.applyNewStyleForError(inputForEmail, errorForInputEmail, true);
+      return;
     }
+    switchPage(Pages.Main);
   });
 
   return containerForRegistrationForms;

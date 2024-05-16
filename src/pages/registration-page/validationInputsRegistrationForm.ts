@@ -22,7 +22,7 @@ export function applyNewStyleForError(input: HTMLInputElement, error: HTMLDivEle
     input.classList.remove('is-invalid');
     input.classList.add('is-valid');
   }
-  // activateSubmitButton();
+  activateSubmitButton();
 }
 
 export function generateValidationInputFirstName() {
@@ -114,6 +114,10 @@ export function generateValidationInputPassword() {
     applyNewStyleForError(variablesRegPage.inputForPassword, variablesRegPage.errorForInputPassword, true);
   } else if (!ALL_UPPERCASE_LETTERS.test(variablesRegPage.inputForPassword.value)) {
     variablesRegPage.errorForInputPassword.textContent = 'Password must must contain at least one uppercase letter';
+    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+    applyNewStyleForError(variablesRegPage.inputForPassword, variablesRegPage.errorForInputPassword, true);
+  } else if (!ALL_SPECIAL_CHARACTERS.test(variablesRegPage.inputForPassword.value)) {
+    variablesRegPage.errorForInputPassword.textContent = `Password must must contain at least one special character (e.g., !@#$%^&*)`;
     variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
     applyNewStyleForError(variablesRegPage.inputForPassword, variablesRegPage.errorForInputPassword, true);
   } else if (variablesRegPage.inputForPassword.value.length < 8) {

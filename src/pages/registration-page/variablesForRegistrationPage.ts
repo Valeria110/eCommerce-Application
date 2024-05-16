@@ -127,7 +127,7 @@ export const labelForCheckboxDefaultBillingForm = createElement(
 );
 
 export const containerForButtonSignUpAndLogin = createElement('div');
-export const buttonSignUp = createElement('button', 'registration-page__button-signup btn', 'Sign up'); // disabled
+export const buttonSignUp = createElement('button', 'registration-page__button-signup btn disabled', 'Sign up');
 buttonSignUp.type = 'submit';
 export const buttonToLoginPage = createElement(
   'div',

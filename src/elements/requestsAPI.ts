@@ -292,6 +292,58 @@ class RequestFetch {
     return newVersion;
   }
 
+  async setDefShippingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultShippingAddress',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setDefBillingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultBillingAddress',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
   async getCustomerAddressData(id: string, num: number) {
     const url = `${this.host}/${this.projectKey}/customers/${id}`;
 
