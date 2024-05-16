@@ -28,4 +28,11 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-use-before-define': 'off',
   },
+  globals: {
+    describe: true,
+    it: true,
+    expect: true,
+    beforeEach: true,
+    jest: true,
+  },
 };

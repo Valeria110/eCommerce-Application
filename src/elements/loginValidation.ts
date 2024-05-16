@@ -129,4 +129,4 @@ function showOrHidePassword() {
   }
 }
 
-export { validateLoginForm, showOrHidePassword, showError };
+export { validateLoginForm, showOrHidePassword, showError, validateEmail };
