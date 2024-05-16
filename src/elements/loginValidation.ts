@@ -8,7 +8,7 @@ function validateLoginForm(): boolean {
   isNull<HTMLInputElement>(emailInput);
   isNull<HTMLInputElement>(passwordInput);
 
-  return validateInputs(emailInput.value.trim(), passwordInput.value.trim());
+  return validateInputs(emailInput.value, passwordInput.value);
 }
 
 function validateInputs(emailValue: string, passwordValue: string): boolean {
@@ -19,9 +19,10 @@ function validateInputs(emailValue: string, passwordValue: string): boolean {
 }
 
 function validateEmail(emailValue: string): void {
+  console.log(`_${emailValue}_`);
   const emailInput = document.querySelector('.login-form__email-input');
   isNull<HTMLInputElement>(emailInput);
-  const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (emailValue === '') {
     showError(emailInput, 'This field is required');
@@ -40,6 +41,8 @@ function validateEmail(emailValue: string): void {
     error.textContent = '';
     emailInput.classList.add('is-valid');
     emailInput.classList.remove('is-invalid');
+  } else if (isContainLeadingTrailingWhitespace(emailInput.value)) {
+    showError(emailInput, 'Email must not contain leading or trailing whitespace');
   }
 }
 
@@ -66,8 +69,8 @@ function validatePassword(passwordValue: string): void {
     showError(passwordInput, 'Password must contain at least one lowercase letter (a-z)');
   } else if (!specialCharacterPattern.test(passwordValue)) {
     showError(passwordInput, 'Password must contain at least one special character (e.g., !@#$%^&*)');
-  } else if (passwordValue.includes(' ')) {
-    showError(passwordInput, 'Password must not contain any spaces');
+  } else if (isContainLeadingTrailingWhitespace(passwordValue)) {
+    showError(passwordInput, 'Password must not contain leading or trailing whitespace');
   } else if (passwordInput.validity.valid) {
     const error = passwordInput.nextElementSibling;
     isNull<HTMLDivElement>(error);
@@ -75,6 +78,10 @@ function validatePassword(passwordValue: string): void {
     passwordInput.classList.add('is-valid');
     passwordInput.classList.remove('is-invalid');
   }
+}
+
+function isContainLeadingTrailingWhitespace(str: string) {
+  return str !== str.trim();
 }
 
 function showError(input: HTMLInputElement, errorMessage: string) {

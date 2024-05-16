@@ -1,4 +1,7 @@
+import { AppEvents } from './types';
+
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
+const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
 class RequestFetch {
   base64Auth: string;
@@ -19,6 +22,12 @@ class RequestFetch {
 
   #customerToken: string | undefined; // use only get set customerToken
 
+  #customerData = {
+    email: '',
+    firstName: '',
+    lastName: '',
+  };
+
   constructor() {
     this.authUrl = process.env.CTP_AUTH_URL ?? '';
     this.host = process.env.CTP_API_URL ?? '';
@@ -37,11 +46,19 @@ class RequestFetch {
 
     const cacheCustomerToken = localStorage.getItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
     this.customerToken = cacheCustomerToken ? cacheCustomerToken : undefined;
+    this.#customerData.email = localStorage.getItem(LOCAL_STORAGE_EMAIL) ?? '';
+
+    (async () => {
+      await this.authProjectToken();
+      if (this.#customerData.email) {
+        await this.updateUserData();
+      }
+      document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
+    })();
   }
 
   set customerToken(value: string | undefined) {
     this.#customerToken = value;
-    console.log(`set customerToken ${value}`);
     if (value) {
       localStorage.setItem(LOCAL_STORAGE_CUSTOMER_TOKEN, value);
     } else {
@@ -55,6 +72,19 @@ class RequestFetch {
 
   get isLogined() {
     return this.customerToken !== undefined;
+  }
+
+  get customerData() {
+    return this.#customerData;
+  }
+
+  private updateUserEmail(email: string | undefined) {
+    if (email) {
+      this.#customerData.email = email;
+      localStorage.setItem(LOCAL_STORAGE_EMAIL, email);
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_EMAIL);
+    }
   }
 
   private async authProjectToken() {
@@ -81,6 +111,8 @@ class RequestFetch {
     email: string,
     password: string,
   ): Promise<{ isOk: boolean; field: 'login' | 'password' | undefined; message: string }> {
+    this.updateUserEmail(email);
+
     const encodedEmail = encodeURIComponent(email);
     const encodedPassword = encodeURIComponent(password);
 
@@ -116,13 +148,14 @@ class RequestFetch {
       this.customerToken = obj.access_token;
     }
 
-    console.log(obj);
+    await this.updateUserData();
 
     return { isOk: response.ok, field, message };
   }
 
   authCustomersLogout() {
     this.customerToken = undefined;
+    this.updateUserEmail(undefined);
   }
 
   async isExistCustomer(email: string): Promise<boolean> {
@@ -141,6 +174,33 @@ class RequestFetch {
     const customers = await response.json();
 
     return customers.results.length > 0;
+  }
+
+  private async updateUserData() {
+    if (!this.#customerData.email) {
+      throw new Error('Cannot update user data, email is empty');
+    }
+
+    const whereEmailEqual = encodeURIComponent(`lowercaseEmail="${this.#customerData.email.toLowerCase()}"`);
+
+    const url = `${this.host}/${this.projectKey}/customers?where=${whereEmailEqual}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+      },
+    });
+
+    await this.checkResponse(response);
+
+    const customers = await response.json();
+
+    if (customers.results) {
+      this.#customerData.firstName = customers.results[0].firstName;
+      this.#customerData.lastName = customers.results[0].lastName;
+    } else {
+      console.error('problem with request updateUserData');
+    }
   }
 
   async getProducts() {
