@@ -1,14 +1,14 @@
 import generateRegistrationPage from '../pages/registration-page/layoutRegistrationPage';
-import error404Page from '../pages/error404Page';
+import { error404Page } from '../pages/error404Page';
 import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
-import switchPage from './switchPage';
 import { AppEvents, Pages } from './types';
+import { changePageRoute, handleLocation } from './pageRouting/routing';
 
 export default class App {
   start(): void {
-    switchPage(Pages.SignUp); // мэин
     localStorage.setItem('version', '1');
+    handleLocation();
   }
 }
 
@@ -19,15 +19,24 @@ document.addEventListener(AppEvents.switchPage, (event) => {
   switch (newPage) {
     case Pages.LogIn:
       document.body.append(loginPage());
+      changePageRoute(Pages.LogIn);
       break;
     case Pages.SignUp:
       document.body.append(generateRegistrationPage());
+      changePageRoute(Pages.SignUp);
       break;
     case Pages.Main:
       document.body.append(mainPage());
+      changePageRoute(Pages.Main);
       break;
     default:
-      document.body.append(error404Page());
+      error404Page().forEach((element) => {
+        document.body.append(element);
+      });
+      changePageRoute(Pages.Error404);
       break;
   }
 });
+
+window.addEventListener('popstate', handleLocation);
+window.addEventListener('DOMContentLoaded', handleLocation);

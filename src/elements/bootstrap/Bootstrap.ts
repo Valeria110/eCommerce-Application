@@ -1,4 +1,4 @@
-import './orange.scss';
+import './color-default.scss';
 import './style-default.scss';
 
 interface DropdownSplitElement {
@@ -11,12 +11,17 @@ interface DropdownSplitElement {
 export default class Bootstrap {
   static createElement<T extends keyof HTMLElementTagNameMap>(
     tagName: T,
-    className = '',
+    className: string | string[] = '',
     textContent?: string,
   ): HTMLElementTagNameMap[T] {
     const element = document.createElement(tagName);
-    if (className) {
+    if (typeof className === 'string') {
       element.className = className;
+    }
+    if (Array.isArray(className)) {
+      className.forEach((classItem) => {
+        element.classList.add(classItem);
+      });
     }
     if (textContent !== undefined) {
       element.textContent = textContent;
@@ -67,5 +72,32 @@ export default class Bootstrap {
     button.classList.add('btn');
     button.textContent = textContent;
     return button;
+  }
+
+  static createOffCanvas(id: string, title: string, bodyContent: HTMLDivElement): HTMLDivElement {
+    const offcanvas = Bootstrap.createElement('div', 'offcanvas offcanvas-end');
+    offcanvas.tabIndex = -1;
+    offcanvas.id = id;
+    offcanvas.setAttribute('aria-labelledby', `${id}Label`);
+
+    const header = Bootstrap.createElement('div', 'offcanvas-header');
+    const h5 = Bootstrap.createElement('h5', 'offcanvas-title');
+    h5.id = `${id}Label`;
+    h5.textContent = title;
+    header.append(h5);
+
+    const closeButton = this.createButton('', 'btn-close');
+    closeButton.setAttribute('data-bs-dismiss', 'offcanvas');
+    closeButton.setAttribute('aria-label', 'Close');
+    header.append(closeButton);
+
+    offcanvas.append(header);
+
+    const body = Bootstrap.createElement('div', 'offcanvas-body');
+    body.append(bodyContent);
+
+    offcanvas.append(body);
+
+    return offcanvas;
   }
 }
