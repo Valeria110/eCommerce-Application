@@ -39,16 +39,13 @@ class RequestFetch {
     this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
     this.scope = `manage_project:${this.projectKey}`;
 
-    if (!(this.authUrl && this.host && this.projectClientID && this.projectClientSecret && this.projectKey)) {
-      // throw new Error('The variables .env is not defined correct. Check if exist this file.');
-      return;
-    }
-
-    this.authProjectToken();
-
     const cacheCustomerToken = localStorage.getItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
     this.customerToken = cacheCustomerToken ? cacheCustomerToken : undefined;
     this.#customerData.email = localStorage.getItem(LOCAL_STORAGE_EMAIL) ?? '';
+
+    if (!(this.authUrl && this.host && this.projectClientID && this.projectClientSecret && this.projectKey)) {
+      throw new Error('The variables .env is not defined correct. Check if exist this file.');
+    }
 
     (async () => {
       await this.authProjectToken();

@@ -1,3 +1,11 @@
+jest.mock('../elements/requestsAPI', () => ({
+  isLogined: false,
+  customerData: {
+    firstName: 'Jon',
+    lastName: 'Smit',
+    email: 'test@test.com',
+  },
+}));
 import { error404Page } from './error404Page';
 
 describe('Bootstrap', () => {
