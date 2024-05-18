@@ -289,3 +289,9 @@ background-color: #fd9843 !important;
     text-align: start;
   }
 }
+
+@media (max-width: 575px) {
+  .modal-dialog {
+    right: 0 !important;
+  }
+}
