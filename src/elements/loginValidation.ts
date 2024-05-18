@@ -19,7 +19,6 @@ function validateInputs(emailValue: string, passwordValue: string): boolean {
 }
 
 function validateEmail(emailValue: string): void {
-  console.log(`_${emailValue}_`);
   const emailInput = document.querySelector('.login-form__email-input');
   isNull<HTMLInputElement>(emailInput);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -81,8 +81,6 @@ function loginPage(): HTMLElement {
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
 
-  submitFormBtn.addEventListener('click', () => handleServerLogin(inputsContainer));
-
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
   registrationLink.href = '#';
@@ -105,8 +103,6 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
   const passwordField = inputsContainer.querySelector('.login-form__password-input') as HTMLInputElement;
 
   if (loginField && passwordField) {
-    console.log('try login', loginField.value, passwordField.value);
-
     request
       .authCustomersLogin(loginField.value, passwordField.value)
       .then((serverAnswer) => {
