@@ -20,7 +20,9 @@
     ],
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
-      "\\.(scss)$": "<rootDir>/styleMock.ts"
+      "\\.(scss)$": "<rootDir>/src/mocks/styleMock.ts",
+      "\\.(svg)$": "<rootDir>/src/mocks/svgMock.ts",
+      "\\.(png)$": "<rootDir>/src/mocks/svgMock.ts"
     }
   },
   "repository": {
