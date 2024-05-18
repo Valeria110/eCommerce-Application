@@ -1,7 +1,7 @@
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
 import { generateBillingForm } from './layoutBillingForm';
 import { generateResultsCountries } from './listCountries';
-import { applyNewStyleForError } from './validationInputsRegistrationForm';
+import { showErrorOnRegistration } from './validationInputsRegistrationForm';
 import { ALL_CONTRIES, ALL_NUMBERS, ALL_SPECIAL_CHARACTERS } from './validationRegex';
 
 export function splitStreetNameAndNumber(street: string): { name: string; number: string } {
@@ -28,10 +28,9 @@ export function generateValidationInputStreet(inputStreet: HTMLInputElement, err
   const isEmpty = inputStreet.value === '';
 
   if (isEmpty) {
-    error.textContent = 'Street must contain at least one character';
-    applyNewStyleForError(inputStreet, error, true);
+    showErrorOnRegistration(inputStreet, error, true, 'Street must contain at least one character');
   } else {
-    applyNewStyleForError(inputStreet, error, false);
+    showErrorOnRegistration(inputStreet, error, false);
   }
 
   if (isChecked) {
@@ -44,8 +43,7 @@ export function generateValidationInputStreet(inputStreet: HTMLInputElement, err
         ? variablesRegPage.errorForInputStreetBillingForm
         : variablesRegPage.errorForInputStreet;
     billingInput.value = isEmpty ? '' : inputStreet.value;
-    billingError.textContent = isEmpty ? 'Street must contain at least one character' : '';
-    applyNewStyleForError(billingInput, billingError, isEmpty);
+    showErrorOnRegistration(billingInput, billingError, isEmpty, 'Street must contain at least one character');
   }
 }
 
@@ -56,13 +54,11 @@ export function generateValidationInputCity(inputCity: HTMLInputElement, error: 
     ALL_NUMBERS.test(inputCity.value) || ALL_SPECIAL_CHARACTERS.test(inputCity.value);
 
   if (isEmpty) {
-    error.textContent = 'City must contain at least one character';
-    applyNewStyleForError(inputCity, error, true);
+    showErrorOnRegistration(inputCity, error, true, 'City must contain at least one character');
   } else if (containsNumbersOrSpecialCharacters) {
-    error.textContent = 'City must not contain special characters or numbers';
-    applyNewStyleForError(inputCity, error, true);
+    showErrorOnRegistration(inputCity, error, true, 'City must not contain special characters or numbers');
   } else {
-    applyNewStyleForError(inputCity, error, false);
+    showErrorOnRegistration(inputCity, error, false);
   }
 
   if (isChecked) {
@@ -75,13 +71,13 @@ export function generateValidationInputCity(inputCity: HTMLInputElement, error: 
         ? variablesRegPage.errorForInputCityBillingForm
         : variablesRegPage.errorForInputCity;
     billingInput.value = isEmpty ? '' : inputCity.value;
-    billingError.textContent = isEmpty ? 'City must contain at least one character' : '';
-    billingError.textContent = isEmpty
-      ? 'City must contain at least one character'
-      : containsNumbersOrSpecialCharacters
-        ? 'City must not contain special characters or numbers'
-        : '';
-    applyNewStyleForError(billingInput, billingError, isEmpty || containsNumbersOrSpecialCharacters);
+    if (isEmpty) {
+      showErrorOnRegistration(billingInput, billingError, true, 'City must contain at least one character');
+    } else if (containsNumbersOrSpecialCharacters) {
+      showErrorOnRegistration(billingInput, billingError, true, 'City must not contain special characters or numbers');
+    } else {
+      showErrorOnRegistration(billingInput, billingError, false);
+    }
   }
 }
 
@@ -91,10 +87,9 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
   let resultsCountries: string[] = [];
 
   if (isEmpty) {
-    error.textContent = 'This field is required';
-    applyNewStyleForError(inputCountry, error, true);
+    showErrorOnRegistration(inputCountry, error, true, 'This field is required');
   } else {
-    applyNewStyleForError(inputCountry, error, false);
+    showErrorOnRegistration(inputCountry, error, false);
   }
 
   if (!isEmpty) {
@@ -104,11 +99,9 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
   }
 
   if (resultsCountries.length === 0 && !isEmpty) {
-    error.textContent = 'Country must be a valid';
-    applyNewStyleForError(inputCountry, error, true);
+    showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
   } else {
-    error.textContent = 'Country must be a valid';
-    applyNewStyleForError(inputCountry, error, true);
+    showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
   }
 
   const container =
@@ -128,24 +121,24 @@ export function generateValidationInputPostalCode(
   error: HTMLDivElement,
 ) {
   const countries = Object.keys(ALL_CONTRIES);
-  const isEmptyCountry = inputCountry.value === '';
   const isEmptyPostalCode = inputPostalCode.value === '';
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
   const postalCodeRegex = ALL_CONTRIES[inputCountry.value];
   const truePostalCode = postalCodeRegex && postalCodeRegex.test(inputPostalCode.value);
 
   if (inputCountry.value === '' || !countries.includes(inputCountry.value)) {
-    error.textContent = 'Please select a country';
-    applyNewStyleForError(inputPostalCode, error, true);
+    showErrorOnRegistration(inputPostalCode, error, true, 'Please select a country');
   } else if (isEmptyPostalCode) {
-    error.textContent = 'This field is required';
-    applyNewStyleForError(inputPostalCode, error, true);
+    showErrorOnRegistration(inputPostalCode, error, true, 'This field is required');
   } else if (!truePostalCode) {
-    error.textContent =
-      'Postal code must follow the format for the country (e.g., 12345 or A1B 2C3 for the U.S. and Canada, respectively)';
-    applyNewStyleForError(inputPostalCode, error, true);
+    showErrorOnRegistration(
+      inputPostalCode,
+      error,
+      true,
+      'Postal code must follow the format for the country (e.g., 12345 or A1B 2C3 for the U.S. and Canada, respectively)',
+    );
   } else {
-    applyNewStyleForError(inputPostalCode, error, false);
+    showErrorOnRegistration(inputPostalCode, error, false);
   }
 
   if (isChecked) {
@@ -158,14 +151,20 @@ export function generateValidationInputPostalCode(
         ? variablesRegPage.errorForInputPostalCodeBillingForm
         : variablesRegPage.errorForInputPostalCode;
     billingInput.value = isEmptyPostalCode ? '' : inputPostalCode.value;
-    billingError.textContent = isEmptyCountry
-      ? 'Please select a country'
-      : isEmptyPostalCode
-        ? 'This field is required'
-        : !truePostalCode
-          ? 'Postal code must follow the format for the country (e.g., 12345 or A1B 2C3 for the U.S. and Canada, respectively)'
-          : '';
-    applyNewStyleForError(billingInput, billingError, isEmptyPostalCode || !truePostalCode || isEmptyCountry);
+    if (inputCountry.value === '' || !countries.includes(inputCountry.value)) {
+      showErrorOnRegistration(billingInput, billingError, true, 'Please select a country');
+    } else if (isEmptyPostalCode) {
+      showErrorOnRegistration(billingInput, billingError, true, 'This field is required');
+    } else if (!truePostalCode) {
+      showErrorOnRegistration(
+        billingInput,
+        billingError,
+        true,
+        'Postal code must follow the format for the country (e.g., 12345 or A1B 2C3 for the U.S. and Canada, respectively)',
+      );
+    } else {
+      showErrorOnRegistration(billingInput, billingError, false);
+    }
   }
 }
 
@@ -179,26 +178,34 @@ function copyFieldValue(
     billingInput.value = shippingInput.value;
     billingInput.classList.remove('is-invalid');
     billingInput.classList.add('is-valid');
-    applyNewStyleForError(billingInput, errorInputBillingForm, false);
+    showErrorOnRegistration(billingInput, errorInputBillingForm, false);
   } else {
     if (billingInput.value !== '' && !billingInput.classList.contains('is-invalid')) {
       shippingInput.value = billingInput.value;
       shippingInput.classList.remove('is-invalid');
       shippingInput.classList.add('is-valid');
-      applyNewStyleForError(shippingInput, errorInputShippingForm, false);
+      showErrorOnRegistration(shippingInput, errorInputShippingForm, false);
     } else {
       if (shippingInput.classList.contains('is-invalid')) {
         billingInput.value = shippingInput.value;
         billingInput.classList.remove('is-valid');
         billingInput.classList.add('is-invalid');
-        errorInputBillingForm.textContent = errorInputShippingForm.textContent;
-        applyNewStyleForError(billingInput, errorInputBillingForm, true);
+        showErrorOnRegistration(
+          billingInput,
+          errorInputBillingForm,
+          true,
+          errorInputShippingForm.textContent as string,
+        );
       } else if (billingInput.classList.contains('is-invalid')) {
         shippingInput.value = billingInput.value;
         shippingInput.classList.remove('is-valid');
         shippingInput.classList.add('is-invalid');
-        errorInputShippingForm.textContent = errorInputBillingForm.textContent;
-        applyNewStyleForError(shippingInput, errorInputShippingForm, true);
+        showErrorOnRegistration(
+          shippingInput,
+          errorInputShippingForm,
+          true,
+          errorInputBillingForm.textContent as string,
+        );
       }
     }
   }

@@ -242,6 +242,31 @@ div .error-register {
   margin: 0px;
 }
 
+.modal-backdrop {
+  opacity: 0 !important;
+}
+
+.modal-header, 
+.modal-content {
+  border-color: $checkboxs-buttons-color !important;
+}
+
+.modal-header {
+background-color: #fd9843 !important;
+}
+
+.btn-close {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: red !important;
+}
+
+.modal-dialog {
+  position: fixed !important;
+  right: 25px !important;
+}
+
 @media (hover: hover) {
   .billing-form__button:hover {
     background-color: #feb272;

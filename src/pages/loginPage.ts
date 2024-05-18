@@ -4,7 +4,7 @@ import eyeOffIcon from '../img/eye-off-icon.svg';
 import { validateLoginForm, showOrHidePassword, showError } from '../elements/loginValidation';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
-import request from '../elements/requestsAPI';
+import requestsAPI from '../elements/requestsAPI';
 
 function loginPage(): HTMLElement {
   document.body.classList.add('justify-content-center', 'align-items-center');
@@ -81,8 +81,6 @@ function loginPage(): HTMLElement {
   submitFormBtn.type = 'submit';
   submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
 
-  submitFormBtn.addEventListener('click', () => handleServerLogin(inputsContainer));
-
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
   registrationLink.href = '#';
@@ -107,7 +105,7 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
   if (loginField && passwordField) {
     console.log('try login', loginField.value, passwordField.value);
 
-    request
+    requestsAPI
       .authCustomersLogin(loginField.value, passwordField.value)
       .then((serverAnswer) => {
         if (serverAnswer.isOk) {

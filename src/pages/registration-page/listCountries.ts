@@ -1,5 +1,5 @@
 import createElement from '../../elements/bootstrap/createElement';
-import { applyNewStyleForError } from './validationInputsRegistrationForm';
+import { showErrorOnRegistration } from './validationInputsRegistrationForm';
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
 import { generateValidationInputPostalCode } from './validationInputsShippingAndBillingAddressForms';
 
@@ -32,7 +32,7 @@ export function generateResultsCountries(
 
     foundContry.addEventListener('click', () => {
       inputCountry.value = foundContry.textContent as string;
-      applyNewStyleForError(inputCountry, error, false);
+      showErrorOnRegistration(inputCountry, error, false);
       inputCountry.classList.remove('openList');
       containerResultsCountries.innerHTML = '';
       containerResultsCountries.style.border = '0px';
@@ -53,14 +53,14 @@ export function generateResultsCountries(
       if (isChecked) {
         if (inputCountry === variablesRegPage.inputForCountry) {
           variablesRegPage.inputForCountryBillingForm.value = foundContry.textContent as string;
-          applyNewStyleForError(
+          showErrorOnRegistration(
             variablesRegPage.inputForCountryBillingForm,
             variablesRegPage.errorForInputCountryBillingForm,
             false,
           );
         } else {
           variablesRegPage.inputForCountry.value = foundContry.textContent as string;
-          applyNewStyleForError(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, false);
+          showErrorOnRegistration(variablesRegPage.inputForCountry, variablesRegPage.errorForInputCountry, false);
         }
       }
     });

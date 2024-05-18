@@ -6,6 +6,7 @@ import { generateBillingForm } from '../registration-page/layoutBillingForm';
 import { generateCopyAddress } from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import { Pages } from '../../elements/types';
 import requestsAPI from '../../elements/requestsAPI';
+import createElement from '../../elements/bootstrap/createElement';
 
 function togglePasswordVisibility() {
   const { inputForPassword, iconForInputPassword } = variablesRegPage;
@@ -18,7 +19,6 @@ function togglePasswordVisibility() {
 
 export default function generateRegistrationPage() {
   const {
-    containerForRegistrationForms,
     registrationForm,
     containerForShippingAddressForm,
     buttonForBillingForm,
@@ -64,6 +64,13 @@ export default function generateRegistrationPage() {
   } = variablesRegPage;
 
   document.body.style.height = 'auto';
+
+  const containerForRegistrationForms = createElement(
+    'form',
+    'd-flex justify-content-center align-items-center flex-column needs-validation',
+  );
+  containerForRegistrationForms.setAttribute('autocomplete', 'off');
+  containerForRegistrationForms.setAttribute('novalidate', 'true');
 
   containerForRegistrationForms.append(
     registrationForm,
@@ -214,12 +221,24 @@ export default function generateRegistrationPage() {
         const billingDefAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
         await requestsAPI.setDefBillingAddress(billingDefAddressId, customerId);
       }
+      await localStorage.setItem('registerTrue', 'true');
     } catch (error) {
-      errorForInputEmail.textContent = 'There is already an existing customer with the provided email';
-      validationRegistrationForms.applyNewStyleForError(inputForEmail, errorForInputEmail, true);
+      validationRegistrationForms.showErrorOnRegistration(
+        inputForEmail,
+        errorForInputEmail,
+        true,
+        'There is already an existing customer with the provided email',
+      );
       return;
     }
-    switchPage(Pages.Main);
+    requestsAPI
+      .authCustomersLogin(inputForEmail.value, inputForPassword.value)
+      .then(() => {
+        switchPage(Pages.Main);
+      })
+      .catch((error) => {
+        console.error('Ошибка входа:', error);
+      });
   });
 
   return containerForRegistrationForms;

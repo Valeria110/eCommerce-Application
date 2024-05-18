@@ -1,13 +1,6 @@
 import createElement from '../../elements/bootstrap/createElement';
 import './styleRegistrationPage.scss';
 
-export const containerForRegistrationForms = createElement(
-  'form',
-  'd-flex justify-content-center align-items-center flex-column needs-validation',
-);
-containerForRegistrationForms.setAttribute('autocomplete', 'off');
-containerForRegistrationForms.setAttribute('novalidate', 'true');
-
 export const registrationForm = createElement('div');
 registrationForm.style.marginTop = '110px';
 export const containerForLogoAndTitleRegistrationPage = createElement(
@@ -128,9 +121,26 @@ export const labelForCheckboxDefaultBillingForm = createElement(
 
 export const containerForButtonSignUpAndLogin = createElement('div');
 export const buttonSignUp = createElement('button', 'registration-page__button-signup btn disabled', 'Sign up');
-buttonSignUp.type = 'submit';
 export const buttonToLoginPage = createElement(
   'div',
   'registration-page__button-login',
   'Already have an account? Log in',
 );
+
+export const shadowButton = createElement('button', 'btn btn-primary d-none');
+shadowButton.setAttribute('data-bs-toggle', 'modal');
+shadowButton.setAttribute('data-bs-target', '#1234');
+
+export const containerForModalWindow = createElement('div', 'modal fade');
+containerForModalWindow.id = '1234';
+containerForModalWindow.setAttribute('tabindex', '-1');
+containerForModalWindow.setAttribute('aria-hidden', 'true');
+export const modalWindow = createElement('div', 'modal-dialog');
+export const contentModalWindow = createElement('div', 'modal-content');
+export const headerModalWindow = createElement('div', 'modal-header');
+export const titleModalWindow = createElement('h6', 'modal-title', 'Registration was successful!');
+export const buttonCloseModalWindow = createElement('button', 'btn-close');
+buttonCloseModalWindow.setAttribute('data-bs-dismiss', 'modal');
+export const bodyModalWindow = createElement('div', 'modal-body', '');
+bodyModalWindow.innerHTML =
+  'Thank you for registering at our online bookstore! 🎉🎉🎉<br>Now you can enjoy exclusive offers, discounts, and track your orders online. Start your journey into the world of books right now! 🛍️✨';

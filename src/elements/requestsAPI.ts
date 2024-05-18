@@ -42,7 +42,6 @@ class RequestFetch {
 
     this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
     this.scope = `manage_project:${this.projectKey}`;
-    this.authProjectToken();
 
     const cacheCustomerToken = localStorage.getItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
     this.customerToken = cacheCustomerToken ? cacheCustomerToken : undefined;
