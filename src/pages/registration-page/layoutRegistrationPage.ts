@@ -63,7 +63,7 @@ export default function generateRegistrationPage() {
     containerForRegistrationForms,
   } = variablesRegPage;
 
-  document.body.style.height = 'auto';
+  document.body.classList.add('height-auto');
 
   containerForRegistrationForms.setAttribute('autocomplete', 'off');
   containerForRegistrationForms.setAttribute('novalidate', 'true');
@@ -143,7 +143,6 @@ export default function generateRegistrationPage() {
   inputForBirthDate.addEventListener('click', validationRegistrationForms.replaceInputType);
   buttonToLoginPage.addEventListener('click', () => {
     switchPage(Pages.LogIn);
-    document.body.style.height = '';
   });
   containerForRegistrationForms.removeEventListener('submit', handleFormSubmit);
   containerForRegistrationForms.addEventListener('submit', handleFormSubmit);
@@ -153,7 +152,6 @@ export default function generateRegistrationPage() {
 
 async function handleFormSubmit(event: SubmitEvent) {
   event.preventDefault();
-  document.body.style.height = '';
   try {
     const customerInfo = await requestsAPI.registerCustomer(
       variablesRegPage.inputForEmail.value,
