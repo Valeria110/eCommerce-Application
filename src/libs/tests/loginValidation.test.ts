@@ -8,10 +8,10 @@ describe('validateEmail', () => {
   it('should show error message for empty email value', () => {
     const emailInput = document!.createElement('input');
     emailInput.classList.add('login-form__email-input');
-
-    validateEmail('');
+    emailInput.value = '';
 
     validateEmail(emailInput.value);
+
     expect(showError).toHaveBeenCalledWith(emailInput, 'This field is required');
   });
 });
