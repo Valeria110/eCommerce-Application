@@ -1,5 +1,6 @@
+import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
+import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { AppEvents } from './types';
-
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -42,7 +43,6 @@ class RequestFetch {
 
     this.base64Auth = btoa(`${this.projectClientID}:${this.projectClientSecret}`);
     this.scope = `manage_project:${this.projectKey}`;
-    this.authProjectToken();
 
     const cacheCustomerToken = localStorage.getItem(LOCAL_STORAGE_CUSTOMER_TOKEN);
     this.customerToken = cacheCustomerToken ? cacheCustomerToken : undefined;
@@ -230,6 +230,191 @@ class RequestFetch {
         console.error(`Error HTTP: ${response.status}`);
       }
     }
+  }
+
+  async registerCustomer(email: string, firstName: string, lastName: string, password: string, dateOfBirth: string) {
+    const url = `${this.host}/${this.projectKey}/me/signup`;
+    const bodyRequest = {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+      dateOfBirth: dateOfBirth,
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    return response.json();
+  }
+
+  async addAddress(
+    id: string,
+    firstName: string,
+    lastName: string,
+    street: string,
+    postalCode: string,
+    city: string,
+    country: string,
+    email: string,
+  ) {
+    const streetObj = splitStreetNameAndNumber(street);
+    const url = `${this.host}/${this.projectKey}/customers/${id}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'addAddress',
+          address: {
+            title: 'My Address',
+            firstName: firstName,
+            lastName: lastName,
+            streetName: streetObj.name,
+            streetNumber: streetObj.number,
+            postalCode: postalCode,
+            city: city,
+            country: splitCountry(country),
+            email: email,
+          },
+        },
+      ],
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setShippingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'addShippingAddressId',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setBillingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'addBillingAddressId',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setDefShippingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultShippingAddress',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async setDefBillingAddress(idAddress: string, idCustomer: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${idCustomer}`;
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultBillingAddress',
+          addressId: idAddress,
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const newVersion = await response.json();
+    localStorage.setItem('version', newVersion.version);
+    return newVersion;
+  }
+
+  async getCustomerAddressData(id: string, num: number) {
+    const url = `${this.host}/${this.projectKey}/customers/${id}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+    return result.addresses[num].id;
   }
 }
 
