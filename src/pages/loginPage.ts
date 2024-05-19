@@ -103,8 +103,6 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
   const passwordField = inputsContainer.querySelector('.login-form__password-input') as HTMLInputElement;
 
   if (loginField && passwordField) {
-    console.log('try login', loginField.value, passwordField.value);
-
     requestsAPI
       .authCustomersLogin(loginField.value, passwordField.value)
       .then((serverAnswer) => {
