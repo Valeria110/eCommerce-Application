@@ -4,7 +4,7 @@ import eyeOffIcon from '../img/eye-off-icon.svg';
 import { validateLoginForm, showOrHidePassword, showError } from '../elements/loginValidation';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
-import request from '../elements/requestsAPI';
+import requestsAPI from '../elements/requestsAPI';
 
 function loginPage(): HTMLElement {
   document.body.classList.add('justify-content-center', 'align-items-center');
@@ -103,7 +103,7 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
   const passwordField = inputsContainer.querySelector('.login-form__password-input') as HTMLInputElement;
 
   if (loginField && passwordField) {
-    request
+    requestsAPI
       .authCustomersLogin(loginField.value, passwordField.value)
       .then((serverAnswer) => {
         if (serverAnswer.isOk) {

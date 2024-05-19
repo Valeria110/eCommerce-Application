@@ -79,7 +79,7 @@ function validatePassword(passwordValue: string): void {
   }
 }
 
-function isContainLeadingTrailingWhitespace(str: string) {
+export function isContainLeadingTrailingWhitespace(str: string) {
   return str !== str.trim();
 }
 

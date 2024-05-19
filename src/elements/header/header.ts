@@ -57,9 +57,9 @@ export default function header(): HTMLElement {
 }
 
 function createRightPanel() {
+  const logoutBtn = Bootstrap.createButton('Log out', 'btn-orange border-0 btn-style-default w-50 mx-1');
   const userCard = createUserCard();
   const rightPanel = Bootstrap.createElement('div', 'rightPanel p-3');
-  const logoutBtn = Bootstrap.createButton('Log out', 'btn-orange border-0 btn-style-default w-50 mx-1');
   const exitImg = Bootstrap.createElement('img', 'ms-2');
   exitImg.src = exitIconSrc as string;
   logoutBtn.append(exitImg);
@@ -159,6 +159,7 @@ function createButtonImg(imgSrc: string, classNameBtn = '') {
 }
 
 function clickDefaultActionBtn(chosenActionAction: UserAction) {
+  localStorage.setItem('version', '1');
   if (chosenActionAction === UserAction.LogIn) {
     switchPage(Pages.LogIn);
   } else if (chosenActionAction === UserAction.SignUp) {

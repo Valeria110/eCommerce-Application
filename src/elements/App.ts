@@ -1,12 +1,13 @@
+import generateRegistrationPage from '../pages/registration-page/layoutRegistrationPage';
 import { error404Page } from '../pages/error404Page';
 import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
-import signUpPage from '../pages/signUpPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
 
 export default class App {
   start(): void {
+    localStorage.setItem('version', '1');
     handleLocation();
   }
 }
@@ -21,7 +22,7 @@ document.addEventListener(AppEvents.switchPage, (event) => {
       changePageRoute(Pages.LogIn);
       break;
     case Pages.SignUp:
-      document.body.append(signUpPage());
+      document.body.append(generateRegistrationPage());
       changePageRoute(Pages.SignUp);
       break;
     case Pages.Main:

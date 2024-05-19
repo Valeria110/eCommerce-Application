@@ -15,7 +15,11 @@ function changePageRoute(page: Pages) {
       history.pushState({ state: 'main_page' }, 'Main Page', '/main');
       break;
     case Pages.SignUp:
-      history.pushState({ state: 'sign_up_page' }, 'Sign Up Page', '/sign_up');
+      if (isUserLogined()) {
+        history.pushState({ state: 'main_page' }, 'Main Page', '/main');
+      } else {
+        history.pushState({ state: 'sign_up_page' }, 'Sign Up Page', '/sign_up');
+      }
       break;
     case Pages.Error404:
       history.pushState({ state: 'error_404_page' }, 'Error 404 Page', '/error_404');
@@ -45,7 +49,11 @@ function handleLocation() {
         switchPage(Pages.Main);
         break;
       case '/sign_up':
-        switchPage(Pages.SignUp);
+        if (isUserLogined()) {
+          switchPage(Pages.Main);
+        } else {
+          switchPage(Pages.SignUp);
+        }
         break;
     }
   }
