@@ -23,7 +23,7 @@ export function splitStreetNameAndNumber(street: string): { name: string; number
   return { name, number };
 }
 
-export function generateValidationInputStreet(inputStreet: HTMLInputElement, error: HTMLDivElement) {
+export function validateInputStreet(inputStreet: HTMLInputElement, error: HTMLDivElement) {
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
   const isEmpty = inputStreet.value === '';
 
@@ -47,7 +47,7 @@ export function generateValidationInputStreet(inputStreet: HTMLInputElement, err
   }
 }
 
-export function generateValidationInputCity(inputCity: HTMLInputElement, error: HTMLDivElement) {
+export function validateInputCity(inputCity: HTMLInputElement, error: HTMLDivElement) {
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
   const isEmpty = inputCity.value === '';
   const containsNumbersOrSpecialCharacters =
@@ -81,7 +81,7 @@ export function generateValidationInputCity(inputCity: HTMLInputElement, error: 
   }
 }
 
-export function genarateValidationInputCountry(inputCountry: HTMLInputElement, error: HTMLDivElement) {
+export function validateInputCountry(inputCountry: HTMLInputElement, error: HTMLDivElement) {
   const isEmpty = inputCountry.value === '';
   const countries = Object.keys(ALL_CONTRIES);
   let resultsCountries: string[] = [];
@@ -98,9 +98,7 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
     });
   }
 
-  if (resultsCountries.length === 0 && !isEmpty) {
-    showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
-  } else {
+  if (resultsCountries.length === 0 || !isEmpty) {
     showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
   }
 
@@ -115,7 +113,7 @@ export function genarateValidationInputCountry(inputCountry: HTMLInputElement, e
   generateResultsCountries(resultsCountries, inputCountry, container, errorContainer);
 }
 
-export function generateValidationInputPostalCode(
+export function validateInputPostalCode(
   inputCountry: HTMLInputElement,
   inputPostalCode: HTMLInputElement,
   error: HTMLDivElement,
@@ -211,7 +209,7 @@ function copyFieldValue(
   }
 }
 
-export function generateCopyAddress() {
+export function copyAddress() {
   generateBillingForm();
   const isChecked = variablesRegPage.checkboxSameAddress.checked;
 

@@ -48,19 +48,19 @@ export function generateBillingForm() {
   containerForCheckboxDefaultBillingForm.append(checkboxDefaultBillingForm, labelForCheckboxDefaultBillingForm);
 
   inputForStreetBillingForm.addEventListener('input', () =>
-    validationRegPage.generateValidationInputStreet(inputForStreetBillingForm, errorForInputStreetBillingForm),
+    validationRegPage.validateInputStreet(inputForStreetBillingForm, errorForInputStreetBillingForm),
   );
 
   inputForCountryBillingForm.addEventListener('input', () =>
-    validationRegPage.genarateValidationInputCountry(inputForCountryBillingForm, errorForInputCountryBillingForm),
+    validationRegPage.validateInputCountry(inputForCountryBillingForm, errorForInputCountryBillingForm),
   );
 
   inputForCityBillingForm.addEventListener('input', () =>
-    validationRegPage.generateValidationInputCity(inputForCityBillingForm, errorForInputCityBillingForm),
+    validationRegPage.validateInputCity(inputForCityBillingForm, errorForInputCityBillingForm),
   );
 
   inputForPostalCodeBillingForm.addEventListener('input', () =>
-    validationRegPage.generateValidationInputPostalCode(
+    validationRegPage.validateInputPostalCode(
       inputForCountryBillingForm,
       inputForPostalCodeBillingForm,
       errorForInputPostalCodeBillingForm,

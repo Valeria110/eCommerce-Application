@@ -32,7 +32,7 @@ export function showErrorOnRegistration(
   activateSubmitButton();
 }
 
-export function generateValidationInputFirstName() {
+export function validateInputFirstName() {
   if (variablesRegPage.inputForFirstName.value === '') {
     showErrorOnRegistration(
       variablesRegPage.inputForFirstName,
@@ -55,7 +55,7 @@ export function generateValidationInputFirstName() {
   }
 }
 
-export function generateValidationInputLastName() {
+export function validateInputLastName() {
   if (variablesRegPage.inputForLastName.value === '') {
     showErrorOnRegistration(
       variablesRegPage.inputForLastName,
@@ -78,7 +78,7 @@ export function generateValidationInputLastName() {
   }
 }
 
-export function generateValidationInputEmail() {
+export function validateInputEmail() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (variablesRegPage.inputForEmail.value === '') {
     showErrorOnRegistration(
@@ -116,7 +116,7 @@ export function generateValidationInputEmail() {
   }
 }
 
-function generateValidationBirthDate() {
+function validateBirthDate() {
   const selectedDate = new Date(variablesRegPage.inputForBirthDate.value);
   const currentDate = new Date();
   const ageDifference = currentDate.getFullYear() - selectedDate.getFullYear();
@@ -154,10 +154,10 @@ function generateValidationBirthDate() {
 export function replaceInputType() {
   variablesRegPage.inputForBirthDate.type = 'date';
   variablesRegPage.inputForBirthDate.removeEventListener('click', replaceInputType);
-  variablesRegPage.inputForBirthDate.addEventListener('input', generateValidationBirthDate);
+  variablesRegPage.inputForBirthDate.addEventListener('input', validateBirthDate);
 }
 
-export function generateValidationInputPassword() {
+export function validateInputPassword() {
   if (variablesRegPage.inputForPassword.value === '') {
     variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
     showErrorOnRegistration(
@@ -165,6 +165,14 @@ export function generateValidationInputPassword() {
       variablesRegPage.errorForInputPassword,
       true,
       'This field is required',
+    );
+  } else if (variablesRegPage.inputForPassword.value.includes(' ')) {
+    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+    showErrorOnRegistration(
+      variablesRegPage.inputForPassword,
+      variablesRegPage.errorForInputPassword,
+      true,
+      'Password must not contain whitespace',
     );
   } else if (!ALL_NUMBERS.test(variablesRegPage.inputForPassword.value)) {
     variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
@@ -224,6 +232,10 @@ export function activateSubmitButton() {
   }
 
   if (document.querySelectorAll('.is-invalid').length > LENGTH_INVALID_INPUTS) {
+    variablesRegPage.buttonSignUp.classList.add('disabled');
+  }
+
+  if (document.querySelectorAll('.is-valid').length === 0) {
     variablesRegPage.buttonSignUp.classList.add('disabled');
   }
 }

@@ -1,6 +1,11 @@
 import createElement from '../../elements/bootstrap/createElement';
 import './styleRegistrationPage.scss';
 
+export const containerForRegistrationForms = createElement(
+  'form',
+  'd-flex justify-content-center align-items-center flex-column needs-validation',
+);
+
 export const registrationForm = createElement('div');
 registrationForm.style.marginTop = '110px';
 export const containerForLogoAndTitleRegistrationPage = createElement(
@@ -16,28 +21,28 @@ export const containerForInputsRegistrationForm = createElement(
   'div',
   'd-flex justify-content-center align-items-center flex-column',
 );
-export const inputForFirstName = createElement('input', 'form-control registration-form__input');
+export const inputForFirstName = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForFirstName.placeholder = 'First name';
 inputForFirstName.required = true;
 export const errorForInputFirstName = createElement('div', 'error-register text-danger');
 
-export const inputForLastName = createElement('input', 'form-control registration-form__input');
+export const inputForLastName = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForLastName.placeholder = 'Last name';
 inputForLastName.required = true;
 export const errorForInputLastName = createElement('div', 'error-register text-danger');
 
-export const inputForEmail = createElement('input', 'registration-form__input form-control');
+export const inputForEmail = createElement('input', 'registration-form__input form-control reset-inputs');
 inputForEmail.placeholder = 'Email';
 inputForEmail.type = 'email';
 inputForEmail.required = true;
 export const errorForInputEmail = createElement('div', 'error-register text-danger');
 
-export const containerForInputBirth = createElement('div', 'registration-form__input-content');
+export const containerForInputBirth = createElement('div', 'registration-form__input-content reset-inputs');
 export const inputForBirthDate = createElement('input', 'registration-form__input-birth form-control');
 inputForBirthDate.placeholder = 'Birth date';
 export const errorForInputBirth = createElement('div', 'error-register text-danger');
 
-export const containerForInputPassword = createElement('div', 'registration-form__input-content');
+export const containerForInputPassword = createElement('div', 'registration-form__input-content reset-inputs');
 export const inputForPassword = createElement('input', 'registration-form__input-password form-control');
 inputForPassword.placeholder = 'Password';
 inputForPassword.type = 'password';
@@ -49,20 +54,20 @@ export const titleShippingAddressForm = createElement('h6', 'shipping-form__titl
 export const shippingAddressForm = createElement('div', 'd-flex justify-content-center align-items-center flex-column');
 
 export const containerForInputCountry = createElement('div', 'shipping-form__container-list');
-export const inputForCountry = createElement('input', 'form-control registration-form__input');
+export const inputForCountry = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForCountry.placeholder = 'Country*';
 export const containerForResultsCountries = createElement('div', 'shipping-form__container-list_results');
 export const errorForInputCountry = createElement('div', 'error-register text-danger');
 
-export const inputForCity = createElement('input', 'form-control registration-form__input');
+export const inputForCity = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForCity.placeholder = 'City*';
 export const errorForInputCity = createElement('div', 'error-register text-danger');
 
-export const inputForStreet = createElement('input', 'form-control registration-form__input');
+export const inputForStreet = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForStreet.placeholder = 'Street*';
 export const errorForInputStreet = createElement('div', 'error-register text-danger');
 
-export const inputForPostalCode = createElement('input', 'form-control registration-form__input');
+export const inputForPostalCode = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForPostalCode.placeholder = 'Postal code*';
 export const errorForInputPostalCode = createElement('div', 'error-register text-danger');
 
@@ -92,20 +97,23 @@ export const titleBillingForm = createElement('h6', 'billing-form__title', 'Bill
 export const billingAddressForm = createElement('div', 'd-flex justify-content-center align-items-center flex-column');
 
 export const containerForInputCountryBillingForm = createElement('div', 'shipping-form__container-list');
-export const inputForCountryBillingForm = createElement('input', 'form-control registration-form__input');
+export const inputForCountryBillingForm = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForCountryBillingForm.placeholder = 'Country*';
 export const containerResultsCountriesBillingForm = createElement('div', 'shipping-form__container-list_results');
 export const errorForInputCountryBillingForm = createElement('div', 'error-register text-danger');
 
-export const inputForCityBillingForm = createElement('input', 'form-control registration-form__input');
+export const inputForCityBillingForm = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForCityBillingForm.placeholder = 'City*';
 export const errorForInputCityBillingForm = createElement('div', 'error-register text-danger');
 
-export const inputForStreetBillingForm = createElement('input', 'form-control registration-form__input');
+export const inputForStreetBillingForm = createElement('input', 'form-control registration-form__input reset-inputs');
 inputForStreetBillingForm.placeholder = 'Street*';
 export const errorForInputStreetBillingForm = createElement('div', 'error-register text-danger');
 
-export const inputForPostalCodeBillingForm = createElement('input', 'form-control registration-form__input');
+export const inputForPostalCodeBillingForm = createElement(
+  'input',
+  'form-control registration-form__input reset-inputs',
+);
 inputForPostalCodeBillingForm.placeholder = 'Postal code*';
 export const errorForInputPostalCodeBillingForm = createElement('div', 'error-register text-danger');
 

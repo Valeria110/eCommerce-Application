@@ -1,7 +1,7 @@
 import createElement from '../../elements/bootstrap/createElement';
 import { showErrorOnRegistration } from './validationInputsRegistrationForm';
 import * as variablesRegPage from '../registration-page/variablesForRegistrationPage';
-import { generateValidationInputPostalCode } from './validationInputsShippingAndBillingAddressForms';
+import { validateInputPostalCode } from './validationInputsShippingAndBillingAddressForms';
 
 function clearResultsAndStyles(inputCountry: HTMLInputElement, containerResultsCountries: HTMLDivElement) {
   inputCountry.classList.remove('openList', 'is-valid');
@@ -37,13 +37,13 @@ export function generateResultsCountries(
       containerResultsCountries.innerHTML = '';
       containerResultsCountries.style.border = '0px';
       if (inputCountry === variablesRegPage.inputForCountry) {
-        generateValidationInputPostalCode(
+        validateInputPostalCode(
           variablesRegPage.inputForCountry,
           variablesRegPage.inputForPostalCode,
           variablesRegPage.errorForInputPostalCode,
         );
       } else {
-        generateValidationInputPostalCode(
+        validateInputPostalCode(
           variablesRegPage.inputForCountryBillingForm,
           variablesRegPage.inputForPostalCodeBillingForm,
           variablesRegPage.errorForInputPostalCodeBillingForm,

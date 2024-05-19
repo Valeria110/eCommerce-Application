@@ -1,3 +1,4 @@
+import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { AppEvents } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
@@ -277,7 +278,7 @@ class RequestFetch {
             streetNumber: streetObj.number,
             postalCode: postalCode,
             city: city,
-            country: country.split(' ')[country.split(' ').length - 1].replace('(', '').replace(')', ''),
+            country: splitCountry(country),
             email: email,
           },
         },

@@ -17,6 +17,8 @@ enum UserAction {
   LogOut = 'Log out',
 }
 
+let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
+
 export default function header(): HTMLElement {
   const headerElement = Bootstrap.createElement('nav', 'header navbar');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid px-0');
@@ -54,10 +56,8 @@ export default function header(): HTMLElement {
   return headerElement;
 }
 
-export const logoutBtn = Bootstrap.createButton('Log out', 'btn-orange border-0 btn-style-default w-50 mx-1');
-
 function createRightPanel() {
-  let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
+  const logoutBtn = Bootstrap.createButton('Log out', 'btn-orange border-0 btn-style-default w-50 mx-1');
   const userCard = createUserCard();
   const rightPanel = Bootstrap.createElement('div', 'rightPanel p-3');
   const exitImg = Bootstrap.createElement('img', 'ms-2');
@@ -100,7 +100,6 @@ function createRightPanel() {
 }
 
 function createActionContainer() {
-  let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const optionsWithoutLogin = [UserAction.LogIn, UserAction.SignUp].map((text) =>
     Bootstrap.createNavItem(text, 'dropdown-item', false, false, 'dropdown-item-style-default'),
   );
@@ -160,6 +159,7 @@ function createButtonImg(imgSrc: string, classNameBtn = '') {
 }
 
 function clickDefaultActionBtn(chosenActionAction: UserAction) {
+  localStorage.setItem('version', '1');
   if (chosenActionAction === UserAction.LogIn) {
     switchPage(Pages.LogIn);
   } else if (chosenActionAction === UserAction.SignUp) {
