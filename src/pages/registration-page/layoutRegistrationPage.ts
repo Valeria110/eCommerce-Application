@@ -232,7 +232,7 @@ async function handleFormSubmit(event: SubmitEvent) {
     );
     return;
   }
-  requestsAPI
+  await requestsAPI
     .authCustomersLogin(variablesRegPage.inputForEmail.value, variablesRegPage.inputForPassword.value)
     .then(() => {
       switchPage(Pages.Main);
