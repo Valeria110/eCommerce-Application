@@ -203,6 +203,16 @@ div .registration-page__button-signup {
   cursor: pointer;
 }
 
+.registration-page__button-main {
+  color: #ca6510;
+  font-family: $font-family-page;
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+}
+
 div .error-register {
   width: 306px;
   font-size: 16px;

@@ -25,6 +25,7 @@ export default function generateRegistrationPage() {
     containerForButtonSignUpAndLogin,
     buttonSignUp,
     buttonToLoginPage,
+    buttonToMainPage,
     containerForLogoAndTitleRegistrationPage,
     containerForInputsRegistrationForm,
     logoRegistrationPage,
@@ -109,7 +110,7 @@ export default function generateRegistrationPage() {
   containerForInputCountry.append(inputForCountry, containerForResultsCountries, errorForInputCountry);
   containerForCheckboxSameAddress.append(checkboxSameAddress, labelForCheckboxSameAddress);
   containerForCheckboxDefault.append(checkboxDefault, labelForCheckboxDefault);
-  containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToLoginPage);
+  containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToMainPage, buttonToLoginPage);
 
   inputForFirstName.addEventListener('input', validationRegistrationForms.validateInputFirstName);
   inputForLastName.addEventListener('input', validationRegistrationForms.validateInputLastName);
@@ -143,6 +144,9 @@ export default function generateRegistrationPage() {
   inputForBirthDate.addEventListener('click', validationRegistrationForms.replaceInputType);
   buttonToLoginPage.addEventListener('click', () => {
     switchPage(Pages.LogIn);
+  });
+  buttonToMainPage.addEventListener('click', () => {
+    switchPage(Pages.Main);
   });
   containerForRegistrationForms.removeEventListener('submit', handleFormSubmit);
   containerForRegistrationForms.addEventListener('submit', handleFormSubmit);
