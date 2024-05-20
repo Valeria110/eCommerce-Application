@@ -2,6 +2,10 @@ $placeholder-color: #adb5bd;
 $font-family-page: 'Inter', sans-serif;
 $checkboxs-buttons-color: #fd7e14;
 
+.height-auto {
+  height: auto;
+}
+
 form .registration-form__input,
 .registration-form__input-content,
 form .registration-form__input-birth,
@@ -199,6 +203,16 @@ div .registration-page__button-signup {
   cursor: pointer;
 }
 
+.registration-page__button-main {
+  color: #ca6510;
+  font-family: $font-family-page;
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+}
+
 div .error-register {
   width: 306px;
   font-size: 16px;
@@ -246,13 +260,13 @@ div .error-register {
   opacity: 0 !important;
 }
 
-.modal-header, 
+.modal-header,
 .modal-content {
   border-color: $checkboxs-buttons-color !important;
 }
 
 .modal-header {
-background-color: #fd9843 !important;
+  background-color: #fd9843 !important;
 }
 
 .btn-close {

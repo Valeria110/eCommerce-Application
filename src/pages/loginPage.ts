@@ -5,6 +5,7 @@ import { validateLoginForm, showOrHidePassword, showError } from '../elements/lo
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
 import requestsAPI from '../elements/requestsAPI';
+import Bootstrap from '../elements/bootstrap/Bootstrap';
 
 function loginPage(): HTMLElement {
   document.body.classList.add('justify-content-center', 'align-items-center');
@@ -88,12 +89,16 @@ function loginPage(): HTMLElement {
   submitFormBtn.textContent = 'Log in';
   registrationLink.addEventListener('click', () => switchPage(Pages.SignUp));
 
-  main.appendChild(loginFormWrapper);
-  loginFormWrapper.appendChild(loginForm);
-  loginForm.appendChild(loginFormHeader);
-  loginForm.appendChild(inputsContainer);
-  loginForm.appendChild(submitFormBtn);
-  loginFormWrapper.appendChild(registrationLink);
+  const mainLink = Bootstrap.createElement('a', 'login-form-wrapper__main-link', 'Continue without logging in');
+  mainLink.href = '#';
+  mainLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    switchPage(Pages.Main);
+  });
+
+  loginForm.append(loginFormHeader, inputsContainer, submitFormBtn);
+  loginFormWrapper.append(loginForm, registrationLink, mainLink);
+  main.append(loginFormWrapper);
 
   return main;
 }

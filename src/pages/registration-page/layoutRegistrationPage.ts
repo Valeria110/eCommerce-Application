@@ -25,6 +25,7 @@ export default function generateRegistrationPage() {
     containerForButtonSignUpAndLogin,
     buttonSignUp,
     buttonToLoginPage,
+    buttonToMainPage,
     containerForLogoAndTitleRegistrationPage,
     containerForInputsRegistrationForm,
     logoRegistrationPage,
@@ -63,7 +64,7 @@ export default function generateRegistrationPage() {
     containerForRegistrationForms,
   } = variablesRegPage;
 
-  document.body.style.height = 'auto';
+  document.body.classList.add('height-auto');
 
   containerForRegistrationForms.setAttribute('autocomplete', 'off');
   containerForRegistrationForms.setAttribute('novalidate', 'true');
@@ -109,7 +110,7 @@ export default function generateRegistrationPage() {
   containerForInputCountry.append(inputForCountry, containerForResultsCountries, errorForInputCountry);
   containerForCheckboxSameAddress.append(checkboxSameAddress, labelForCheckboxSameAddress);
   containerForCheckboxDefault.append(checkboxDefault, labelForCheckboxDefault);
-  containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToLoginPage);
+  containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToMainPage, buttonToLoginPage);
 
   inputForFirstName.addEventListener('input', validationRegistrationForms.validateInputFirstName);
   inputForLastName.addEventListener('input', validationRegistrationForms.validateInputLastName);
@@ -143,7 +144,9 @@ export default function generateRegistrationPage() {
   inputForBirthDate.addEventListener('click', validationRegistrationForms.replaceInputType);
   buttonToLoginPage.addEventListener('click', () => {
     switchPage(Pages.LogIn);
-    document.body.style.height = '';
+  });
+  buttonToMainPage.addEventListener('click', () => {
+    switchPage(Pages.Main);
   });
   containerForRegistrationForms.removeEventListener('submit', handleFormSubmit);
   containerForRegistrationForms.addEventListener('submit', handleFormSubmit);
@@ -153,7 +156,6 @@ export default function generateRegistrationPage() {
 
 async function handleFormSubmit(event: SubmitEvent) {
   event.preventDefault();
-  document.body.style.height = '';
   try {
     const customerInfo = await requestsAPI.registerCustomer(
       variablesRegPage.inputForEmail.value,
@@ -232,7 +234,7 @@ async function handleFormSubmit(event: SubmitEvent) {
     );
     return;
   }
-  requestsAPI
+  await requestsAPI
     .authCustomersLogin(variablesRegPage.inputForEmail.value, variablesRegPage.inputForPassword.value)
     .then(() => {
       switchPage(Pages.Main);
