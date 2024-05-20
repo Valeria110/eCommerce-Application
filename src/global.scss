@@ -1,1 +1,18 @@
 @import '~bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  padding: 10px;
+  max-width: 100%;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+}

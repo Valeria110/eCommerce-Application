@@ -4,12 +4,26 @@
   "description": "",
   "main": "webpack.base.config.js",
   "scripts": {
-    "start": "webpack serve --open --mode development --config ./webpack.config.js",
-    "build": "webpack --mode production --config ./webpack.config.js",
+    "start": "webpack serve --open --mode development --config ./webpack.config.js --env mode=dev",
+    "build": "webpack --mode production --config ./webpack.config.js --env mode=prod",
     "test": "jest",
+    "test:detail": "jest --verbose",
+    "test:coverage": "jest --coverage",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
     "ci:format": "prettier --check ."
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts,jsx,tsx}",
+      "!**/node_modules/**"
+    ],
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(scss)$": "<rootDir>/src/mocks/styleMock.ts",
+      "\\.(svg)$": "<rootDir>/src/mocks/svgMock.ts",
+      "\\.(png)$": "<rootDir>/src/mocks/svgMock.ts"
+    }
   },
   "repository": {
     "type": "git",
@@ -37,6 +51,7 @@
     "html-webpack-plugin": "^5.6.0",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "3.2.5",
     "sass": "^1.76.0",
     "sass-loader": "^14.2.1",
@@ -51,6 +66,8 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "^3.3.2"
   }
 }

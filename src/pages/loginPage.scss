@@ -1,0 +1,85 @@
+@import '../utils/utils.scss';
+
+$submit-btn-bgc: #fd7e14;
+$submit-btn-bgc-hover: rgba(253, 126, 20, 0.6);
+$submit-btn-bgc-active: #df741b;
+$registration-link-color: #ca6510;
+$placeholder-color: #adb5bd;
+
+.login-page-main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  .login-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 32px;
+    width: 306px;
+    height: auto;
+
+    .main__login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      width: 100%;
+
+      .login-form__header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        .login-form__title {
+          font-size: 32px;
+          font-weight: 600;
+        }
+      }
+
+      .login-form__inputs-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .input-wrapper {
+          position: relative;
+
+          .login-form__input {
+            width: 100%;
+            height: 52px;
+
+            &::placeholder {
+              color: $placeholder-color;
+            }
+          }
+
+          .error {
+            margin-top: 8px;
+            text-align: left;
+          }
+
+          .login-form__show-password-btn {
+            position: absolute;
+            top: 13px;
+            right: 35px;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .login-form__submit-btn {
+        @include btn-styles;
+      }
+    }
+
+    .login-form-wrapper__registration-link,
+    .login-form-wrapper__main-link {
+      display: inline-block;
+      margin-right: auto;
+      color: $registration-link-color;
+    }
+  }
+}

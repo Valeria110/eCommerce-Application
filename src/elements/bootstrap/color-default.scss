@@ -1,0 +1,41 @@
+@import '~bootstrap/scss/bootstrap';
+button.btn.btn-orange {
+  background-color: $orange-500;
+  color: white;
+
+  &:hover {
+    background-color: $orange-600;
+  }
+
+  &:active {
+    background-color: $orange-700;
+    color: white;
+  }
+}
+
+button.btn.btn-gray {
+  background: rgba(200, 200, 200, 0.15);
+  color: rgba(0, 0, 0, 0.4);
+
+  &:hover {
+    background: rgba(200, 200, 200, 0.31);
+  }
+
+  &:active {
+    background: rgba(200, 200, 200, 0.39);
+  }
+}
+
+.dropdown-orange {
+  .dropdown-item {
+    padding: 10px 16px 10px 16px;
+    &.active,
+    &:active {
+      background-color: $orange-600;
+    }
+  }
+}
+
+a.a-orange-300 {
+  color: $orange-300;
+}
