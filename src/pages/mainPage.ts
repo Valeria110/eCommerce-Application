@@ -1,5 +1,6 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import header from '../elements/header/header';
+import { generateCatalogPage } from './catalog-page/layoutCatalogPage';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -25,5 +26,7 @@ export default function mainPage() {
       localStorage.setItem('registerTrue', '');
     }, 100);
   }
+
+  div.append(generateCatalogPage());
   return div;
 }

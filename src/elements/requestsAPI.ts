@@ -203,25 +203,6 @@ class RequestFetch {
     }
   }
 
-  async getProducts() {
-    // use customer token for this
-    try {
-      const response = await fetch(`${this.host}/${this.projectKey}/products`, {
-        headers: {
-          Authorization: `Bearer ${this.customerToken}`,
-        },
-      });
-
-      await this.checkResponse(response);
-
-      const obj = await response.json();
-      console.log(obj.results);
-      return response.ok;
-    } catch (error) {
-      return false;
-    }
-  }
-
   private async checkResponse(response: Response) {
     if (!response.ok) {
       if (response.status === 401) {

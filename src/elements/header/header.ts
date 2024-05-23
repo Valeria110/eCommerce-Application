@@ -145,7 +145,7 @@ function createLinksMenu(className = '', classNameLi = 'mx-1') {
   const collapseDiv = Bootstrap.createElement('div', className);
   const ul = Bootstrap.createElement('ul', 'navbar-nav');
   ul.append(Bootstrap.createNavItem('Main', 'nav-item', true, false, classNameLi));
-  ul.append(Bootstrap.createNavItem('Catalog', 'nav-item', false, true, classNameLi));
+  ul.append(Bootstrap.createNavItem('Catalog', 'nav-item', false, false, classNameLi));
   ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, classNameLi));
   collapseDiv.append(ul);
   return collapseDiv;
