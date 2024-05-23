@@ -203,6 +203,35 @@ class RequestFetch {
     }
   }
 
+  async getProducts() {
+    const limit = 100;
+    const url = `${this.host}/${this.projectKey}/products?limit=${limit}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${await this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const resultProducts = response.json();
+    return resultProducts;
+  }
+
+  async getCategories() {
+    const url = `${this.host}/${this.projectKey}/categories`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${await this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const resultCategories = response.json();
+    return resultCategories;
+  }
+
   private async checkResponse(response: Response) {
     if (!response.ok) {
       if (response.status === 401) {

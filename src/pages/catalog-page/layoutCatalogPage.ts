@@ -1,3 +1,4 @@
+import requestsAPI from '../../elements/requestsAPI';
 import * as variablesCatalogPage from '../catalog-page/variablesForCatalogPage';
 
 export function generateCatalogPage() {
@@ -50,4 +51,17 @@ export function generateCatalogPage() {
   );
 
   return variablesCatalogPage.containerForCatalogPage;
+}
+
+export async function getBooks() {
+  const resultCategories = await requestsAPI.getCategories();
+  document.querySelectorAll('.list-categories__item').forEach((item) => {
+    resultCategories.results.forEach((categories: { name: string; id: string }) => {
+      if (Object.values(categories.name).includes(item.textContent as string)) {
+        item.id = categories.id;
+      }
+    });
+  });
+  const resultBooks = await requestsAPI.getProducts();
+  console.log(resultBooks);
 }
