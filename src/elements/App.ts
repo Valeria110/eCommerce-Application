@@ -16,6 +16,10 @@ document.addEventListener(AppEvents.switchPage, (event) => {
   const newPage = (event as CustomEvent).detail;
   document.body.innerHTML = '';
   document.body.className = '';
+  document.body.style.overflow = 'auto';
+  document.body.style.padding = '0';
+  document.body.removeAttribute('data-bs-overflow');
+  document.body.removeAttribute('data-bs-padding-right');
   switch (newPage) {
     case Pages.LogIn:
       document.body.append(loginPage());
