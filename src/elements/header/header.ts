@@ -25,7 +25,7 @@ export default function header(): HTMLElement {
   const headerContainer = Bootstrap.createElement('div', 'container-fluid px-0');
 
   const brand = Bootstrap.createElement('a', 'navbar-brand header__brand', 'LitHub');
-  brand.href = '#';
+  brand.addEventListener('click', () => switchPage(Pages.Main));
   const logo = Bootstrap.createElement('img', 'd-inline-block align-top');
   logo.src = logoSrc as string;
   brand.prepend(logo);

@@ -16,6 +16,8 @@ document.addEventListener(AppEvents.switchPage, (event) => {
   const newPage = (event as CustomEvent).detail;
   document.body.innerHTML = '';
   document.body.className = '';
+
+  // TODO: simplefy it
   document.body.style.overflow = 'auto';
   document.body.style.padding = '0';
   document.body.removeAttribute('data-bs-overflow');
