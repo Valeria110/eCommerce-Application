@@ -1,3 +1,5 @@
+import switchPage from '../switchPage';
+import { Pages } from '../types';
 import './color-default.scss';
 import './style-default.scss';
 
@@ -50,6 +52,7 @@ export default class Bootstrap {
     isActive = false,
     isDisabled = false,
     className = '',
+    page: Pages | undefined = undefined,
   ) {
     const li = this.createElement('li', liClass + ' ' + className);
     if (isActive) {
@@ -61,6 +64,13 @@ export default class Bootstrap {
     if (isDisabled) {
       a.classList.add('disabled');
     }
+    if (page) {
+      a.addEventListener('click', (event) => {
+        event.preventDefault();
+        switchPage(page);
+      });
+    }
+
     li.append(a);
     return li;
   }

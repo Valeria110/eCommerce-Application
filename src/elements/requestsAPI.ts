@@ -111,8 +111,6 @@ class RequestFetch {
     email: string,
     password: string,
   ): Promise<{ isOk: boolean; field: 'login' | 'password' | undefined; message: string }> {
-    this.updateUserEmail(email);
-
     const encodedEmail = encodeURIComponent(email);
     const encodedPassword = encodeURIComponent(password);
 
@@ -146,9 +144,9 @@ class RequestFetch {
       }
     } else {
       this.customerToken = obj.access_token;
+      this.updateUserEmail(email);
+      await this.updateUserData();
     }
-
-    await this.updateUserData();
 
     return { isOk: response.ok, field, message };
   }
