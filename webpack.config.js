@@ -50,7 +50,7 @@ const baseConfig = {
     new CleanWebpackPlugin(),
     new EslintPlugin({ extensions: ['ts'], failOnError: false, emitWarning: true }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'src/img/favicon.ico', to: 'favicon.ico' }],
+      patterns: [{ from: 'src/img/favicon.ico', to: 'favicon.ico' }, { from: 'src/_redirects' }],
     }),
   ],
 };
