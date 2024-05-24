@@ -1,7 +1,7 @@
 @import './../../breakpoints.scss';
 @import '~bootstrap/scss/bootstrap';
 
-.footer {
+.footerGithub {
   display: flex;
   justify-content: center;
   gap: 24px;
@@ -30,7 +30,7 @@
 
 .footerContact {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   background-color: $orange-500;
 
   font-size: 16px;
@@ -39,14 +39,17 @@
 
   padding: 24px 72px;
 
+  gap: 2px;
+
   @media (width <= $screen-width-tablet) {
     font-size: 14px;
     line-height: 17px;
+    padding: 24px 66px;
   }
   @media (width <= $screen-burger) {
     flex-direction: column;
-    margin-left: 35px;
     gap: 34px;
+    padding: 24px 35px;
   }
 
   &__cart {
