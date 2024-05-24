@@ -16,7 +16,7 @@ export default function mainPage() {
   const div = Bootstrap.createElement('div');
   div.append(header());
   div.append(containerForModalWindow, shadowButton);
-  div.append(footer());
+  div.append(...footer());
 
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);

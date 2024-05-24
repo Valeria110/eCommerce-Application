@@ -1,21 +1,55 @@
 @import './../../breakpoints.scss';
+@import '~bootstrap/scss/bootstrap';
 
 .footer {
   display: flex;
   justify-content: center;
   gap: 24px;
 
-  margin-top: 0;
-  margin-bottom: 28px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+
+  padding-top: 32px;
+  padding-bottom: 32px;
+  @media (width <= $screen-width-tablet) {
+    padding-top: 28;
+    padding-bottom: 28px;
+  }
   @media (width <= $screen-burger) {
     flex-direction: column;
     margin-left: 35px;
-    margin-right: 35px;
   }
 
   &__cart {
     gap: 16px !important;
     color: black;
     margin-right: 19px;
+  }
+}
+
+.footerContact {
+  display: flex;
+  justify-content: space-around;
+  background-color: $orange-500;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+
+  padding: 24px 72px;
+
+  @media (width <= $screen-width-tablet) {
+    font-size: 14px;
+    line-height: 17px;
+  }
+  @media (width <= $screen-burger) {
+    flex-direction: column;
+    margin-left: 35px;
+    gap: 34px;
+  }
+
+  &__cart {
+    color: white;
   }
 }

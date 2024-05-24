@@ -15,13 +15,12 @@ export default class Bootstrap {
     textContent?: string,
   ): HTMLElementTagNameMap[T] {
     const element = document.createElement(tagName);
-    if (typeof className === 'string') {
-      element.className = className;
-    }
+
     if (Array.isArray(className)) {
-      className.forEach((classItem) => {
-        element.classList.add(classItem);
-      });
+      className = className.join(' ');
+    }
+    if (className) {
+      element.className = className;
     }
     if (textContent !== undefined) {
       element.textContent = textContent;
