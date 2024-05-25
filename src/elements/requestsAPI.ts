@@ -1,6 +1,6 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
-import { AppEvents } from './types';
+import { AppEvents, Product } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -217,6 +217,35 @@ class RequestFetch {
       return response.ok;
     } catch (error) {
       return false;
+    }
+  }
+
+  async getProductsByID(productID: string): Promise<Product | undefined> {
+    // use customer token for this
+    // TODO: Problem with anonim customer
+    try {
+      console.log(`${this.host}/${this.projectKey}/products/${productID}`);
+
+      const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
+        headers: {
+          Authorization: `Bearer ${this.customerToken}`,
+        },
+      });
+
+      await this.checkResponse(response);
+
+      if (!response.ok) {
+        return undefined;
+      }
+
+      const obj = await response.json();
+      return {
+        title: obj.masterData.current.name['en-US'],
+        description: obj.masterData.current.description['en-US'],
+        slug: obj.masterData.current.slug['en-US'],
+      };
+    } catch (error) {
+      return undefined;
     }
   }
 

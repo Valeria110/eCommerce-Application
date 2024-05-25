@@ -20,8 +20,6 @@ enum UserAction {
 let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
 
 export default function header(currentPage: Pages): HTMLElement {
-  console.log(currentPage);
-
   defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const headerElement = Bootstrap.createElement('nav', 'header navbar');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid px-0');

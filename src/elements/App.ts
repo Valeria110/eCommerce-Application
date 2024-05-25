@@ -8,6 +8,7 @@ import aboutUS from '../pages/aboutUs';
 import header from './header/header';
 import error404Page from '../pages/error404Page';
 import footer from './footer/footer';
+import product from './product/product';
 
 export default class App {
   start(): void {
@@ -27,8 +28,8 @@ function renderPage(newPage: Pages) {
   document.body.className = '';
   resetStyleAfterBurger();
 
-  const pagesWithHeader = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Error404];
-  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS];
+  const pagesWithHeader = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Error404, Pages.Product];
+  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product];
 
   if (pagesWithHeader.includes(newPage)) {
     document.body.append(header(newPage));
@@ -49,6 +50,9 @@ function renderPage(newPage: Pages) {
       break;
     case Pages.AboutUS:
       document.body.append(aboutUS());
+      break;
+    case Pages.Product:
+      document.body.append(product('54c754ea-1ddf-488e-b58f-21f4257ee50a'));
       break;
     default:
       document.body.append(error404Page());

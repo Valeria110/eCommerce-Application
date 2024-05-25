@@ -1,6 +1,8 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import discount from '../elements/discount/discount';
 import findYourBook from '../elements/findYourBook/findYourBook';
+import switchPage from '../elements/switchPage';
+import { Pages } from '../elements/types';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -17,6 +19,13 @@ export default function mainPage() {
   div.append(containerForModalWindow, shadowButton);
   div.append(findYourBook());
   div.append(discount());
+
+  // TODO: Debug time
+  const goToProduct = Bootstrap.createButton('Go to product', 'btn-orange border-0 btn-style-default mx-1');
+  goToProduct.addEventListener('click', () => {
+    switchPage(Pages.Product);
+  });
+  div.append(goToProduct);
 
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
