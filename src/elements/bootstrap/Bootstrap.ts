@@ -55,14 +55,14 @@ export default class Bootstrap {
     page: Pages | undefined = undefined,
   ) {
     const li = this.createElement('li', liClass + ' ' + className);
-    if (isActive) {
-      li.classList.add('active');
-    }
 
     const a = this.createElement('a', 'nav-link', text);
     a.href = '#';
     if (isDisabled) {
       a.classList.add('disabled');
+    }
+    if (isActive) {
+      a.classList.add('active');
     }
     if (page) {
       a.addEventListener('click', (event) => {

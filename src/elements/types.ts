@@ -4,6 +4,7 @@ export enum Pages {
   Main = 'Main',
   Error404 = 'Error404',
   Catalog = 'Catalog',
+  AboutUS = 'About us',
 }
 
 export enum AppEvents {

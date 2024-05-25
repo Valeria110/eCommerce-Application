@@ -1,3 +1,5 @@
+import error404Page from './error404Page';
+
 jest.mock('../elements/requestsAPI', () => ({
   isLogined: false,
   customerData: {
@@ -6,10 +8,9 @@ jest.mock('../elements/requestsAPI', () => ({
     email: 'test@test.com',
   },
 }));
-import { error404Page } from './error404Page';
 
 describe('Bootstrap', () => {
-  const errorWrapper = error404Page()[1];
+  const errorWrapper = error404Page();
   describe('createElement', () => {
     it('should create an element with the given tag name', () => {
       expect(errorWrapper.tagName).toBe('DIV');

@@ -2,12 +2,10 @@ import Bootstrap from '../elements/bootstrap/Bootstrap';
 import './error404Page.scss';
 import errImg from '../img/error-img.png';
 import homeIcon from '../img/home-icon.svg';
-import header from '../elements/header/header';
 import switchPage from '../elements/switchPage';
 import { Pages } from '../elements/types';
 
-function error404Page(): HTMLElement[] {
-  const headerElem = header();
+export default function error404Page(): HTMLElement {
   const errorWrapper = Bootstrap.createElement('div', [
     'error-wrapper',
     'd-flex',
@@ -44,7 +42,5 @@ function error404Page(): HTMLElement[] {
 
   errorContentBlock.append(errorTitle, errorDesc, homeBtn);
   errorWrapper.append(errorImg, errorContentBlock);
-  return [headerElem, errorWrapper];
+  return errorWrapper;
 }
-
-export { error404Page };
