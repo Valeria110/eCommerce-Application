@@ -18,12 +18,12 @@ export default class App {
 }
 
 document.addEventListener(AppEvents.switchPage, (event) => {
-  const newPage = (event as CustomEvent).detail;
-  renderPage(newPage);
-  changePageRoute(newPage);
+  const { page, productId } = (event as CustomEvent).detail;
+  renderPage(page, productId);
+  changePageRoute(page, productId);
 });
 
-function renderPage(newPage: Pages) {
+function renderPage(newPage: Pages, productId: string | undefined) {
   document.body.innerHTML = '';
   document.body.className = '';
   resetStyleAfterBurger();
@@ -52,7 +52,7 @@ function renderPage(newPage: Pages) {
       document.body.append(aboutUS());
       break;
     case Pages.Product:
-      document.body.append(product('54c754ea-1ddf-488e-b58f-21f4257ee50a'));
+      document.body.append(product(productId ?? ''));
       break;
     default:
       document.body.append(error404Page());

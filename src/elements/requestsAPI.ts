@@ -221,14 +221,10 @@ class RequestFetch {
   }
 
   async getProductsByID(productID: string): Promise<Product | undefined> {
-    // use customer token for this
-    // TODO: Problem with anonim customer
     try {
-      console.log(`${this.host}/${this.projectKey}/products/${productID}`);
-
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
-          Authorization: `Bearer ${this.customerToken}`,
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         },
       });
 

@@ -2,7 +2,7 @@ import requestsAPI from '../requestsAPI';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
 
-function changePageRoute(page: Pages) {
+function changePageRoute(page: Pages, productId: string | undefined = undefined) {
   switch (page) {
     case Pages.LogIn:
       if (isUserLogined()) {
@@ -24,6 +24,11 @@ function changePageRoute(page: Pages) {
     case Pages.Error404:
       history.pushState({ state: 'error_404_page' }, 'Error 404 Page', '/error_404');
       break;
+    case Pages.Product:
+      history.pushState({ state: 'product' }, 'Product', `/product/${productId ?? ''}`);
+      break;
+    default:
+      console.error('configure routing in changePageRoute()');
   }
 }
 
