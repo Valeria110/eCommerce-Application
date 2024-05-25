@@ -27,12 +27,18 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
     case Pages.Product:
       history.pushState({ state: 'product' }, 'Product', `/product/${productId ?? ''}`);
       break;
+    case Pages.Catalog:
+      history.pushState({ state: 'catalog' }, 'Catalog', '/catalog');
+      break;
+    case Pages.AboutUS:
+      history.pushState({ state: 'about us' }, 'About us', '/about_us');
+      break;
     default:
       console.error('configure routing in changePageRoute()');
   }
 }
 
-const routes = ['/login', '/main', '/sign_up'];
+const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us'];
 
 function handleLocation() {
   const pathname = window.location.pathname;
@@ -52,6 +58,12 @@ function handleLocation() {
         break;
       case '/main':
         switchPage(Pages.Main);
+        break;
+      case '/catalog':
+        switchPage(Pages.Catalog);
+        break;
+      case '/about_us':
+        switchPage(Pages.AboutUS);
         break;
       case '/sign_up':
         if (isUserLogined()) {

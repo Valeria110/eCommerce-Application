@@ -65,7 +65,6 @@ function renderPage(newPage: Pages, productId: string | undefined) {
 }
 
 function resetStyleAfterBurger() {
-  // TODO: simplefy it
   document.body.style.overflow = 'auto';
   document.body.style.padding = '0';
   document.body.removeAttribute('data-bs-overflow');
