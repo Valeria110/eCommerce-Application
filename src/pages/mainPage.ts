@@ -27,9 +27,10 @@ export default function mainPage() {
     }, 100);
   }
 
-  setTimeout(() => {
+  const get = setTimeout(() => {
     getBooks();
-  }, 500);
+    clearTimeout(get);
+  }, 300);
 
   div.append(generateCatalogPage());
   return div;

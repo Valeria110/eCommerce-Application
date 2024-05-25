@@ -11,22 +11,26 @@
     width: 100px;
     height: 36px;
     padding: 0px 16px;
+    border: 1px solid #dee2e6;
 }
 
 .catalog-page__input-price::placeholder {
     color: #ADB5BD;
 }
 
+.catalog-page__input-price:focus {
+    outline: 2px solid #fd9843;
+    z-index: 3;
+}
+
 .catalog-page__input-price_from {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
-    border: 1px solid #dee2e6;
 }
 
 .catalog-page__input-price_to {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    border: 1px solid #dee2e6;
     border-left: 0px;
     margin-right: 8px;
 }
@@ -41,6 +45,10 @@
 
 .catalog-page__input-search::placeholder {
     color: #ADB5BD;
+}
+
+.catalog-page__input-search:focus {
+    outline: 2px solid #fd9843;
 }
 
 .catalog-page__select-dropdown {
@@ -98,4 +106,122 @@
   height: 24px;
   position: absolute;
   right: 16px;
+}
+
+.catalog-page__cards-cover {
+    width: 196px;
+    height: 294px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.catalog-page__body {
+    flex-wrap: wrap;
+    margin-top: 80px;
+    justify-content: space-between;
+    width: 100%;
+    gap: 71px;
+}
+
+.catalog-page__cards-name {
+    font-size: 20px;
+    font-weight: 600;
+    width: 196px;
+}
+
+.catalog-page__cards-body {
+    min-width: 196px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.catalog-page__cards-name_author {
+    width: 196px;
+    font-weight: 400;
+    font-size: 16px;
+    color: #ADB5BD;
+}
+
+.catalog-page__cards-description, 
+.catalog-page__cards-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.catalog-page__cards-price {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.catalog-page__pagination {
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+    margin-bottom: 80px;
+    gap: 12px;
+}
+
+.catalog-page__pagination_item {
+    width: 33px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ADB5BD;
+    padding: 8px 12px;
+}
+
+.catalog-page__pagination-container {
+    gap: 4px;
+}
+
+.catalog-page__pagination-arrow {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.activePage {
+    background-color: #fc7e14;
+    color: white;
+    border-radius: 4px;
+}
+
+.catalog-page__cards-discounted {
+    color: white;
+    background-color: #fc7e14;
+    width: 67px;
+    height: 44px;
+    padding: 10px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0px;
+    font-size: 20px;
+}
+
+.catalog-page__cards-price-container {
+    display: flex;
+    gap: 4px;
+}
+
+.catalog-page__cards-price_discounted {
+    text-decoration: line-through;
+    font-size: 14px;
+    color: #999999;
+}
+
+@media(max-width: 1410px) {
+    .catalog-page__body {
+        justify-content: space-around;
+    }
 }
