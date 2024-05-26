@@ -167,20 +167,42 @@ async function handleFormSubmit(event: SubmitEvent) {
 
     const customerId = customerInfo.customer.id;
 
-    await requestsAPI.addAddress(
-      customerId,
-      variablesRegPage.inputForFirstName.value,
-      variablesRegPage.inputForLastName.value,
-      variablesRegPage.inputForStreet.value,
-      variablesRegPage.inputForPostalCode.value,
-      variablesRegPage.inputForCity.value,
-      variablesRegPage.inputForCountry.value,
-      variablesRegPage.inputForEmail.value,
-    );
-    const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
-    await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+    if (
+      variablesRegPage.checkboxSameAddress.checked &&
+      !variablesRegPage.checkboxDefault.checked &&
+      !variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setBillingAddress(shippingAddressId, customerId);
+    } else if (
+      !variablesRegPage.checkboxSameAddress.checked &&
+      !variablesRegPage.checkboxDefault.checked &&
+      !variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
 
-    if (variablesRegPage.containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)) {
       await requestsAPI.addAddress(
         customerId,
         variablesRegPage.inputForFirstName.value,
@@ -193,9 +215,11 @@ async function handleFormSubmit(event: SubmitEvent) {
       );
       const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
       await requestsAPI.setBillingAddress(billingAddressId, customerId);
-    }
-
-    if (variablesRegPage.checkboxDefault.checked) {
+    } else if (
+      variablesRegPage.checkboxSameAddress.checked &&
+      variablesRegPage.checkboxDefault.checked &&
+      variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
       await requestsAPI.addAddress(
         customerId,
         variablesRegPage.inputForFirstName.value,
@@ -206,11 +230,68 @@ async function handleFormSubmit(event: SubmitEvent) {
         variablesRegPage.inputForCountry.value,
         variablesRegPage.inputForEmail.value,
       );
-      const shippingDefAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
-      await requestsAPI.setDefShippingAddress(shippingDefAddressId, customerId);
-    }
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setBillingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefBillingAddress(shippingAddressId, customerId);
+    } else if (
+      variablesRegPage.checkboxSameAddress.checked &&
+      variablesRegPage.checkboxDefault.checked &&
+      !variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setBillingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefShippingAddress(shippingAddressId, customerId);
+    } else if (
+      variablesRegPage.checkboxSameAddress.checked &&
+      !variablesRegPage.checkboxDefault.checked &&
+      variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setBillingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefBillingAddress(shippingAddressId, customerId);
+    } else if (
+      !variablesRegPage.checkboxSameAddress.checked &&
+      variablesRegPage.checkboxDefault.checked &&
+      variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefShippingAddress(shippingAddressId, customerId);
 
-    if (variablesRegPage.checkboxDefaultBillingForm.checked) {
       await requestsAPI.addAddress(
         customerId,
         variablesRegPage.inputForFirstName.value,
@@ -221,8 +302,71 @@ async function handleFormSubmit(event: SubmitEvent) {
         variablesRegPage.inputForCountryBillingForm.value,
         variablesRegPage.inputForEmail.value,
       );
-      const billingDefAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
-      await requestsAPI.setDefBillingAddress(billingDefAddressId, customerId);
+      const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+      await requestsAPI.setBillingAddress(billingAddressId, customerId);
+      await requestsAPI.setDefBillingAddress(billingAddressId, customerId);
+    } else if (
+      !variablesRegPage.checkboxSameAddress.checked &&
+      variablesRegPage.checkboxDefault.checked &&
+      !variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+      await requestsAPI.setDefShippingAddress(shippingAddressId, customerId);
+
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreetBillingForm.value,
+        variablesRegPage.inputForPostalCodeBillingForm.value,
+        variablesRegPage.inputForCityBillingForm.value,
+        variablesRegPage.inputForCountryBillingForm.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+      await requestsAPI.setBillingAddress(billingAddressId, customerId);
+    } else if (
+      !variablesRegPage.checkboxSameAddress.checked &&
+      !variablesRegPage.checkboxDefault.checked &&
+      variablesRegPage.checkboxDefaultBillingForm.checked
+    ) {
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreet.value,
+        variablesRegPage.inputForPostalCode.value,
+        variablesRegPage.inputForCity.value,
+        variablesRegPage.inputForCountry.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const shippingAddressId = await requestsAPI.getCustomerAddressData(customerId, 0);
+      await requestsAPI.setShippingAddress(shippingAddressId, customerId);
+
+      await requestsAPI.addAddress(
+        customerId,
+        variablesRegPage.inputForFirstName.value,
+        variablesRegPage.inputForLastName.value,
+        variablesRegPage.inputForStreetBillingForm.value,
+        variablesRegPage.inputForPostalCodeBillingForm.value,
+        variablesRegPage.inputForCityBillingForm.value,
+        variablesRegPage.inputForCountryBillingForm.value,
+        variablesRegPage.inputForEmail.value,
+      );
+      const billingAddressId = await requestsAPI.getCustomerAddressData(customerId, 1);
+      await requestsAPI.setBillingAddress(billingAddressId, customerId);
+      await requestsAPI.setDefBillingAddress(billingAddressId, customerId);
     }
     await localStorage.setItem('registerTrue', 'true');
   } catch (error) {
