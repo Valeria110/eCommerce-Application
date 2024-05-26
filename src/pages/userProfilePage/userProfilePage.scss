@@ -1,0 +1,121 @@
+$grey-400: #999999;
+$input-bgc: rgba(254, 178, 114, 0.08);
+$input-border-color: rgba(254, 178, 114, 0.3);
+
+.user-profile-main {
+  width: 47rem;
+  margin: 0 auto;
+  margin-top: 9rem;
+  gap: 96px;
+
+  @media screen and (max-width: 768px) {
+    & {
+      width: auto;
+      max-width: 636px;
+      gap: 64px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+
+  .user-profile-main__header {
+    gap: 48px;
+    margin-right: auto;
+    @media screen and (max-width: 768px) {
+      & {
+        align-items: center;
+        gap: 48px;
+        margin-right: 0;
+        flex-direction: column;
+      }
+    }
+
+    .user-profile-header__img {
+      max-width: 273px;
+
+      @media screen and (max-width: 768px) {
+        & {
+          max-width: 200px;
+        }
+      }
+    }
+
+    .user-profile-header__info {
+      justify-content: center;
+      gap: 4px;
+      text-align: left;
+
+      .user-profile-header__residence {
+        font-size: 20px;
+        color: $grey-400;
+      }
+    }
+  }
+
+  .user-profile-form {
+    margin-bottom: 144px;
+    gap: 96px;
+
+    .user-profile-form__personal-info {
+      gap: 40px;
+      @media screen and (max-width: 768px) {
+        & {
+          align-items: center;
+        }
+      }
+    }
+
+    .personal-info__inputs-container {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      column-gap: 134px;
+      row-gap: 40px;
+
+      @media screen and (max-width: 768px) {
+        & {
+          grid-template-columns: 1fr;
+          grid-template-rows: repeat(3, 1fr);
+          column-gap: 24px;
+        }
+      }
+
+      .user-profile-form__label {
+        gap: 8px;
+        color: $grey-400;
+
+        .user-profile-form__input {
+          width: 306px;
+          height: 52px;
+          padding: 16px;
+          background-color: $input-bgc;
+          border: 1px solid $input-border-color;
+        }
+      }
+    }
+
+    .user-profile-form__addresses-info {
+      gap: 40px;
+      @media screen and (max-width: 768px) {
+        & {
+          align-items: center;
+        }
+      }
+
+      .shipping-address-box__title,
+      .billing-address-box__title {
+        margin-bottom: 24px;
+        font-size: 16px;
+      }
+
+      .billing-address-box__title {
+        margin-top: 20px;
+      }
+    }
+
+    .save-changes-btn {
+      width: 306px;
+      height: 52px;
+      margin: 0 auto;
+    }
+  }
+}

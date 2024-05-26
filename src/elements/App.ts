@@ -4,6 +4,7 @@ import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
+import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
 
 export default class App {
   start(): void {
@@ -32,6 +33,12 @@ document.addEventListener(AppEvents.switchPage, (event) => {
     case Pages.Main:
       document.body.append(mainPage());
       changePageRoute(Pages.Main);
+      break;
+    case Pages.UserProfile:
+      userProfilePage().forEach((element) => {
+        document.body.append(element);
+      });
+      changePageRoute(Pages.UserProfile);
       break;
     default:
       error404Page().forEach((element) => {

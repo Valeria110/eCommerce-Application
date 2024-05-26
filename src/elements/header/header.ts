@@ -34,6 +34,9 @@ export default function header(): HTMLElement {
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-3');
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
+  profileBtn.addEventListener('click', () => {
+    switchPage(Pages.UserProfile);
+  });
   if (!requestsAPI.isLogined) {
     profileBtn.classList.add('d-none');
   }

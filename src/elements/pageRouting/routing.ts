@@ -21,6 +21,9 @@ function changePageRoute(page: Pages) {
         history.pushState({ state: 'sign_up_page' }, 'Sign Up Page', '/sign_up');
       }
       break;
+    case Pages.UserProfile:
+      history.pushState({ state: 'user_profile_page' }, 'User Profile Page', '/user_profile_page');
+      break;
     case Pages.Error404:
       history.pushState({ state: 'error_404_page' }, 'Error 404 Page', '/error_404');
       break;
