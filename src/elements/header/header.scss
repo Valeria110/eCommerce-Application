@@ -20,6 +20,7 @@ $screen-burger: $screen-width-tablet - 80px;
   .header__brand {
     font-weight: 500;
     font-size: 16px;
+    cursor: pointer;
 
     display: flex;
     align-items: center;

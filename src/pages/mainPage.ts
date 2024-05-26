@@ -1,5 +1,6 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
-import header from '../elements/header/header';
+import discount from '../elements/discount/discount';
+import findYourBook from '../elements/findYourBook/findYourBook';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -13,8 +14,10 @@ import {
 
 export default function mainPage() {
   const div = Bootstrap.createElement('div');
-  div.append(header());
   div.append(containerForModalWindow, shadowButton);
+  div.append(findYourBook());
+  div.append(discount());
+
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
   contentModalWindow.append(headerModalWindow, bodyModalWindow);

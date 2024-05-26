@@ -1,0 +1,55 @@
+@import './../../breakpoints.scss';
+.discount {
+  max-width: $screen-width-desktop;
+
+  display: flex;
+  justify-content: flex-start;
+
+  gap: 54px;
+  @media (width <= $screen-width-tablet) {
+    gap: 16px;
+  }
+
+  @media (width <= $screen-burger) {
+    gap: 4px;
+    flex-direction: column;
+  }
+
+  margin-left: auto;
+  margin-right: auto;
+
+  background-color: rgb(255, 195, 62);
+
+  @media (width <= $screen-burger) {
+    padding: 32px 30px;
+  }
+
+  &__img {
+    margin-left: 56px;
+    @media (width <= $screen-width-tablet) {
+      height: 157px;
+      width: 157px;
+    }
+    @media (width <= $screen-burger) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  &__text {
+    font-size: clamp(18px, 3vw, 40px);
+    font-weight: 600;
+    margin-bottom: 0;
+
+    @media (width <= $screen-burger) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    align-content: center;
+
+    &-promoCode {
+      color: #d13330;
+    }
+  }
+}
