@@ -74,5 +74,6 @@ function resetStyleAfterBurger() {
   document.body.removeAttribute('data-bs-overflow');
   document.body.removeAttribute('data-bs-padding-right');
 }
+
 window.addEventListener('popstate', handleLocation);
 window.addEventListener('DOMContentLoaded', handleLocation);
