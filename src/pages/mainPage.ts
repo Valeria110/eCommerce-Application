@@ -26,6 +26,5 @@ export default function mainPage() {
     }, 100);
   }
 
-  console.log(123);
   return bodyMain;
 }

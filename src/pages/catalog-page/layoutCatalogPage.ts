@@ -230,6 +230,16 @@ function createNumberPage(countPages: number) {
   for (let i = 0; i < countPages; i += 1) {
     const numberPage = createElement('div', 'catalog-page__pagination_item', `${i + 1}`);
     numberPage.id = i.toString();
+    numberPage.addEventListener('click', () => {
+      localStorage.setItem('numberPageBooks', String(numberPage.id));
+      document.querySelectorAll('.activePage').forEach((item) => item.classList.remove('activePage'));
+
+      const newPageElement = document.getElementById(String(numberPage.id));
+      if (newPageElement) {
+        newPageElement.classList.add('activePage');
+      }
+      getBooks();
+    });
     variablesCatalogPage.containerForNumbersPages.append(numberPage);
     if (i === 0) {
       numberPage.classList.add('activePage');
