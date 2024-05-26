@@ -45,15 +45,16 @@ export const priceCurrency = createElement('div', 'd-flex align-items-center', '
 export const containerForInputSearchBooks = createElement('div', 'd-flex position-relative align-items-center');
 export const inputSearchBooks = createElement('input', 'catalog-page__input-search');
 inputSearchBooks.placeholder = 'Search';
+inputSearchBooks.style.height = '36px';
 export const iconForInputSearchBooks = createElement('div', 'catalog-page__input-icon');
 
 export const containerForAllBooks = createElement('div', 'd-flex catalog-page__body');
 
 export const containerForPagination = createElement('div', 'd-flex catalog-page__pagination');
-export const iconArrowLeft = createElement('div', 'catalog-page__pagination-arrow');
+export const iconArrowLeft = createElement('button', 'catalog-page__pagination-arrow');
 iconArrowLeft.innerHTML =
   '<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 7L9.5 12L14.5 17" stroke="black" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>';
 export const containerForNumbersPages = createElement('div', 'd-flex catalog-page__pagination-container');
-export const iconArrowRight = createElement('div', 'catalog-page__pagination-arrow');
+export const iconArrowRight = createElement('button', 'catalog-page__pagination-arrow');
 iconArrowRight.innerHTML =
   '<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1L6.5 6L1.5 11" stroke="black" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>';

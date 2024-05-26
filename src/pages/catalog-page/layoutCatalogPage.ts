@@ -5,7 +5,10 @@ import * as variablesCatalogPage from '../catalog-page/variablesForCatalogPage';
 import './styleCatalogPage.scss';
 
 const COUNT_CHUNKS = 10;
-const COUNT_PAGES = 5;
+let COUNT_PAGES: number;
+const FIRST_PAGE = 0;
+let CACHED_BOOKS: [];
+let PAGES_CREATED = false;
 
 export function generateCatalogPage() {
   localStorage.setItem('numberPageBooks', '0');
@@ -68,18 +71,37 @@ export function generateCatalogPage() {
     variablesCatalogPage.iconArrowRight,
   );
 
-  variablesCatalogPage.iconArrowRight.addEventListener('click', () => {
-    localStorage.setItem('numberPageBooks', String(Number(localStorage.getItem('numberPageBooks') as string) + 0.5));
-    getBooks();
-  });
+  variablesCatalogPage.iconArrowRight.onclick = null;
+  variablesCatalogPage.iconArrowRight.onclick = swapCatalogPages.bind(null, 'right');
 
-  variablesCatalogPage.iconArrowLeft.addEventListener('click', () => {
-    localStorage.setItem('numberPageBooks', String(Number(localStorage.getItem('numberPageBooks') as string) - 0.5));
-    getBooks();
-  });
+  variablesCatalogPage.iconArrowLeft.onclick = null;
+  variablesCatalogPage.iconArrowLeft.onclick = swapCatalogPages.bind(null, 'left');
 
-  createNumberPage(COUNT_PAGES);
+  getBooks();
   return variablesCatalogPage.containerForCatalogPage;
+}
+
+function swapCatalogPages(direction: string) {
+  const currentPageString = localStorage.getItem('numberPageBooks');
+  const currentPage = currentPageString !== null ? Number(currentPageString) : 0;
+  let newPage;
+
+  if (direction === 'right') {
+    newPage = currentPage + 1;
+  } else {
+    newPage = currentPage - 1;
+  }
+
+  localStorage.setItem('numberPageBooks', String(newPage));
+
+  document.querySelectorAll('.activePage').forEach((item) => item.classList.remove('activePage'));
+
+  const newPageElement = document.getElementById(String(newPage));
+  if (newPageElement) {
+    newPageElement.classList.add('activePage');
+  }
+
+  getBooks();
 }
 
 export async function getAllCategories() {
@@ -94,12 +116,29 @@ export async function getAllCategories() {
 }
 
 export async function getBooks() {
-  getAllCategories();
-  const resultBooks = await requestsAPI.getProducts();
+  if (!CACHED_BOOKS) {
+    const resultBooks = await requestsAPI.getProducts();
+    getAllCategories();
+    CACHED_BOOKS = resultBooks.results;
+  }
+  generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
+}
+
+function generateBooks(array: InfoBook[][]) {
   variablesCatalogPage.containerForAllBooks.innerHTML = '';
-  splitArrayIntoChunks(resultBooks.results, COUNT_CHUNKS).forEach((arrayWithBooks, indexArray) => {
+
+  if (localStorage.getItem('numberPageBooks') === FIRST_PAGE.toString()) {
+    variablesCatalogPage.iconArrowLeft.disabled = true;
+  } else if (localStorage.getItem('numberPageBooks') === (COUNT_PAGES - 1).toString()) {
+    variablesCatalogPage.iconArrowRight.disabled = true;
+  } else {
+    variablesCatalogPage.iconArrowLeft.disabled = false;
+    variablesCatalogPage.iconArrowRight.disabled = false;
+  }
+
+  array.forEach((arrayWithBooks, indexArray: number) => {
     if (indexArray === Number(localStorage.getItem('numberPageBooks'))) {
-      arrayWithBooks.forEach((book: InfoBook, indexBook) => {
+      arrayWithBooks.forEach((book: InfoBook, indexBook: number) => {
         if (indexBook < COUNT_CHUNKS) {
           book.masterData.staged.masterVariant.attributes.forEach((itemAttributes, indexitemAttribute) => {
             if (itemAttributes.name === 'author') {
@@ -123,16 +162,21 @@ export async function getBooks() {
   });
 }
 
-export function splitArrayIntoChunks(array: [], chunkSize: number) {
+function splitArrayIntoChunks(array: [], chunkSize: number) {
   const result = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     const chunk = array.slice(i, i + chunkSize);
     result.push(chunk);
   }
+  COUNT_PAGES = result.length;
+  if (!PAGES_CREATED) {
+    createNumberPage(COUNT_PAGES);
+    PAGES_CREATED = true;
+  }
   return result;
 }
 
-export function insertDotBeforeLastTwoChars(str: string) {
+function insertDotBeforeLastTwoChars(str: string) {
   if (str.length < 2) {
     return str;
   }
@@ -143,7 +187,7 @@ export function insertDotBeforeLastTwoChars(str: string) {
   return beforeLastTwo + '.' + lastTwo + '$';
 }
 
-export function generateCards(imgUrl: string, nameBook: string, authorBook: string, price: number, discounted = '') {
+function generateCards(imgUrl: string, nameBook: string, authorBook: string, price: number, discounted = '') {
   let shortNameBook = '';
   if (nameBook.length > 35) {
     shortNameBook = nameBook.slice(0, 24) + '...';
@@ -181,7 +225,7 @@ export function generateCards(imgUrl: string, nameBook: string, authorBook: stri
   return containerForBook;
 }
 
-export function createNumberPage(countPages: number) {
+function createNumberPage(countPages: number) {
   variablesCatalogPage.containerForNumbersPages.innerHTML = '';
   for (let i = 0; i < countPages; i += 1) {
     const numberPage = createElement('div', 'catalog-page__pagination_item', `${i + 1}`);

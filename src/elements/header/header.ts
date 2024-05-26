@@ -10,6 +10,7 @@ import logoSrc from './../../img/lithub-logo.svg';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
+import { generateCatalogPage } from '../../pages/catalog-page/layoutCatalogPage';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -143,9 +144,13 @@ function createActionContainer() {
 
 function createLinksMenu(className = '', classNameLi = 'mx-1') {
   const collapseDiv = Bootstrap.createElement('div', className);
+  const buttonCatalog = Bootstrap.createNavItem('Catalog', 'nav-item', false, false, classNameLi);
   const ul = Bootstrap.createElement('ul', 'navbar-nav');
   ul.append(Bootstrap.createNavItem('Main', 'nav-item', true, false, classNameLi));
-  ul.append(Bootstrap.createNavItem('Catalog', 'nav-item', false, false, classNameLi));
+  ul.append(buttonCatalog);
+  buttonCatalog.addEventListener('click', () => {
+    document.body.append(generateCatalogPage());
+  });
   ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, classNameLi));
   collapseDiv.append(ul);
   return collapseDiv;

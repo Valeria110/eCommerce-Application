@@ -8,7 +8,7 @@ import { changePageRoute, handleLocation } from './pageRouting/routing';
 export default class App {
   start(): void {
     localStorage.setItem('version', '1');
-    handleLocation();
+    // handleLocation();  causes main to be called again
   }
 }
 

@@ -1,6 +1,5 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import header from '../elements/header/header';
-import { generateCatalogPage, getBooks } from './catalog-page/layoutCatalogPage';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -13,9 +12,9 @@ import {
 } from './registration-page/variablesForRegistrationPage';
 
 export default function mainPage() {
-  const div = Bootstrap.createElement('div');
-  div.append(header());
-  div.append(containerForModalWindow, shadowButton);
+  const bodyMain = Bootstrap.createElement('div');
+  bodyMain.append(header());
+  bodyMain.append(containerForModalWindow, shadowButton);
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
   contentModalWindow.append(headerModalWindow, bodyModalWindow);
@@ -27,11 +26,6 @@ export default function mainPage() {
     }, 100);
   }
 
-  const get = setTimeout(() => {
-    getBooks();
-    clearTimeout(get);
-  }, 300);
-
-  div.append(generateCatalogPage());
-  return div;
+  console.log(123);
+  return bodyMain;
 }
