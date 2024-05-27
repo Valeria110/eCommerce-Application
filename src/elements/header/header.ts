@@ -10,7 +10,6 @@ import logoSrc from './../../img/lithub-logo.svg';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
-import { generateCatalogPage } from '../../pages/catalog-page/layoutCatalogPage';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -20,18 +19,18 @@ enum UserAction {
 
 let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
 
-export default function header(): HTMLElement {
+export default function header(currentPage: Pages): HTMLElement {
   defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
   const headerElement = Bootstrap.createElement('nav', 'header navbar');
   const headerContainer = Bootstrap.createElement('div', 'container-fluid px-0');
 
   const brand = Bootstrap.createElement('a', 'navbar-brand header__brand', 'LitHub');
-  brand.href = '#';
+  brand.addEventListener('click', () => switchPage(Pages.Main));
   const logo = Bootstrap.createElement('img', 'd-inline-block align-top');
   logo.src = logoSrc as string;
   brand.prepend(logo);
 
-  const menuLinks = createLinksMenu('header__linkCollapse');
+  const menuLinks = createLinksMenu(currentPage, 'header__linkCollapse');
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-3');
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
@@ -47,7 +46,7 @@ export default function header(): HTMLElement {
   burgerBtn.dataset.bsTarget = `#${burgerOffCanvasID}`;
   burgerBtn.setAttribute('aria-controls', 'burger right side panel');
 
-  const rightPanel = createRightPanel();
+  const rightPanel = createRightPanel(currentPage);
   const offCanvasRightPanel = Bootstrap.createOffCanvas(burgerOffCanvasID, '', rightPanel);
 
   const buttonWrapper = Bootstrap.createElement('div', 'header__btnWrapper');
@@ -58,7 +57,7 @@ export default function header(): HTMLElement {
   return headerElement;
 }
 
-function createRightPanel() {
+function createRightPanel(currentPage: Pages) {
   const logoutBtn = Bootstrap.createButton('Log out', 'btn-orange border-0 btn-style-default w-50 mx-1');
   const userCard = createUserCard();
   const rightPanel = Bootstrap.createElement('div', 'rightPanel p-3');
@@ -95,7 +94,7 @@ function createRightPanel() {
   }
   btnWrapper.append(logoutBtn, loginBtn, signUpBtn);
 
-  const menuLinks = createLinksMenu('', 'my-2');
+  const menuLinks = createLinksMenu(currentPage, '', 'my-2');
 
   rightPanel.append(userCard, menuLinks, btnWrapper);
   return rightPanel;
@@ -142,16 +141,17 @@ function createActionContainer() {
   return actionContainer;
 }
 
-function createLinksMenu(className = '', classNameLi = 'mx-1') {
+function createLinksMenu(currentPage: Pages, className = '', classNameLi = 'mx-1') {
+  const pages = [Pages.Main, Pages.Catalog, Pages.AboutUS];
+
   const collapseDiv = Bootstrap.createElement('div', className);
   const buttonCatalog = Bootstrap.createNavItem('Catalog', 'nav-item', false, false, classNameLi);
   const ul = Bootstrap.createElement('ul', 'navbar-nav');
-  ul.append(Bootstrap.createNavItem('Main', 'nav-item', true, false, classNameLi));
-  ul.append(buttonCatalog);
-  buttonCatalog.addEventListener('click', () => {
-    document.body.append(generateCatalogPage());
+
+  pages.forEach((page) => {
+    ul.append(Bootstrap.createNavItem(page, 'nav-item', currentPage === page, false, classNameLi, page));
   });
-  ul.append(Bootstrap.createNavItem('About us', 'nav-item', false, true, classNameLi));
+
   collapseDiv.append(ul);
   return collapseDiv;
 }

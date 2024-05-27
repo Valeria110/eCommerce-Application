@@ -9,13 +9,14 @@ jest.mock('../requestsAPI', () => ({
 
 import header from './header';
 import requestsAPI from '../requestsAPI';
+import { Pages } from '../types';
 
 describe('Header', () => {
   let element: HTMLElement;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    element = header();
+    element = header(Pages.Main);
   });
 
   describe('createElement', () => {

@@ -1,5 +1,6 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
-import header from '../elements/header/header';
+import discount from '../elements/discount/discount';
+import findYourBook from '../elements/findYourBook/findYourBook';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -12,9 +13,11 @@ import {
 } from './registration-page/variablesForRegistrationPage';
 
 export default function mainPage() {
-  const bodyMain = Bootstrap.createElement('div');
-  bodyMain.append(header());
-  bodyMain.append(containerForModalWindow, shadowButton);
+  const div = Bootstrap.createElement('div');
+  div.append(containerForModalWindow, shadowButton);
+  div.append(findYourBook());
+  div.append(discount());
+
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
   contentModalWindow.append(headerModalWindow, bodyModalWindow);
@@ -26,5 +29,5 @@ export default function mainPage() {
     }, 100);
   }
 
-  return bodyMain;
+  return div;
 }

@@ -1,6 +1,6 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
-import { AppEvents } from './types';
+import { AppEvents, Product } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -111,8 +111,6 @@ class RequestFetch {
     email: string,
     password: string,
   ): Promise<{ isOk: boolean; field: 'login' | 'password' | undefined; message: string }> {
-    this.updateUserEmail(email);
-
     const encodedEmail = encodeURIComponent(email);
     const encodedPassword = encodeURIComponent(password);
 
@@ -146,9 +144,9 @@ class RequestFetch {
       }
     } else {
       this.customerToken = obj.access_token;
+      this.updateUserEmail(email);
+      await this.updateUserData();
     }
-
-    await this.updateUserData();
 
     return { isOk: response.ok, field, message };
   }
@@ -242,6 +240,31 @@ class RequestFetch {
       return resultCategories;
     } catch (error) {
       console.error('API error:', (error as Error).message);
+    }
+  }
+
+  async getProductsByID(productID: string): Promise<Product | undefined> {
+    try {
+      const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
+        headers: {
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+        },
+      });
+
+      await this.checkResponse(response);
+
+      if (!response.ok) {
+        return undefined;
+      }
+
+      const obj = await response.json();
+      return {
+        title: obj.masterData.current.name['en-US'],
+        description: obj.masterData.current.description['en-US'],
+        slug: obj.masterData.current.slug['en-US'],
+      };
+    } catch (error) {
+      return undefined;
     }
   }
 
