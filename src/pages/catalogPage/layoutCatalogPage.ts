@@ -99,7 +99,9 @@ function swapCatalogPages(direction: string) {
 
   localStorage.setItem('numberPageBooks', String(newPage));
 
-  document.querySelectorAll('.active-page').forEach((item) => item.classList.remove('active-page'));
+  document
+    .querySelectorAll('.catalog-page__pagination_item.active-page')
+    .forEach((item) => item.classList.remove('active-page'));
 
   const newPageElement = document.getElementById(String(newPage));
   if (newPageElement) {
@@ -267,7 +269,9 @@ function createNumberPage(countPages: number) {
     numberPage.id = i.toString();
     numberPage.addEventListener('click', () => {
       localStorage.setItem('numberPageBooks', String(numberPage.id));
-      document.querySelectorAll('.active-page').forEach((item) => item.classList.remove('active-page'));
+      document
+        .querySelectorAll('.catalog-page__pagination_item.active-page')
+        .forEach((item) => item.classList.remove('active-page'));
 
       const newPageElement = document.getElementById(String(numberPage.id));
       if (newPageElement) {
