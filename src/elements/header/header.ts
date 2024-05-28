@@ -145,7 +145,6 @@ function createLinksMenu(currentPage: Pages, className = '', classNameLi = 'mx-1
   const pages = [Pages.Main, Pages.Catalog, Pages.AboutUS];
 
   const collapseDiv = Bootstrap.createElement('div', className);
-  const buttonCatalog = Bootstrap.createNavItem('Catalog', 'nav-item', false, false, classNameLi);
   const ul = Bootstrap.createElement('ul', 'navbar-nav');
 
   pages.forEach((page) => {
