@@ -1,6 +1,6 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
-import { AppEvents, Product } from './types';
+import { AppEvents, Product, IAddressObj, IUserData } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -27,6 +27,20 @@ class RequestFetch {
     email: '',
     firstName: '',
     lastName: '',
+    id: '',
+    dateOfBirth: '',
+  };
+
+  #customerAddresses: {
+    billingAddresses: IAddressObj[] | null;
+    shippingAddresses: IAddressObj[] | null;
+    defBillingAddress: IAddressObj | null;
+    defShippingAddress: IAddressObj | null;
+  } = {
+    billingAddresses: null,
+    shippingAddresses: null,
+    defShippingAddress: null,
+    defBillingAddress: null,
   };
 
   constructor() {
@@ -45,7 +59,7 @@ class RequestFetch {
     this.#customerData.email = localStorage.getItem(LOCAL_STORAGE_EMAIL) ?? '';
 
     if (!(this.authUrl && this.host && this.projectClientID && this.projectClientSecret && this.projectKey)) {
-      throw new Error('The variables .env is not defined correct. Check if exist this file.');
+      throw new Error('The variables .env is not defined correct. Check if this file exists.');
     }
 
     (async () => {
@@ -146,6 +160,7 @@ class RequestFetch {
       this.customerToken = obj.access_token;
       this.updateUserEmail(email);
       await this.updateUserData();
+      this.setUserAddresses();
     }
 
     return { isOk: response.ok, field, message };
@@ -194,8 +209,10 @@ class RequestFetch {
     const customers = await response.json();
 
     if (customers.results) {
+      this.#customerData.id = customers.results[0].id;
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
+      this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
     } else {
       console.error('problem with request updateUserData');
     }
@@ -461,6 +478,102 @@ class RequestFetch {
 
     const result = await response.json();
     return result.addresses[num].id;
+  }
+
+  private async setUserAddresses(): Promise<void> {
+    const url = `${this.host}/${this.projectKey}/me?expand=addresses[*]`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const addresses = data.addresses;
+
+        if (data.defaultBillingAddressId) {
+          this.#customerAddresses.defBillingAddress = addresses.find(
+            (address: IAddressObj) => address.id === data.defaultBillingAddressId,
+          );
+        } else {
+          this.#customerAddresses.defBillingAddress = null;
+        }
+
+        if (data.defaultShippingAddressId) {
+          this.#customerAddresses.defShippingAddress = addresses.find(
+            (address: IAddressObj) => address.id === data.defaultShippingAddressId,
+          );
+        } else {
+          this.#customerAddresses.defShippingAddress = null;
+        }
+
+        if (data.billingAddressIds.length > 0) {
+          const billingAddresses: IAddressObj[] = [];
+
+          data.billingAddressIds.forEach((billingAddressId: string) => {
+            billingAddresses.push(addresses.find((address: IAddressObj) => address.id === billingAddressId));
+          });
+
+          this.#customerAddresses.billingAddresses = billingAddresses;
+        } else {
+          this.#customerAddresses.billingAddresses = null;
+        }
+
+        if (data.shippingAddressIds.length > 0) {
+          const shippingAddresses: IAddressObj[] = [];
+
+          data.shippingAddressIds.forEach((shippingAddressId: string) => {
+            shippingAddresses.push(addresses.find((address: IAddressObj) => address.id === shippingAddressId));
+          });
+
+          this.#customerAddresses.shippingAddresses = shippingAddresses;
+        } else {
+          this.#customerAddresses.shippingAddresses = null;
+        }
+      } else {
+        throw new Error('Failed to fetch user addresses');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public getCustomerAddresses(): {
+    billingAddresses: IAddressObj[] | null;
+    shippingAddresses: IAddressObj[] | null;
+    defBillingAddress: IAddressObj | null;
+    defShippingAddress: IAddressObj | null;
+  } {
+    return this.#customerAddresses;
+  }
+
+  async getCustomer(): Promise<IUserData | null> {
+    const url = `${this.host}/${this.projectKey}/customers`;
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+        },
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        const customer = data.results.find((userData: IUserData) => userData.id === this.#customerData.id);
+        return customer;
+      }
+
+      return null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 }
 

@@ -21,6 +21,9 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
         history.pushState({ state: 'sign_up_page' }, 'Sign Up Page', '/sign_up');
       }
       break;
+    case Pages.UserProfile:
+      history.pushState({ state: 'user_profile_page' }, 'User Profile Page', '/user_profile_page');
+      break;
     case Pages.Error404:
       history.pushState({ state: 'error_404_page' }, 'Error 404 Page', '/error_404');
       break;
@@ -38,7 +41,7 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
   }
 }
 
-const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us'];
+const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page'];
 
 function handleLocation() {
   const pathname = window.location.pathname;
@@ -70,6 +73,13 @@ function handleLocation() {
           switchPage(Pages.Main);
         } else {
           switchPage(Pages.SignUp);
+        }
+        break;
+      case '/user_profile_page':
+        if (isUserLogined()) {
+          switchPage(Pages.UserProfile);
+        } else {
+          switchPage(Pages.Main);
         }
         break;
     }
