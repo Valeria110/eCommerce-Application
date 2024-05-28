@@ -162,7 +162,7 @@ class RequestFetch {
       this.customerToken = obj.access_token;
       this.updateUserEmail(email);
       await this.updateUserData();
-      this.setUserAddresses();
+      await this.setUserAddresses();
     }
 
     return { isOk: response.ok, field, message };
@@ -553,6 +553,36 @@ class RequestFetch {
     } catch (err) {
       console.error(err);
       return null;
+    }
+  }
+
+  public async updateUserFirstName(newName: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
+    console.log(this.#customerData.id);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: Number(localStorage.getItem('version')),
+          actions: {
+            action: 'setFirstName',
+            firstName: `${newName}`,
+          },
+        }),
+      });
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        this.customerData.firstName = newName;
+        console.log(data);
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 }

@@ -94,7 +94,6 @@ function userProfilePage(): HTMLElement {
         saveChangesBtn.classList.remove('disabled');
       } else {
         saveChangesBtn.classList.add('disabled');
-        console.log('invalid');
       }
     });
   });
@@ -344,8 +343,6 @@ function addInputEventListener(labelText: string, input: HTMLInputElement) {
         isNull<HTMLDivElement>(addressBox);
         const countryInput = addressBox.querySelector('.country-input');
         isNull<HTMLInputElement>(countryInput);
-        console.log(countryInput.value);
-
         validationRegPage.validateInputPostalCode(countryInput, input, error);
       });
       break;

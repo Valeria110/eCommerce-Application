@@ -116,7 +116,6 @@ function canSubmitForm(): boolean {
 function showOrHidePassword() {
   const passwordInput = document.querySelector('.password-input');
   const showPasswordBtn = document.querySelector('.show-password-btn');
-  console.log(passwordInput, showPasswordBtn);
 
   isNull<HTMLInputElement>(passwordInput);
   isNull<HTMLImageElement>(showPasswordBtn);
