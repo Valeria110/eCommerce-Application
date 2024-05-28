@@ -57,6 +57,7 @@ export default class Bootstrap {
     const li = this.createElement('li', liClass + ' ' + className);
 
     const a = this.createElement('a', 'nav-link', text);
+    a.href = '#';
     if (isDisabled) {
       a.classList.add('disabled');
     }
