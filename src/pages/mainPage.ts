@@ -28,5 +28,6 @@ export default function mainPage() {
       localStorage.setItem('registerTrue', '');
     }, 100);
   }
+
   return div;
 }

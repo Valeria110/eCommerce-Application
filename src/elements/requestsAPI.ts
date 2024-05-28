@@ -219,21 +219,44 @@ class RequestFetch {
   }
 
   async getProducts() {
-    // use customer token for this
+    const limit = 100;
+    const url = `${this.host}/${this.projectKey}/products?limit=${limit}`;
+
     try {
-      const response = await fetch(`${this.host}/${this.projectKey}/products`, {
+      const response = await fetch(url, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${this.customerToken}`,
+          Authorization: `Bearer ${await this.projectToken}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      await this.checkResponse(response);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
 
-      const obj = await response.json();
-      console.log(obj.results);
-      return response.ok;
+      const resultProducts = await response.json();
+      return resultProducts;
     } catch (error) {
-      return false;
+      console.error('API error:', (error as Error).message);
+    }
+  }
+
+  async getCategories() {
+    try {
+      const url = `${this.host}/${this.projectKey}/categories`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${await this.projectToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const resultCategories = await response.json();
+      return resultCategories;
+    } catch (error) {
+      console.error('API error:', (error as Error).message);
     }
   }
 

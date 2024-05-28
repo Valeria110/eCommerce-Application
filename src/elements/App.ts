@@ -3,18 +3,18 @@ import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
-import catalog from '../pages/catalog';
 import aboutUS from '../pages/aboutUs';
 import header from './header/header';
 import error404Page from '../pages/error404Page';
 import footer from './footer/footer';
 import product from './product/product';
+import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
 
 export default class App {
   start(): void {
     localStorage.setItem('version', '1');
-    handleLocation();
+    // handleLocation();  causes main to be called again
   }
 }
 
@@ -47,7 +47,7 @@ function renderPage(newPage: Pages, productId: string | undefined) {
       document.body.append(mainPage());
       break;
     case Pages.Catalog:
-      document.body.append(catalog());
+      document.body.append(generateCatalogPage());
       break;
     case Pages.AboutUS:
       document.body.append(aboutUS());
