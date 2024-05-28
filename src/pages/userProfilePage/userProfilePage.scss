@@ -65,21 +65,23 @@ $input-border-color: rgba(254, 178, 114, 0.3);
       }
     }
 
-    .personal-info__inputs-container {
+    .personal-info__inputs-container,
+    .addresses-info__inputs-container {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
       column-gap: 134px;
       row-gap: 40px;
 
       @media screen and (max-width: 768px) {
         & {
           grid-template-columns: 1fr;
-          grid-template-rows: repeat(3, 1fr);
+          grid-template-rows: repeat(5, 1fr);
           column-gap: 24px;
         }
       }
 
       .user-profile-form__label {
+        position: relative;
         gap: 8px;
         color: $grey-400;
 
@@ -89,6 +91,35 @@ $input-border-color: rgba(254, 178, 114, 0.3);
           padding: 16px;
           background-color: $input-bgc;
           border: 1px solid $input-border-color;
+        }
+
+        .user-profile-form__show-password-btn {
+          position: absolute;
+          top: 43px;
+          right: 45px;
+          cursor: pointer;
+        }
+
+        .error {
+          margin-top: 8px;
+          text-align: left;
+        }
+      }
+
+      input[type='date'] {
+        padding-right: 40px !important;
+      }
+    }
+
+    .addresses-info__inputs-container {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+
+      @media screen and (max-width: 768px) {
+        & {
+          grid-template-columns: 1fr;
+          grid-template-rows: repeat(4, 1fr);
+          column-gap: 24px;
         }
       }
     }

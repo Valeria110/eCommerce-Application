@@ -1,9 +1,14 @@
 import './userProfilePage.scss';
+import * as validationRegPage from '../registration-page/validationInputsShippingAndBillingAddressForms';
+import * as personalInfoValidation from '../registration-page/validationInputsRegistrationForm';
+import { AppEvents, IAddressObj } from '../../elements/types';
 
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import requestsAPI from '../../elements/requestsAPI';
 import { countriesList, isNull } from '../../utils/utils';
+import eyeOffIcon from '../../img/eye-off-icon.svg';
+import { showOrHidePassword } from '../../elements/loginValidation';
 
 function userProfilePage(): HTMLElement {
   const main = Bootstrap.createElement('main', 'user-profile-main d-flex flex-column');
@@ -21,6 +26,11 @@ function userProfilePage(): HTMLElement {
     'user-profile-header__email',
     localStorage.getItem('customerEmail') as string,
   );
+
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    userFullname.textContent = `${requestsAPI.customerData.firstName} ${requestsAPI.customerData.lastName}`;
+    userEmail.textContent = `${requestsAPI.customerData.email}`;
+  });
 
   const userProfileForm = Bootstrap.createElement('form', 'user-profile-form d-flex flex-column');
   userProfileForm.setAttribute('novalidate', '');
@@ -102,7 +112,31 @@ function createPersonalInfoBox(): HTMLElement {
   dateOfBirthInput.value = requestsAPI.customerData.dateOfBirth;
   dateOfBirthInput.dataset.initialValue = requestsAPI.customerData.dateOfBirth;
 
-  inputsContainer.append(nameLabel, lastnameLabel, dateOfBirthLabel);
+  const emailLabel = createInputAndLabelElem('Email', 'email');
+  const emailInput = emailLabel.querySelector('input');
+  isNull<HTMLInputElement>(emailInput);
+  emailInput.value = requestsAPI.customerData.email;
+  emailInput.dataset.initialValue = requestsAPI.customerData.email;
+
+  const passwordLabel = createInputAndLabelElem('Password', 'password');
+  const passwordInput = passwordLabel.querySelector('input');
+  isNull<HTMLInputElement>(passwordInput);
+  passwordInput.value = requestsAPI.customerData.password;
+  passwordInput.dataset.initialValue = requestsAPI.customerData.password;
+  const showPasswordBtn = Bootstrap.createElement('img', 'show-password-btn user-profile-form__show-password-btn');
+  showPasswordBtn.src = eyeOffIcon as string;
+  showPasswordBtn.addEventListener('click', showOrHidePassword);
+  passwordLabel.appendChild(showPasswordBtn);
+
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    nameInput.value = `${requestsAPI.customerData.firstName}`;
+    lastNameInput.value = `${requestsAPI.customerData.lastName}`;
+    emailInput.value = `${requestsAPI.customerData.email}`;
+    dateOfBirthInput.value = `${requestsAPI.customerData.dateOfBirth}`;
+    passwordInput.value = `${requestsAPI.customerData.password}`;
+  });
+
+  inputsContainer.append(nameLabel, lastnameLabel, dateOfBirthLabel, emailLabel, passwordLabel);
 
   personalInfoBox.append(personalInfoBoxTitle, inputsContainer);
 
@@ -131,7 +165,7 @@ function createShippingAddressBlock(addressIndex: number): HTMLElement {
   } else {
     shippingAddressBoxTitle.textContent = 'Shipping address';
   }
-  const inputsContainer = Bootstrap.createElement('div', 'personal-info__inputs-container d-grid');
+  const inputsContainer = Bootstrap.createElement('div', 'addresses-info__inputs-container d-grid');
 
   const countryLabel = createInputAndLabelElem('Country', 'text');
   const countryInput = countryLabel.querySelector('input');
@@ -149,14 +183,24 @@ function createShippingAddressBlock(addressIndex: number): HTMLElement {
   const zipcodeInput = zipcodeLabel.querySelector('input');
   isNull<HTMLInputElement>(zipcodeInput);
 
-  countryInput.value = shippingAddressObj ? countriesList[shippingAddressObj.country] : '';
-  countryInput.dataset.initialValue = shippingAddressObj ? countriesList[shippingAddressObj.country] : '';
-  cityInput.value = shippingAddressObj ? shippingAddressObj.city : '';
-  cityInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.city : '';
-  streetInput.value = shippingAddressObj ? shippingAddressObj.streetName : '';
-  streetInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.streetName : '';
-  zipcodeInput.value = shippingAddressObj ? shippingAddressObj.postalCode : '';
-  zipcodeInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.postalCode : '';
+  const updateAddress = (addressesObj: IAddressObj | null) => {
+    countryInput.value = addressesObj ? countriesList[addressesObj.country] : '';
+    countryInput.dataset.initialValue = addressesObj ? countriesList[addressesObj.country] : '';
+    cityInput.value = addressesObj ? addressesObj.city : '';
+    cityInput.dataset.initialValue = addressesObj ? addressesObj.city : '';
+    streetInput.value = addressesObj ? addressesObj.streetName : '';
+    streetInput.dataset.initialValue = addressesObj ? addressesObj.streetName : '';
+    zipcodeInput.value = addressesObj ? addressesObj.postalCode : '';
+    zipcodeInput.dataset.initialValue = addressesObj ? addressesObj.postalCode : '';
+  };
+
+  updateAddress(shippingAddressObj);
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    const shippingAddresses2 = requestsAPI.getCustomerAddresses().shippingAddresses;
+    if (shippingAddresses2) {
+      updateAddress(shippingAddresses2[addressIndex]);
+    }
+  });
 
   inputsContainer.append(countryLabel, cityLabel, streetLabel, zipcodeLabel);
   shippingAddressBox.append(shippingAddressBoxTitle, inputsContainer);
@@ -182,7 +226,7 @@ function createBillingAddressBlock(addressIndex: number): HTMLElement {
   } else {
     billingAddressBoxTitle.textContent = 'Billing address';
   }
-  const inputsContainer = Bootstrap.createElement('div', 'personal-info__inputs-container d-grid');
+  const inputsContainer = Bootstrap.createElement('div', 'addresses-info__inputs-container d-grid');
 
   const countryLabel = createInputAndLabelElem('Country', 'text');
   const countryInput = countryLabel.querySelector('input');
@@ -200,15 +244,24 @@ function createBillingAddressBlock(addressIndex: number): HTMLElement {
   const zipcodeInput = zipcodeLabel.querySelector('input');
   isNull<HTMLInputElement>(zipcodeInput);
 
-  countryInput.value = billingAddressObj ? countriesList[billingAddressObj.country] : '';
-  countryInput.dataset.initialValue = billingAddressObj ? countriesList[billingAddressObj.country] : '';
-  cityInput.value = billingAddressObj ? billingAddressObj.city : '';
-  cityInput.dataset.initialValue = billingAddressObj ? billingAddressObj.city : '';
-  streetInput.value = billingAddressObj ? billingAddressObj.streetName : '';
-  streetInput.dataset.initialValue = billingAddressObj ? billingAddressObj.streetName : '';
-  zipcodeInput.value = billingAddressObj ? billingAddressObj.postalCode : '';
-  zipcodeInput.dataset.initialValue = billingAddressObj ? billingAddressObj.postalCode : '';
+  const updateAddress = (addressObj: IAddressObj | null) => {
+    countryInput.value = addressObj ? countriesList[addressObj.country] : '';
+    countryInput.dataset.initialValue = addressObj ? countriesList[addressObj.country] : '';
+    cityInput.value = addressObj ? addressObj.city : '';
+    cityInput.dataset.initialValue = addressObj ? addressObj.city : '';
+    streetInput.value = addressObj ? addressObj.streetName : '';
+    streetInput.dataset.initialValue = addressObj ? addressObj.streetName : '';
+    zipcodeInput.value = addressObj ? addressObj.postalCode : '';
+    zipcodeInput.dataset.initialValue = addressObj ? addressObj.postalCode : '';
+  };
+  updateAddress(billingAddressObj);
 
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    const billingAddresses2 = requestsAPI.getCustomerAddresses().shippingAddresses;
+    if (billingAddresses2) {
+      updateAddress(billingAddresses2[addressIndex]);
+    }
+  });
   inputsContainer.append(countryLabel, cityLabel, streetLabel, zipcodeLabel);
   billingAddressBox.append(billingAddressBoxTitle, inputsContainer);
 
@@ -222,6 +275,7 @@ function createInputAndLabelElem(labelText: string, inputType: string) {
   input.setAttribute('type', inputType);
   if (labelText === 'Country') {
     input.setAttribute('list', 'countriesList');
+    input.classList.add('country-input');
     const datalist = Bootstrap.createElement('datalist', 'countries-list');
     datalist.id = 'countriesList';
     Object.keys(countriesList).forEach((key: string) => {
@@ -230,13 +284,86 @@ function createInputAndLabelElem(labelText: string, inputType: string) {
       datalist.appendChild(option);
     });
 
-    label.append(input, datalist);
+    const error = Bootstrap.createElement('div', 'error text-danger');
+    label.append(input, error, datalist);
+    addInputEventListener(labelText, input);
+
     return label;
   }
 
-  label.appendChild(input);
+  if (labelText === 'Password') {
+    input.classList.add('password-input');
+  }
+
+  const error = Bootstrap.createElement('div', 'error text-danger');
+
+  label.append(input, error);
+  addInputEventListener(labelText, input);
 
   return label;
+}
+
+function addInputEventListener(labelText: string, input: HTMLInputElement) {
+  const error = input.nextElementSibling;
+  isNull<HTMLDivElement>(error);
+
+  switch (labelText) {
+    case 'Country':
+      input.addEventListener('input', () => {
+        validationRegPage.validateInputCountry(input, error);
+      });
+      break;
+    case 'City':
+      input.addEventListener('input', () => {
+        validationRegPage.validateInputCity(input, error);
+      });
+      break;
+    case 'Zip code':
+      input.addEventListener('input', () => {
+        const addressBox = input.closest('.addresses-info__inputs-container');
+        isNull<HTMLDivElement>(addressBox);
+        const countryInput = addressBox.querySelector('.country-input');
+        isNull<HTMLInputElement>(countryInput);
+        console.log(countryInput.value);
+
+        validationRegPage.validateInputPostalCode(countryInput, input, error);
+      });
+      break;
+    case 'Street':
+      input.addEventListener('input', () => {
+        validationRegPage.validateInputStreet(input, error);
+      });
+      break;
+    case 'Name':
+      input.addEventListener('input', () => {
+        personalInfoValidation.validateInputFirstName(input, error);
+      });
+      break;
+    case 'Lastname':
+      input.addEventListener('input', () => {
+        personalInfoValidation.validateInputLastName(input, error);
+      });
+      break;
+    case 'Date of birth':
+      input.addEventListener('input', () => {
+        const inputContainer = input.closest('.user-profile-form__label');
+        isNull<HTMLElement>(inputContainer);
+        personalInfoValidation.validateBirthDate(input, error, inputContainer);
+      });
+      break;
+    case 'Email':
+      input.addEventListener('input', () => {
+        personalInfoValidation.validateInputEmail(input, error);
+      });
+      break;
+    case 'Password':
+      input.addEventListener('input', () => {
+        const inputContainer = input.closest('.user-profile-form__label');
+        isNull<HTMLElement>(inputContainer);
+        personalInfoValidation.validateInputPassword(input, error, inputContainer);
+      });
+      break;
+  }
 }
 
 function isInputChanged(input: HTMLInputElement, inputs: HTMLInputElement[]) {

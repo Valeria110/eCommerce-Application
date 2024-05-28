@@ -32,191 +32,143 @@ export function showErrorOnRegistration(
   activateSubmitButton();
 }
 
-export function validateInputFirstName() {
-  if (variablesRegPage.inputForFirstName.value === '') {
+export function validateInputFirstName(nameInput?: HTMLInputElement, error?: HTMLDivElement) {
+  const firstNameInput = nameInput ? nameInput : variablesRegPage.inputForFirstName;
+  const errorBlock = error ? error : variablesRegPage.errorForInputFirstName;
+
+  if (firstNameInput.value === '') {
+    showErrorOnRegistration(firstNameInput, errorBlock, true, 'First name must contain at least one character');
+  } else if (ALL_NUMBERS.test(firstNameInput.value) || ALL_SPECIAL_CHARACTERS.test(firstNameInput.value)) {
     showErrorOnRegistration(
-      variablesRegPage.inputForFirstName,
-      variablesRegPage.errorForInputFirstName,
-      true,
-      'First name must contain at least one character',
-    );
-  } else if (
-    ALL_NUMBERS.test(variablesRegPage.inputForFirstName.value) ||
-    ALL_SPECIAL_CHARACTERS.test(variablesRegPage.inputForFirstName.value)
-  ) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForFirstName,
-      variablesRegPage.errorForInputFirstName,
+      firstNameInput,
+      errorBlock,
       true,
       'First name must not contain special characters or numbers',
     );
   } else {
-    showErrorOnRegistration(variablesRegPage.inputForFirstName, variablesRegPage.errorForInputFirstName, false);
+    showErrorOnRegistration(firstNameInput, errorBlock, false);
   }
 }
 
-export function validateInputLastName() {
-  if (variablesRegPage.inputForLastName.value === '') {
+export function validateInputLastName(input?: HTMLInputElement, error?: HTMLDivElement) {
+  const lastNameInput = input ? input : variablesRegPage.inputForLastName;
+  const errorBlock = error ? error : variablesRegPage.errorForInputLastName;
+
+  if (lastNameInput.value === '') {
+    showErrorOnRegistration(lastNameInput, errorBlock, true, 'First name must contain at least one character');
+  } else if (ALL_NUMBERS.test(lastNameInput.value) || ALL_SPECIAL_CHARACTERS.test(lastNameInput.value)) {
     showErrorOnRegistration(
-      variablesRegPage.inputForLastName,
-      variablesRegPage.errorForInputLastName,
-      true,
-      'First name must contain at least one character',
-    );
-  } else if (
-    ALL_NUMBERS.test(variablesRegPage.inputForLastName.value) ||
-    ALL_SPECIAL_CHARACTERS.test(variablesRegPage.inputForLastName.value)
-  ) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForLastName,
-      variablesRegPage.errorForInputLastName,
+      lastNameInput,
+      errorBlock,
       true,
       'First name must not contain special characters or numbers',
     );
   } else {
-    showErrorOnRegistration(variablesRegPage.inputForLastName, variablesRegPage.errorForInputLastName, false);
+    showErrorOnRegistration(lastNameInput, errorBlock, false);
   }
 }
 
-export function validateInputEmail() {
+export function validateInputEmail(input?: HTMLInputElement, error?: HTMLDivElement) {
+  const emailInput = input ? input : variablesRegPage.inputForEmail;
+  const errorBlock = error ? error : variablesRegPage.errorForInputEmail;
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (variablesRegPage.inputForEmail.value === '') {
+  if (emailInput.value === '') {
+    showErrorOnRegistration(emailInput, errorBlock, true, 'This field is required');
+  } else if (emailInput.validity.typeMismatch || !emailRegex.test(emailInput.value)) {
+    showErrorOnRegistration(emailInput, errorBlock, true, 'Email must be properly formatted (e.g., user@example.com)');
+  } else if (emailInput.validity.tooShort) {
     showErrorOnRegistration(
-      variablesRegPage.inputForEmail,
-      variablesRegPage.errorForInputEmail,
+      emailInput,
+      errorBlock,
       true,
-      'This field is required',
+      `Email should be at least 8 characters; you entered ${emailInput.value.length}`,
     );
-  } else if (
-    variablesRegPage.inputForEmail.validity.typeMismatch ||
-    !emailRegex.test(variablesRegPage.inputForEmail.value)
-  ) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForEmail,
-      variablesRegPage.errorForInputEmail,
-      true,
-      'Email must be properly formatted (e.g., user@example.com)',
-    );
-  } else if (variablesRegPage.inputForEmail.validity.tooShort) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForEmail,
-      variablesRegPage.errorForInputEmail,
-      true,
-      `Email should be at least 8 characters; you entered ${variablesRegPage.inputForEmail.value.length}`,
-    );
-  } else if (isContainLeadingTrailingWhitespace(variablesRegPage.inputForEmail.value)) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForEmail,
-      variablesRegPage.errorForInputEmail,
-      true,
-      'Email must not contain leading or trailing whitespace',
-    );
+  } else if (isContainLeadingTrailingWhitespace(emailInput.value)) {
+    showErrorOnRegistration(emailInput, errorBlock, true, 'Email must not contain leading or trailing whitespace');
   } else {
-    showErrorOnRegistration(variablesRegPage.inputForEmail, variablesRegPage.errorForInputEmail, false);
+    showErrorOnRegistration(emailInput, errorBlock, false);
   }
 }
 
-function validateBirthDate() {
-  const selectedDate = new Date(variablesRegPage.inputForBirthDate.value);
+export function validateBirthDate(input?: HTMLInputElement, error?: HTMLDivElement, inputContainer?: HTMLElement) {
+  const birthDateInput = input ? input : variablesRegPage.inputForBirthDate;
+  const errorBlock = error ? error : variablesRegPage.errorForInputBirth;
+  const birthDateInputContainer = inputContainer ? inputContainer : variablesRegPage.containerForInputBirth;
+  const selectedDate = new Date(birthDateInput.value);
   const currentDate = new Date();
   const ageDifference = currentDate.getFullYear() - selectedDate.getFullYear();
 
-  if (variablesRegPage.inputForBirthDate.value === '') {
-    showErrorOnRegistration(
-      variablesRegPage.inputForBirthDate,
-      variablesRegPage.errorForInputBirth,
-      true,
-      'This field is required',
-    );
-    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+  if (birthDateInput.value === '') {
+    showErrorOnRegistration(birthDateInput, errorBlock, true, 'This field is required');
+    birthDateInputContainer.style.marginBottom = '0px';
   } else if (ageDifference < MIN_AGE) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForBirthDate,
-      variablesRegPage.errorForInputBirth,
-      true,
-      'Minimum age must be at least 13 years',
-    );
-    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+    showErrorOnRegistration(birthDateInput, errorBlock, true, 'Minimum age must be at least 13 years');
+    birthDateInputContainer.style.marginBottom = '0px';
   } else if (ageDifference > MAX_AGE) {
-    showErrorOnRegistration(
-      variablesRegPage.inputForBirthDate,
-      variablesRegPage.errorForInputBirth,
-      true,
-      'Age cannot exceed 100 years',
-    );
-    variablesRegPage.containerForInputBirth.style.marginBottom = '0px';
+    showErrorOnRegistration(birthDateInput, errorBlock, true, 'Age cannot exceed 100 years');
+    birthDateInputContainer.style.marginBottom = '0px';
   } else {
-    variablesRegPage.containerForInputBirth.style.marginBottom = '16px';
-    showErrorOnRegistration(variablesRegPage.inputForBirthDate, variablesRegPage.errorForInputBirth, false);
+    birthDateInputContainer.style.marginBottom = '16px';
+    showErrorOnRegistration(birthDateInput, errorBlock, false);
   }
 }
 
 export function replaceInputType() {
   variablesRegPage.inputForBirthDate.type = 'date';
   variablesRegPage.inputForBirthDate.removeEventListener('click', replaceInputType);
-  variablesRegPage.inputForBirthDate.addEventListener('input', validateBirthDate);
+  variablesRegPage.inputForBirthDate.addEventListener('input', () => validateBirthDate());
 }
 
-export function validateInputPassword() {
-  if (variablesRegPage.inputForPassword.value === '') {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+export function validateInputPassword(input?: HTMLInputElement, error?: HTMLDivElement, inputContainer?: HTMLElement) {
+  const passwordInput = input ? input : variablesRegPage.inputForPassword;
+  const errorBlock = error ? error : variablesRegPage.errorForInputPassword;
+  const passwordInputContainer = inputContainer ? inputContainer : variablesRegPage.containerForInputPassword;
+
+  if (passwordInput.value === '') {
+    passwordInputContainer.style.marginBottom = '0px';
+    showErrorOnRegistration(passwordInput, errorBlock, true, 'This field is required');
+  } else if (passwordInput.value.includes(' ')) {
+    passwordInputContainer.style.marginBottom = '0px';
+    showErrorOnRegistration(passwordInput, errorBlock, true, 'Password must not contain whitespace');
+  } else if (!ALL_NUMBERS.test(passwordInput.value)) {
+    passwordInputContainer.style.marginBottom = '0px';
+    showErrorOnRegistration(passwordInput, errorBlock, true, 'Password must must contain at least one digit');
+  } else if (!ALL_LOWERCASE_LETTERS.test(passwordInput.value)) {
+    passwordInputContainer.style.marginBottom = '0px';
     showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
-      true,
-      'This field is required',
-    );
-  } else if (variablesRegPage.inputForPassword.value.includes(' ')) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
-    showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
-      true,
-      'Password must not contain whitespace',
-    );
-  } else if (!ALL_NUMBERS.test(variablesRegPage.inputForPassword.value)) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
-    showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
-      true,
-      'Password must must contain at least one digit',
-    );
-  } else if (!ALL_LOWERCASE_LETTERS.test(variablesRegPage.inputForPassword.value)) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
-    showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
+      passwordInput,
+      errorBlock,
       true,
       'Password must must contain at least one lowercase letter',
     );
-  } else if (!ALL_UPPERCASE_LETTERS.test(variablesRegPage.inputForPassword.value)) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+  } else if (!ALL_UPPERCASE_LETTERS.test(passwordInput.value)) {
+    passwordInputContainer.style.marginBottom = '0px';
     showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
+      passwordInput,
+      errorBlock,
       true,
       'Password must must contain at least one uppercase letter',
     );
-  } else if (!ALL_SPECIAL_CHARACTERS.test(variablesRegPage.inputForPassword.value)) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+  } else if (!ALL_SPECIAL_CHARACTERS.test(passwordInput.value)) {
+    passwordInputContainer.style.marginBottom = '0px';
     showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
+      passwordInput,
+      errorBlock,
       true,
       'Password must must contain at least one special character (e.g., !@#$%^&*)',
     );
-  } else if (variablesRegPage.inputForPassword.value.length < 8) {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '0px';
+  } else if (passwordInput.value.length < 8) {
+    passwordInputContainer.style.marginBottom = '0px';
     showErrorOnRegistration(
-      variablesRegPage.inputForPassword,
-      variablesRegPage.errorForInputPassword,
+      passwordInput,
+      errorBlock,
       true,
-      `Password should be at least 8 characters; you entered ${variablesRegPage.inputForPassword.value.length}`,
+      `Password should be at least 8 characters; you entered ${passwordInput.value.length}`,
     );
   } else {
-    variablesRegPage.containerForInputPassword.style.marginBottom = '16px';
-    showErrorOnRegistration(variablesRegPage.inputForPassword, variablesRegPage.errorForInputPassword, false);
+    passwordInputContainer.style.marginBottom = '16px';
+    showErrorOnRegistration(passwordInput, errorBlock, false);
   }
 }
 

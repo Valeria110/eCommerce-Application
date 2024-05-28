@@ -12,6 +12,7 @@ export enum Pages {
 export enum AppEvents {
   switchPage = 'switchPage',
   updateUserName = 'updateUserName',
+  setUserAddresses = 'setUserAddresses',
 }
 
 export interface Product {

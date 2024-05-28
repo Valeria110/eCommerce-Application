@@ -90,7 +90,7 @@ function showError(input: HTMLInputElement, errorMessage: string) {
   input.classList.add('is-invalid');
   input.classList.remove('is-valid');
 
-  const submitBtn = document.querySelector('.login-form__submit-btn');
+  const submitBtn = document.querySelector('.submit-btn');
   isNull<HTMLButtonElement>(submitBtn);
   submitBtn.classList.add('disabled');
 }
@@ -114,8 +114,10 @@ function canSubmitForm(): boolean {
 }
 
 function showOrHidePassword() {
-  const passwordInput = document.querySelector('.login-form__password-input');
-  const showPasswordBtn = document.querySelector('.login-form__show-password-btn');
+  const passwordInput = document.querySelector('.password-input');
+  const showPasswordBtn = document.querySelector('.show-password-btn');
+  console.log(passwordInput, showPasswordBtn);
+
   isNull<HTMLInputElement>(passwordInput);
   isNull<HTMLImageElement>(showPasswordBtn);
 

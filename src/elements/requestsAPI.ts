@@ -29,6 +29,7 @@ class RequestFetch {
     lastName: '',
     id: '',
     dateOfBirth: '',
+    password: '',
   };
 
   #customerAddresses: {
@@ -66,6 +67,7 @@ class RequestFetch {
       await this.authProjectToken();
       if (this.#customerData.email) {
         await this.updateUserData();
+        await this.setUserAddresses();
       }
       document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     })();
@@ -213,6 +215,7 @@ class RequestFetch {
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
       this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
+      this.#customerData.password = customers.results[0].password;
     } else {
       console.error('problem with request updateUserData');
     }
