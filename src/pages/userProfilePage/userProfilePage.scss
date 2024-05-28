@@ -1,9 +1,10 @@
 $grey-400: #999999;
 $input-bgc: rgba(254, 178, 114, 0.08);
 $input-border-color: rgba(254, 178, 114, 0.3);
+$orange-400: #fd9843;
 
 .user-profile-main {
-  width: 47rem;
+  width: auto;
   margin: 0 auto;
   margin-top: 9rem;
   gap: 96px;
@@ -53,8 +54,22 @@ $input-border-color: rgba(254, 178, 114, 0.3);
   }
 
   .user-profile-form {
+    max-width: 766px;
     margin-bottom: 144px;
+    padding: 10px;
     gap: 96px;
+    box-shadow: (0px 4px 30px rgba(181, 181, 181, 0.2));
+
+    .edit-btn {
+      gap: 7px;
+      margin-left: auto;
+      align-items: center;
+      color: $orange-400;
+    }
+
+    .read-form-btn {
+      color: #999999;
+    }
 
     .user-profile-form__personal-info {
       gap: 40px;

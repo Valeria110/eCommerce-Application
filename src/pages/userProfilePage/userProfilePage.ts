@@ -2,6 +2,7 @@ import './userProfilePage.scss';
 import * as validationRegPage from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import * as personalInfoValidation from '../registration-page/validationInputsRegistrationForm';
 import { AppEvents, IAddressObj } from '../../elements/types';
+import pencilIcon from '../../img/pencil-icon.svg';
 
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import userPhotoSrc from './../../img/placeholderUser.png';
@@ -32,7 +33,7 @@ function userProfilePage(): HTMLElement {
     userEmail.textContent = `${requestsAPI.customerData.email}`;
   });
 
-  const userProfileForm = Bootstrap.createElement('form', 'user-profile-form d-flex flex-column');
+  const userProfileForm = Bootstrap.createElement('form', 'user-profile-form d-flex flex-column readonly-mode');
   userProfileForm.setAttribute('novalidate', '');
   const personalInfoBox = createPersonalInfoBox();
   const addressesInfoBox = Bootstrap.createElement('div', 'user-profile-form__addresses-info d-flex flex-column');
@@ -41,7 +42,17 @@ function userProfilePage(): HTMLElement {
     'user-profile-form__addresses-info-title fw-bold',
     'Addresses',
   );
+  const editBtn = Bootstrap.createElement('button', 'btn edit-btn d-flex justify-content-center');
+  const pencilImg = Bootstrap.createElement('img', 'user-profile-form__pencil-img');
+  pencilImg.src = pencilIcon as string;
+  const editBtnText = Bootstrap.createElement('span', 'edit-btn__text', 'edit');
+  editBtn.append(pencilImg, editBtnText);
+  editBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleMode(editBtn, editBtnText);
+  });
 
+  userProfileForm.appendChild(editBtn);
   main.append(userProfileHeader, userProfileForm);
   userProfileHeader.append(userImg, userProfileHeaderInfo);
   userProfileHeaderInfo.append(userFullname, userEmail);
@@ -64,10 +75,11 @@ function userProfilePage(): HTMLElement {
 
   const saveChangesBtn = Bootstrap.createButton(
     'Save changes',
-    'btn btn-orange border-0 btn-style-default save-changes-btn disabled',
+    'btn btn-orange border-0 btn-style-default save-changes-btn disabled d-none',
   );
   saveChangesBtn.addEventListener('click', (e) => {
     e.preventDefault();
+    toggleMode(editBtn, editBtnText);
   });
 
   userProfileForm.append(saveChangesBtn);
@@ -78,6 +90,12 @@ function userProfilePage(): HTMLElement {
   inputs.forEach((input) => {
     input.addEventListener('input', () => {
       isInputChanged(input, inputs);
+      if (isFormValid()) {
+        saveChangesBtn.classList.remove('disabled');
+      } else {
+        saveChangesBtn.classList.add('disabled');
+        console.log('invalid');
+      }
     });
   });
 
@@ -270,14 +288,16 @@ function createBillingAddressBlock(addressIndex: number): HTMLElement {
 
 function createInputAndLabelElem(labelText: string, inputType: string) {
   const label = Bootstrap.createElement('label', 'user-profile-form__label form-label d-flex flex-column', labelText);
-
   const input = Bootstrap.createElement('input', 'user-profile-form__input form-control');
   input.setAttribute('type', inputType);
+  input.setAttribute('readonly', '');
+
   if (labelText === 'Country') {
     input.setAttribute('list', 'countriesList');
     input.classList.add('country-input');
     const datalist = Bootstrap.createElement('datalist', 'countries-list');
     datalist.id = 'countriesList';
+
     Object.keys(countriesList).forEach((key: string) => {
       const option = Bootstrap.createElement('option', 'country-option');
       option.value = countriesList[key];
@@ -401,6 +421,33 @@ function isDefaultAddress(addressType: 'shipping' | 'billing', shippingAddressId
     const defaultBillingAddressId = defaultBillingAddress.id;
     return defaultBillingAddressId === shippingAddressId;
   }
+}
+
+function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement) {
+  const inputs = Array.from(document.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
+  const saveChangesBtn = document.querySelector('.save-changes-btn');
+  isNull<HTMLButtonElement>(saveChangesBtn);
+
+  inputs.forEach((input: HTMLInputElement | null) => {
+    isNull<HTMLInputElement>(input);
+    if (input.hasAttribute('readonly')) {
+      input.removeAttribute('readonly');
+      saveChangesBtn.classList.remove('d-none');
+      editBtn.classList.add('read-form-btn');
+      editBtnText.textContent = 'back';
+    } else {
+      input.setAttribute('readonly', '');
+      saveChangesBtn.classList.add('d-none');
+      editBtn.classList.remove('read-form-btn');
+      editBtnText.textContent = 'edit';
+    }
+  });
+}
+
+function isFormValid() {
+  const inputs = Array.from(document.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
+  const isValid = !inputs.some((input) => input.classList.contains('is-invalid'));
+  return isValid;
 }
 
 export { userProfilePage };
