@@ -38,7 +38,8 @@ export interface InfoBook {
       };
     };
   };
-  
+}
+
 export interface IAddressObj {
   id: string;
   city: string;
