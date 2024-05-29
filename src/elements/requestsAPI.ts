@@ -311,7 +311,7 @@ class RequestFetch {
         author: getAttributesValue(attributes, 'author') ?? '',
         prices: {
           regular: pricesRegular.centAmount,
-          discounted: pricesDiscount.value.centAmount ?? undefined,
+          discounted: pricesDiscount?.value?.centAmount,
         },
         images: img.map((item) => item.url),
       };

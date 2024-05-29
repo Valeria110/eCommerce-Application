@@ -1,0 +1,40 @@
+$gray_text: rgb(153, 153, 153);
+.product {
+  &__title {
+    color: black;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 39px;
+  }
+  &__author {
+    color: $gray_text;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 29px;
+  }
+  &__description {
+    color: $gray_text;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+  }
+
+  &__cards-price_current {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 48px;
+  }
+
+  &__cards-price-container {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__cards-price_previous{
+    color: $gray_text;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
+    text-decoration-line: line-through;
+  }
+}
