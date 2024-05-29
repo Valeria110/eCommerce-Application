@@ -4,6 +4,23 @@ import { AppEvents, Product, IAddressObj, IUserData } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
+interface Attribute {
+  name: string;
+  value: string;
+}
+
+function getAttributesValue(
+  attributes: Attribute[],
+  name: 'title' | 'author' | 'description' | 'year' | 'publishingHouse',
+): string | null {
+  for (const attribute of attributes) {
+    if (attribute.name === name) {
+      return attribute.value;
+    }
+  }
+  return null; // возвращает null, если имя не найдено
+}
+
 class RequestFetch {
   base64Auth: string;
 
@@ -275,12 +292,31 @@ class RequestFetch {
       }
 
       const obj = await response.json();
+      const attributes = obj.masterData.current.masterVariant.attributes;
+      const pricesRegular = obj.masterData.current.masterVariant.prices.at(0).value;
+      const pricesDiscount = obj.masterData.current.masterVariant.prices.at(0).discounted;
+      const img: {
+        url: string;
+        dimensions: {
+          w: number;
+          h: number;
+        };
+      }[] = obj.masterData.current.masterVariant.images;
+      console.log('attributes', attributes);
       return {
         title: obj.masterData.current.name['en-US'],
-        description: obj.masterData.current.description['en-US'],
+        description:
+          obj.masterData.current.description?.['en-US'] ?? getAttributesValue(attributes, 'description') ?? '',
         slug: obj.masterData.current.slug['en-US'],
+        author: getAttributesValue(attributes, 'author') ?? '',
+        prices: {
+          regular: pricesRegular.centAmount,
+          discounted: pricesDiscount.value.centAmount ?? undefined,
+        },
+        images: img.map((item) => item.url),
       };
     } catch (error) {
+      console.error(error);
       return undefined;
     }
   }
