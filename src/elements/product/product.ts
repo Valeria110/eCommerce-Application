@@ -5,16 +5,29 @@ import switchPage from '../switchPage';
 import { Pages, Product } from '../types';
 import './product.scss';
 
+// TODO: img with proporthios
+// TODO: disable add to card & buy without price
+
 let activeIndexImg = 0;
 let linkMainImg: HTMLElement;
-const dots: HTMLElement[] = [];
+let dots: HTMLElement[] = [];
+let cardDiscounted: HTMLDivElement;
 const updateActiveIndexRenderMain = (response: Product, index: number) => {
   activeIndexImg = index;
 
   dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
-  const dot = dots.at(activeIndexImg);
+  const dot = dots.at(index);
   if (dot) {
     dot.classList.add('productTabs__circle_active');
+  }
+
+  // discount only for first page
+  if (cardDiscounted) {
+    if (index === 0) {
+      cardDiscounted.classList.add('mainImg__cards-discounted');
+    } else {
+      cardDiscounted.classList.remove('mainImg__cards-discounted');
+    }
   }
 
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
@@ -22,17 +35,21 @@ const updateActiveIndexRenderMain = (response: Product, index: number) => {
 
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
-  const page = Bootstrap.createElement('div', 'd-flex flex-column');
+  const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
     console.log('product response', response);
     if (response) {
-      const cardProduct = Bootstrap.createElement('div', 'd-flex justify-content-center align-items-center');
+      const cardProduct = Bootstrap.createElement('div', 'productCard');
       cardProduct.append(createLeftColumn(response));
       cardProduct.append(createRightColumn(response));
 
-      page.append(createCatalogPath(response.title), cardProduct); // TODO: replace svg icon
+      page.append(
+        createCatalogPath(response.title),
+        cardProduct,
+        Bootstrap.createElement('div', '', 'Place for You might light it'),
+      ); // TODO: replace svg icon
     } else {
       switchPage(Pages.Error404);
     }
@@ -42,10 +59,11 @@ export default function product(id: string) {
 }
 
 function createRightColumn(response: Product) {
-  const column = Bootstrap.createElement('div', 'd-flex flex-column justify-content-center w-50');
+  const column = Bootstrap.createElement('div', 'productCard__right');
 
-  column.append(Bootstrap.createElement('h2', 'product__titile', response.title));
+  column.append(Bootstrap.createElement('h2', 'product__title', response.title));
   column.append(Bootstrap.createElement('h3', 'product__author', response.author));
+  column.append(Bootstrap.createElement('p', 'product__summary', 'Summary'));
   column.append(Bootstrap.createElement('p', 'product__description', response.description));
 
   const prices = Bootstrap.createElement('div', 'product__cards-price-container');
@@ -63,7 +81,7 @@ function createRightColumn(response: Product) {
   }
 
   const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 btn-style-default w-50 mx-1');
-  const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white btn-style-default w-25 mx-1');
+  const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white btn-style-default mx-1 product__btnAddToCard');
   const wrapperBtn = Bootstrap.createElement('div');
   wrapperBtn.append(buyBtn);
   wrapperBtn.append(addCartBtn);
@@ -86,15 +104,15 @@ function getProcentDiscount(response: Product) {
 }
 
 function createLeftColumn(response: Product) {
-  const container = Bootstrap.createElement('div', 'd-flex');
+  const container = Bootstrap.createElement('div', 'productCard__left');
 
-  container.append(createPreviewImg(response));
+  container.append(createPreviewsImg(response));
   container.append(createMainImgPage(response));
 
   return container;
 }
 
-function createPreviewImg(response: Product, limitImg = 3) {
+function createPreviewsImg(response: Product, limitImg = 3) {
   const container = Bootstrap.createElement('div', 'productPreviewImg');
 
   if (response.images.length <= 1) {
@@ -116,13 +134,13 @@ function createPreviewImg(response: Product, limitImg = 3) {
 
 function createMainImgPage(response: Product) {
   const containerForCard = createElement('div', '');
-  const containerForBook = createElement('div', 'catalog-page__cards-body');
-  linkMainImg = createElement('div', 'catalog-page__cards-cover');
+  const containerForBook = createElement('div', 'mainImg__cards-body');
+  linkMainImg = createElement('div', 'mainImg__cards-cover');
 
   updateActiveIndexRenderMain(response, 0);
 
   if (response.prices.discounted) {
-    const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', getProcentDiscount(response));
+    cardDiscounted = createElement('div', 'mainImg__cards-discounted', getProcentDiscount(response));
     linkMainImg.append(cardDiscounted);
   }
 
@@ -135,6 +153,7 @@ function createMainImgPage(response: Product) {
 }
 
 function createImgTabs(response: Product) {
+  dots = [];
   const container = Bootstrap.createElement('div', 'productTabs');
 
   if (response.images.length <= 1) {
@@ -142,13 +161,16 @@ function createImgTabs(response: Product) {
   }
 
   response.images.forEach((img, index) => {
+    const dotWrapper = Bootstrap.createElement('div', 'productTabs__circleWrapper');
     const dot = Bootstrap.createElement('div', 'productTabs__circle');
-    dot.addEventListener('click', () => {
+    dotWrapper.append(dot);
+
+    dotWrapper.addEventListener('click', () => {
       updateActiveIndexRenderMain(response, index);
     });
     dots.push(dot);
+    container.append(dotWrapper);
   });
-  container.append(...dots);
 
   updateActiveIndexRenderMain(response, activeIndexImg); // 0 - in first time
   return container;
@@ -168,7 +190,7 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
     switchPage(Pages.Catalog);
   });
   li1.append(a);
-  const li2 = Bootstrap.createElement('li', ['breadcrumb-item', 'active']);
+  const li2 = Bootstrap.createElement('li', 'breadcrumb-item active catalogPath__title');
   li2.setAttribute('aria-current', 'page');
   li2.textContent = title;
   ol.append(li1, li2);

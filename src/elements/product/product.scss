@@ -1,3 +1,4 @@
+@import './../../breakpoints.scss';
 $gray_text: rgb(153, 153, 153);
 .product {
   &__title {
@@ -5,29 +6,40 @@ $gray_text: rgb(153, 153, 153);
     font-size: 32px;
     font-weight: 600;
     line-height: 39px;
+    margin-bottom: 8px;
   }
   &__author {
     color: $gray_text;
     font-size: 24px;
     font-weight: 400;
     line-height: 29px;
+    margin-bottom: 32px;
+  }
+  &__summary {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
+    margin-bottom: 8px;
   }
   &__description {
     color: $gray_text;
     font-size: 16px;
     font-weight: 400;
     line-height: 140%;
+    margin-bottom: 32px;
+  }
+
+  &__cards-price-container {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
   }
 
   &__cards-price_current {
     font-size: 40px;
     font-weight: 600;
     line-height: 48px;
-  }
-
-  &__cards-price-container {
-    display: flex;
-    gap: 4px;
   }
 
   &__cards-price_previous {
@@ -37,6 +49,45 @@ $gray_text: rgb(153, 153, 153);
     line-height: 29px;
     text-decoration-line: line-through;
   }
+
+  &__btnAddToCard {
+    padding: 16px 24px 16px 24px;
+  }
+
+  &__btnBuy {
+    padding: 16px 24px 16px 24px;
+  }
+}
+
+.productPage {
+  margin-left: 62px;
+
+  @media (width <= $screen-width-tablet) {
+    margin-left: 56px;
+  }
+  @media (width <= $screen-width-mobile) {
+    margin-left: 12px;
+  }
+
+  margin-bottom: 144px;
+}
+
+.productCard {
+  display: flex;
+  // gap: 96px;
+
+  gap: clamp(48px, 6.6%, 96px);
+
+  &__left {
+    display: flex;
+    gap: 22px;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    width: 50% !important;
+  }
 }
 
 .catalogPath {
@@ -44,8 +95,15 @@ $gray_text: rgb(153, 153, 153);
   font-weight: 400;
   line-height: 130%;
 
+  margin-bottom: 65px !important;
+
   &__folder {
     color: $gray_text;
+    text-decoration: none;
+  }
+
+  &__title {
+    color: black !important;
     text-decoration: none;
   }
 
@@ -57,9 +115,13 @@ $gray_text: rgb(153, 153, 153);
 .productTabs {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 10px;
+  justify-content: center;
+
+  margin-top: 19px;
+
+  &__circleWrapper {
+    padding: 5px;
+  }
 
   &__circle {
     width: 10px;
@@ -89,5 +151,45 @@ $gray_text: rgb(153, 153, 153);
     background-position: center;
 
     cursor: pointer;
+  }
+}
+
+.mainImg {
+  &__cards-body {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  &__cards-cover {
+    // TODO: Think about this place
+
+    width: 306px;
+    height: 459px;
+
+    @media (width <= $screen-width-tablet) {
+      width: 208px;
+      height: 311px;
+    }
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    position: relative;
+    // object-fit: cover;
+  }
+
+  &__cards-discounted {
+    color: white;
+    background-color: #fc7e14;
+
+    padding: 10px 24px;
+    position: absolute;
+    bottom: 0px;
+
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
   }
 }
