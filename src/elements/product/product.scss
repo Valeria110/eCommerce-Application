@@ -53,3 +53,41 @@ $gray_text: rgb(153, 153, 153);
   //   transform: rotate(90.00deg);
   // }
 }
+
+.productTabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+
+  &__circle {
+    width: 10px;
+    height: 10px;
+    background: rgb(222, 226, 230);
+    border-radius: 50%;
+
+    &_active {
+      background: rgb(253, 126, 20);
+    }
+  }
+}
+
+.productPreviewImg {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+
+  &__img {
+    box-sizing: border-box;
+    border: 1px solid rgb(173, 181, 189);
+    border-radius: 6px;
+    width: 88px;
+    height: 129px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    cursor: pointer;
+  }
+}

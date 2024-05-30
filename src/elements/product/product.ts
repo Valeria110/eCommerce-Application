@@ -5,6 +5,21 @@ import switchPage from '../switchPage';
 import { Pages, Product } from '../types';
 import './product.scss';
 
+let activeIndexImg = 0;
+let linkMainImg: HTMLElement;
+const dots: HTMLElement[] = [];
+const updateActiveIndexRenderMain = (response: Product, index: number) => {
+  activeIndexImg = index;
+
+  dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
+  const dot = dots.at(activeIndexImg);
+  if (dot) {
+    dot.classList.add('productTabs__circle_active');
+  }
+
+  linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
+};
+
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
   const page = Bootstrap.createElement('div', 'd-flex flex-column');
@@ -71,20 +86,72 @@ function getProcentDiscount(response: Product) {
 }
 
 function createLeftColumn(response: Product) {
-  const containerForCard = createElement('div', 'catalog-page__cards-container');
+  const container = Bootstrap.createElement('div', 'd-flex');
+
+  container.append(createPreviewImg(response));
+  container.append(createMainImgPage(response));
+
+  return container;
+}
+
+function createPreviewImg(response: Product, limitImg = 3) {
+  const container = Bootstrap.createElement('div', 'productPreviewImg');
+
+  if (response.images.length <= 1) {
+    return container;
+  }
+
+  response.images.forEach((img, index) => {
+    if (index < limitImg) {
+      const preview = Bootstrap.createElement('div', 'productPreviewImg__img');
+      preview.style.backgroundImage = `url(${img})`;
+
+      preview.addEventListener('click', () => updateActiveIndexRenderMain(response, index));
+      container.append(preview);
+    }
+  });
+
+  return container;
+}
+
+function createMainImgPage(response: Product) {
+  const containerForCard = createElement('div', '');
   const containerForBook = createElement('div', 'catalog-page__cards-body');
-  const containerForCover = createElement('div', 'catalog-page__cards-cover');
-  containerForCover.style.backgroundImage = `url(${response.images[0]})`;
+  linkMainImg = createElement('div', 'catalog-page__cards-cover');
+
+  updateActiveIndexRenderMain(response, 0);
 
   if (response.prices.discounted) {
     const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', getProcentDiscount(response));
-    containerForCover.append(cardDiscounted);
+    linkMainImg.append(cardDiscounted);
   }
 
   containerForCard.append(containerForBook);
-  containerForBook.append(containerForCover);
+  containerForBook.append(linkMainImg);
+
+  containerForCard.append(createImgTabs(response));
 
   return containerForCard;
+}
+
+function createImgTabs(response: Product) {
+  const container = Bootstrap.createElement('div', 'productTabs');
+
+  if (response.images.length <= 1) {
+    return container;
+  }
+
+  response.images.forEach((img, index) => {
+    const dot = Bootstrap.createElement('div', 'productTabs__circle');
+    dot.addEventListener('click', () => {
+      updateActiveIndexRenderMain(response, index);
+    });
+    dots.push(dot);
+  });
+  container.append(...dots);
+
+  updateActiveIndexRenderMain(response, activeIndexImg); // 0 - in first time
+  return container;
 }
 
 function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
