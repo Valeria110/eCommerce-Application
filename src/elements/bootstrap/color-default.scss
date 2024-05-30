@@ -26,6 +26,24 @@ button.btn.btn-gray {
   }
 }
 
+button.btn.btn-white {
+  color: black;
+  background: white;
+  border: 1px solid rgb(253, 152, 67);
+
+  &:hover {
+    color: white;
+    background: $orange-400;
+    border: 1px solid rgb(253, 152, 67);
+  }
+
+  &:active {
+    color: white;
+    background: rgb(253, 126, 20);
+    border: 1px solid rgb(253, 126, 20);
+  }
+}
+
 .dropdown-orange {
   .dropdown-item {
     padding: 10px 16px 10px 16px;

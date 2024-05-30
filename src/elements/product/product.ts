@@ -6,14 +6,17 @@ import './product.scss';
 
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
-  const page = Bootstrap.createElement('div', 'd-flex justify-content-center align-items-center');
+  const page = Bootstrap.createElement('div', 'd-flex flex-column');
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
     console.log('product response', response);
     if (response) {
-      page.append(createLeftColumn(response));
-      page.append(createRightColumn(response));
+      const cardProduct = Bootstrap.createElement('div', 'd-flex justify-content-center align-items-center');
+      cardProduct.append(createLeftColumn(response));
+      cardProduct.append(createRightColumn(response));
+
+      page.append(createCatalogPath(response.title), cardProduct); // TODO: replace svg icon
     } else {
       switchPage(Pages.Error404);
     }
@@ -24,6 +27,7 @@ export default function product(id: string) {
 
 function createRightColumn(response: Product) {
   const column = Bootstrap.createElement('div', 'd-flex flex-column justify-content-center w-50');
+
   column.append(Bootstrap.createElement('h2', 'product__titile', response.title));
   column.append(Bootstrap.createElement('h3', 'product__author', response.author));
   column.append(Bootstrap.createElement('p', 'product__description', response.description));
@@ -42,7 +46,13 @@ function createRightColumn(response: Product) {
     );
   }
 
-  column.append(prices);
+  const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 btn-style-default w-50 mx-1');
+  const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white btn-style-default w-25 mx-1');
+  const wrapperBtn = Bootstrap.createElement('div');
+  wrapperBtn.append(buyBtn);
+  wrapperBtn.append(addCartBtn);
+
+  column.append(prices, wrapperBtn);
   return column;
 }
 
@@ -56,4 +66,26 @@ function createLeftColumn(response: Product) {
   const column = Bootstrap.createElement('div', 'd-flex flex-column justify-content-center align-items-center w-50');
   column.append(Bootstrap.createElement('div', undefined, 'Place for img'));
   return column;
+}
+
+function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
+  const nav = Bootstrap.createElement('nav', 'breadcrumb catalogPath');
+  nav.style.setProperty('--bs-breadcrumb-divider', '">"');
+  nav.setAttribute('aria-label', 'breadcrumb');
+  const ol = Bootstrap.createElement('ol', 'breadcrumb');
+  const li1 = Bootstrap.createElement('li', 'breadcrumb-item');
+  const a = Bootstrap.createElement('a', 'catalogPath__folder');
+  a.href = '#';
+  a.textContent = folder;
+  a.addEventListener('click', (event) => {
+    event.preventDefault();
+    switchPage(Pages.Catalog);
+  });
+  li1.append(a);
+  const li2 = Bootstrap.createElement('li', ['breadcrumb-item', 'active']);
+  li2.setAttribute('aria-current', 'page');
+  li2.textContent = title;
+  ol.append(li1, li2);
+  nav.append(ol);
+  return nav;
 }

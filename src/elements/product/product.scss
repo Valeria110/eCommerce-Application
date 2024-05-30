@@ -30,11 +30,26 @@ $gray_text: rgb(153, 153, 153);
     gap: 4px;
   }
 
-  &__cards-price_previous{
+  &__cards-price_previous {
     color: $gray_text;
     font-size: 24px;
     font-weight: 600;
     line-height: 29px;
     text-decoration-line: line-through;
   }
+}
+
+.catalogPath{
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 130%;
+
+  &__folder{
+    color: $gray_text;
+    text-decoration: none;
+  }
+
+  // &__arrowRight{
+  //   transform: rotate(90.00deg);
+  // }
 }
