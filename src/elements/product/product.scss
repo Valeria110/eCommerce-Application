@@ -39,12 +39,12 @@ $gray_text: rgb(153, 153, 153);
   }
 }
 
-.catalogPath{
+.catalogPath {
   font-size: 16px;
   font-weight: 400;
   line-height: 130%;
 
-  &__folder{
+  &__folder {
     color: $gray_text;
     text-decoration: none;
   }

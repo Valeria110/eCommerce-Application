@@ -1,4 +1,5 @@
 import Bootstrap from '../bootstrap/Bootstrap';
+import createElement from '../bootstrap/createElement';
 import requestsAPI from '../requestsAPI';
 import switchPage from '../switchPage';
 import { Pages, Product } from '../types';
@@ -61,11 +62,29 @@ function convertCentsToDollars(cents: number) {
   return (dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2)) + '$';
 }
 
+function getProcentDiscount(response: Product) {
+  if (!response.prices.discounted) {
+    return '';
+  }
+  const discount = response.prices.discounted / response.prices.regular;
+  return Math.round(discount * 100) + '%';
+}
+
 function createLeftColumn(response: Product) {
-  console.log(response);
-  const column = Bootstrap.createElement('div', 'd-flex flex-column justify-content-center align-items-center w-50');
-  column.append(Bootstrap.createElement('div', undefined, 'Place for img'));
-  return column;
+  const containerForCard = createElement('div', 'catalog-page__cards-container');
+  const containerForBook = createElement('div', 'catalog-page__cards-body');
+  const containerForCover = createElement('div', 'catalog-page__cards-cover');
+  containerForCover.style.backgroundImage = `url(${response.images[0]})`;
+
+  if (response.prices.discounted) {
+    const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', getProcentDiscount(response));
+    containerForCover.append(cardDiscounted);
+  }
+
+  containerForCard.append(containerForBook);
+  containerForBook.append(containerForCover);
+
+  return containerForCard;
 }
 
 function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
