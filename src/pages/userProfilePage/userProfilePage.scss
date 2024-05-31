@@ -2,6 +2,8 @@ $grey-400: #999999;
 $input-bgc: rgba(254, 178, 114, 0.08);
 $input-border-color: rgba(254, 178, 114, 0.3);
 $orange-400: #fd9843;
+$orange-500: #fd7e14;
+$edited-form-bgc: rgba(254, 178, 114, 0.08);
 
 .user-profile-main {
   width: auto;
@@ -69,6 +71,10 @@ $orange-400: #fd9843;
 
     .read-form-btn {
       color: #999999;
+    }
+
+    .form-in-edit-mode {
+      background-color: $edited-form-bgc;
     }
 
     .user-profile-form__personal-info {
@@ -140,10 +146,40 @@ $orange-400: #fd9843;
     }
 
     .user-profile-form__addresses-info {
-      gap: 40px;
+      gap: 50px;
       @media screen and (max-width: 768px) {
         & {
           align-items: center;
+        }
+      }
+
+      .user-profile-form__shipping-addresses,
+      .user-profile-form__billing-addresses {
+        gap: 50px;
+        align-items: center;
+
+        .add-shipping-address-btn,
+        .add-billing-address-btn {
+          width: 306px;
+          height: 50px;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          border-color: $orange-500;
+          font-weight: 500;
+
+          &:hover {
+            background-color: $orange-500;
+            color: #fff;
+          }
+
+          .plus {
+            font-size: 20px;
+          }
+        }
+
+        .delete-btn {
+          gap: 8px;
         }
       }
 
@@ -155,6 +191,17 @@ $orange-400: #fd9843;
 
       .billing-address-box__title {
         margin-top: 20px;
+      }
+
+      .address-box__checkbox {
+        appearance: none;
+        border: 2px solid $orange-500;
+        outline: none;
+        cursor: pointer;
+
+        &:checked {
+          background-color: $orange-500;
+        }
       }
     }
 

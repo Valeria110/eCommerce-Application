@@ -1,5 +1,6 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
+import { reversedCountriesList } from '../utils/utils';
 import { AppEvents, Product, IAddressObj, IUserData } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
@@ -211,11 +212,27 @@ class RequestFetch {
     const customers = await response.json();
 
     if (customers.results) {
+      console.log(customers.results);
+
       this.#customerData.id = customers.results[0].id;
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
       this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
       this.#customerData.password = customers.results[0].password;
+      this.#customerAddresses.billingAddresses = customers.results[0].billingAddressIds.length
+        ? customers.results[0].billingAddressIds
+        : null;
+      this.#customerAddresses.shippingAddresses = customers.results[0].shippingAddressIds.length
+        ? customers.results[0].shippingAddressIds
+        : null;
+      this.#customerAddresses.defBillingAddress = customers.results[0].defaultBillingAddressId
+        ? customers.results[0].defaultBillingAddressId
+        : null;
+      this.#customerAddresses.defShippingAddress = customers.results[0].defaultShippingAddressId
+        ? customers.results[0].defaultShippingAddressId
+        : null;
+
+      localStorage.setItem('version', customers.results[0].version);
     } else {
       console.error('problem with request updateUserData');
     }
@@ -293,6 +310,11 @@ class RequestFetch {
       body: JSON.stringify(bodyRequest),
     });
 
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('version', data.version);
+    }
+
     return response.json();
   }
 
@@ -308,6 +330,13 @@ class RequestFetch {
   ) {
     const streetObj = splitStreetNameAndNumber(street);
     const url = `${this.host}/${this.projectKey}/customers/${id}`;
+
+    if (country.includes(' ')) {
+      country = splitCountry(country);
+    } else {
+      country = reversedCountriesList[country];
+    }
+
     const bodyRequest = {
       version: Number(localStorage.getItem('version')),
       actions: [
@@ -321,16 +350,17 @@ class RequestFetch {
             streetNumber: streetObj.number,
             postalCode: postalCode,
             city: city,
-            country: splitCountry(country),
+            country,
             email: email,
           },
         },
       ],
     };
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.projectToken}`,
+        Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(bodyRequest),
@@ -474,6 +504,7 @@ class RequestFetch {
 
       if (response.ok) {
         const data = await response.json();
+        localStorage.setItem('version', data.version);
         const addresses = data.addresses;
 
         if (data.defaultBillingAddressId) {
@@ -545,6 +576,7 @@ class RequestFetch {
       this.checkResponse(response);
       if (response.ok) {
         const data = await response.json();
+        localStorage.setItem('version', data.version);
         const customer = data.results.find((userData: IUserData) => userData.id === this.#customerData.id);
         return customer;
       }
@@ -556,9 +588,28 @@ class RequestFetch {
     }
   }
 
+  private async updateUserVersion() {
+    const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+        },
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('version', data.version);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   public async updateUserFirstName(newName: string) {
     const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
-    console.log(this.#customerData.id);
 
     try {
       const response = await fetch(url, {
@@ -569,17 +620,349 @@ class RequestFetch {
         },
         body: JSON.stringify({
           version: Number(localStorage.getItem('version')),
-          actions: {
-            action: 'setFirstName',
-            firstName: `${newName}`,
-          },
+          actions: [{ action: 'setFirstName', firstName: `${newName}` }],
         }),
       });
       this.checkResponse(response);
       if (response.ok) {
+        this.#customerData.firstName = newName;
         const data = await response.json();
-        this.customerData.firstName = newName;
-        console.log(data);
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  public async updateUserLastName(newName: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: Number(localStorage.getItem('version')),
+          actions: [{ action: 'setLastName', lastName: `${newName}` }],
+        }),
+      });
+      this.checkResponse(response);
+      if (response.ok) {
+        this.#customerData.lastName = newName;
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  public async changeUserEmail(newEmail: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: Number(localStorage.getItem('version')),
+          actions: [{ action: 'changeEmail', email: `${newEmail}` }],
+        }),
+      });
+      this.checkResponse(response);
+      if (response.ok) {
+        this.#customerData.email = newEmail;
+        localStorage.setItem(LOCAL_STORAGE_EMAIL, newEmail);
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  public async setDateOfBirth(dateOfBirth: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: Number(localStorage.getItem('version')),
+          actions: [{ action: 'setDateOfBirth', dateOfBirth: `${dateOfBirth}` }],
+        }),
+      });
+      this.checkResponse(response);
+      if (response.ok) {
+        this.#customerData.dateOfBirth = dateOfBirth;
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  public async changePassword(newPassword: string) {
+    const url = `${this.host}/${this.projectKey}/customers/password`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: this.customerData.id,
+          version: Number(localStorage.getItem('version')),
+          currentPassword: this.customerData.password,
+          newPassword: newPassword,
+        }),
+      });
+      this.checkResponse(response);
+      if (response.ok) {
+        this.#customerData.password = newPassword;
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async addNewAddress(street: string, postalCode: string, city: string, country: string) {
+    const streetObj = splitStreetNameAndNumber(street);
+    const url = `${this.host}/${this.projectKey}/customers/${this.#customerData.id}`;
+
+    if (country.includes(' ')) {
+      country = splitCountry(country);
+    } else {
+      country = reversedCountriesList[country];
+    }
+
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'addAddress',
+          address: {
+            title: 'My Address',
+            firstName: this.#customerData.firstName,
+            lastName: this.#customerData.lastName,
+            streetName: streetObj.name,
+            streetNumber: streetObj.number,
+            postalCode: postalCode,
+            city: city,
+            country,
+            email: this.#customerData.email,
+          },
+        },
+      ],
+    };
+    console.log(bodyRequest);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: Number(localStorage.getItem('version')),
+        actions: [
+          {
+            action: 'addAddress',
+            address: {
+              title: 'My Address',
+              firstName: this.#customerData.firstName,
+              lastName: this.#customerData.lastName,
+              streetName: streetObj.name,
+              streetNumber: streetObj.number,
+              postalCode: postalCode,
+              city: city,
+              country,
+              email: this.#customerData.email,
+            },
+          },
+        ],
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('version', data.version);
+      return data.addresses[data.addresses.length - 1].id;
+    }
+  }
+
+  async changeAddress(addressData: {
+    addressId: string;
+    street: string;
+    postalCode: string;
+    city: string;
+    country: string;
+    email: string;
+  }) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
+    const streetObj = splitStreetNameAndNumber(addressData.street);
+    const countryName = addressData.country.includes(' ') ? addressData.country.split(' ')[0] : addressData.country;
+    const countryAbbr = reversedCountriesList[countryName];
+    await this.updateUserVersion();
+
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'changeAddress',
+          addressId: addressData.addressId,
+          address: {
+            title: 'My Address',
+            streetName: streetObj.name,
+            streetNumber: streetObj.number,
+            postalCode: addressData.postalCode,
+            city: addressData.city,
+            country: countryAbbr,
+          },
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyRequest),
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async removeAddress(addAddressId: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
+    await this.updateUserVersion();
+
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'removeAddress',
+          addressId: addAddressId,
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyRequest),
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async setDefaultShippingAddress(addAddressId: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
+    await this.updateUserVersion();
+
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultShippingAddress',
+          addressId: addAddressId,
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyRequest),
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async setDefaultBillingAddress(addAddressId: string) {
+    const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
+    await this.updateUserVersion();
+
+    const bodyRequest = {
+      version: Number(localStorage.getItem('version')),
+      actions: [
+        {
+          action: 'setDefaultBillingAddress',
+          addressId: addAddressId,
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.#customerToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyRequest),
+      });
+
+      this.checkResponse(response);
+      if (response.ok) {
+        const data = await response.json();
+        const newVersion = data.version;
+        localStorage.setItem('version', newVersion);
       }
     } catch (err) {
       console.error(err);
