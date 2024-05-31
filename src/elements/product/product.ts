@@ -63,8 +63,20 @@ function createRightColumn(response: Product) {
 
   column.append(Bootstrap.createElement('h2', 'product__title', response.title));
   column.append(Bootstrap.createElement('h3', 'product__author', response.author));
+
   column.append(Bootstrap.createElement('p', 'product__summary', 'Summary'));
-  column.append(Bootstrap.createElement('p', 'product__description', response.description));
+
+  const description = Bootstrap.createElement('p', 'product__description', response.description);
+  column.append(description);
+
+  const link = Bootstrap.createElement('a', 'product__readCompletely', 'Read completely...');
+
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    description.classList.add('product__description-expanded');
+    link.classList.add('d-none');
+  });
+  column.append(link);
 
   const prices = Bootstrap.createElement('div', 'product__cards-price-container');
   if (response.prices.discounted) {
@@ -190,7 +202,7 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
     switchPage(Pages.Catalog);
   });
   li1.append(a);
-  const li2 = Bootstrap.createElement('li', 'breadcrumb-item active catalogPath__title breadcrumb-link');
+  const li2 = Bootstrap.createElement('li', 'breadcrumb-item active catalogPath__title');
   li2.setAttribute('aria-current', 'page');
   li2.textContent = title;
   ol.append(li1, li2);

@@ -19,7 +19,6 @@ $width_change_img: ($screen-width-tablet + 116px);
       font-size: 20px;
       line-height: 24px;
     }
-
   }
   &__author {
     color: $gray_text;
@@ -38,7 +37,6 @@ $width_change_img: ($screen-width-tablet + 116px);
       line-height: 19px;
       margin-bottom: 32px;
     }
-
   }
   &__summary {
     color: black;
@@ -56,17 +54,46 @@ $width_change_img: ($screen-width-tablet + 116px);
     font-size: 16px;
     font-weight: 400;
     line-height: 140%;
-    margin-bottom: 32px;
+
+    margin-bottom: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @media (width <= $width_change_img) {
       font-size: 14px;
     }
 
+    @media (width >= $screen-burger) {
+      -webkit-line-clamp: initial;
+    }
+  }
+
+  &__readCompletely {
+    color: rgb(92, 177, 255);
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0%;
+    text-decoration: none;
+
+    @media (width >= $screen-burger) {
+      display: none;
+    }
+  }
+
+  &__description-expanded {
+    -webkit-line-clamp: initial;
   }
 
   &__cards-price-container {
     display: flex;
     gap: 4px;
+
+    margin-top: 32px;
     margin-bottom: 24px;
 
     @media (width <= $width_change_img) {
@@ -139,8 +166,6 @@ $width_change_img: ($screen-width-tablet + 116px);
     justify-content: center;
     gap: 32px;
   }
-
-
 
   margin-bottom: 144px;
 
@@ -291,7 +316,5 @@ $width_change_img: ($screen-width-tablet + 116px);
     @media (width <= 500px) {
       width: 75%;
     }
-
   }
-
 }
