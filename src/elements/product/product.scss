@@ -126,12 +126,6 @@ $width_change_img: ($screen-width-tablet + 116px);
     }
   }
 
-  // &__btn{
-  //   font-size: 16px;
-  //   font-weight: 600;
-  //   line-height: 18px;
-  // }
-
   &__btnAddToCard {
     padding: 16px 24px 16px 24px;
     width: clamp(115px, 30%, 134px) !important;

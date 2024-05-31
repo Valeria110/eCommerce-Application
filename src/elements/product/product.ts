@@ -69,7 +69,17 @@ function createRightColumn(response: Product) {
   const description = Bootstrap.createElement('p', 'product__description', response.description);
   column.append(description);
 
-  const link = Bootstrap.createElement('a', 'product__readCompletely', 'Read completely...');
+  const link = Bootstrap.createElement('a', 'product__readCompletely d-none', 'Read completely...');
+
+  const disableLinkIfTextFits = () => {
+    if (description.scrollHeight > description.offsetHeight) {
+      link.classList.remove('d-none');
+    } else {
+      link.classList.add('d-none');
+    }
+  };
+  setTimeout(() => disableLinkIfTextFits(), 200);
+  window.addEventListener('resize', () => disableLinkIfTextFits());
 
   link.addEventListener('click', (event) => {
     event.preventDefault();
