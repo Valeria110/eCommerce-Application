@@ -1,5 +1,7 @@
 @import './../../breakpoints.scss';
 $gray_text: rgb(153, 153, 153);
+$width_change_img: ($screen-width-tablet + 116px);
+
 .product {
   &__title {
     color: black;
@@ -7,6 +9,11 @@ $gray_text: rgb(153, 153, 153);
     font-weight: 600;
     line-height: 39px;
     margin-bottom: 8px;
+
+    @media (width <= $width_change_img) {
+      font-size: 24px;
+      line-height: 29px;
+    }
   }
   &__author {
     color: $gray_text;
@@ -14,6 +21,12 @@ $gray_text: rgb(153, 153, 153);
     font-weight: 400;
     line-height: 29px;
     margin-bottom: 32px;
+
+    @media (width <= $width_change_img) {
+      font-size: 20px;
+      line-height: 24px;
+      margin-bottom: 20px;
+    }
   }
   &__summary {
     color: black;
@@ -21,6 +34,10 @@ $gray_text: rgb(153, 153, 153);
     font-weight: 600;
     line-height: 18px;
     margin-bottom: 8px;
+
+    @media (width <= $width_change_img) {
+      font-size: 14px;
+    }
   }
   &__description {
     color: $gray_text;
@@ -28,18 +45,31 @@ $gray_text: rgb(153, 153, 153);
     font-weight: 400;
     line-height: 140%;
     margin-bottom: 32px;
+
+    @media (width <= $width_change_img) {
+      font-size: 14px;
+    }
   }
 
   &__cards-price-container {
     display: flex;
     gap: 4px;
     margin-bottom: 24px;
+
+    @media (width <= $width_change_img) {
+      margin-bottom: 16px;
+    }
   }
 
   &__cards-price_current {
     font-size: 40px;
     font-weight: 600;
     line-height: 48px;
+
+    @media (width <= $width_change_img) {
+      font-size: 32px;
+      line-height: 39px;
+    }
   }
 
   &__cards-price_previous {
@@ -48,25 +78,42 @@ $gray_text: rgb(153, 153, 153);
     font-weight: 600;
     line-height: 29px;
     text-decoration-line: line-through;
+
+    @media (width <= $width_change_img) {
+      font-family: Inter;
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+
+  &__btn{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
   }
 
   &__btnAddToCard {
     padding: 16px 24px 16px 24px;
+    width: clamp(120px, 30%, 134px) !important;
   }
 
   &__btnBuy {
     padding: 16px 24px 16px 24px;
+    width: clamp(120px, 40%, 304px) !important;
   }
 }
 
 .productPage {
   margin-left: 62px;
+  margin-right: 62px;
 
   @media (width <= $screen-width-tablet) {
     margin-left: 56px;
+    margin-right: 56px;
   }
   @media (width <= $screen-width-mobile) {
     margin-left: 12px;
+    margin-right: 12px;
   }
 
   margin-bottom: 144px;
@@ -74,7 +121,11 @@ $gray_text: rgb(153, 153, 153);
 
 .productCard {
   display: flex;
-  // gap: 96px;
+
+  @media (width <= $screen-burger) {
+    flex-direction: column;
+    justify-content: center;
+  }
 
   gap: clamp(48px, 6.6%, 96px);
 
@@ -140,6 +191,10 @@ $gray_text: rgb(153, 153, 153);
   flex-direction: column;
   gap: 36px;
 
+  @media (width <= $screen-width-tablet) {
+    gap: 14.77px;
+  }
+
   &__img {
     box-sizing: border-box;
     border: 1px solid rgb(173, 181, 189);
@@ -149,6 +204,11 @@ $gray_text: rgb(153, 153, 153);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+
+    @media (width <= $width_change_img) {
+      width: 64px;
+      height: 93.82px;
+    }
 
     cursor: pointer;
   }
@@ -162,12 +222,10 @@ $gray_text: rgb(153, 153, 153);
   }
 
   &__cards-cover {
-    // TODO: Think about this place
-
     width: 306px;
     height: 459px;
 
-    @media (width <= $screen-width-tablet) {
+    @media (width <= $width_change_img) {
       width: 208px;
       height: 311px;
     }

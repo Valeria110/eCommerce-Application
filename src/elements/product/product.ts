@@ -80,8 +80,8 @@ function createRightColumn(response: Product) {
     );
   }
 
-  const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 btn-style-default w-50 mx-1');
-  const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white btn-style-default mx-1 product__btnAddToCard');
+  const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
+  const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
   const wrapperBtn = Bootstrap.createElement('div');
   wrapperBtn.append(buyBtn);
   wrapperBtn.append(addCartBtn);

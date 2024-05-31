@@ -16,9 +16,6 @@ $screen-burger: $screen-width-tablet - 80px;
   @media (width <= $screen-width-mobile) {
     margin: 22px 12px;
   }
-  @media (width < 540px) {
-    margin: 22px 12px;
-  }
 
   .header__brand {
     font-weight: 500;
