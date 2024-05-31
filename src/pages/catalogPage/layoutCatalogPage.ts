@@ -152,7 +152,39 @@ export async function getAllCategories() {
     });
   });
 
-  // sort
+  document.querySelectorAll('.list-sort__item').forEach((sort) => {
+    sort.addEventListener('click', async () => {
+      if (sort.textContent === 'Alphabetically' && variablesCatalogPage.nameCategory.id) {
+        const resultBooks = await requestsAPI.sortNameAndPriceWithCategory(
+          variablesCatalogPage.nameCategory.id,
+          'Alphabetically',
+        );
+        CACHED_BOOKS = resultBooks.results;
+        localStorage.setItem('numberPageBooks', '0');
+        PAGES_CREATED = false;
+        generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), true);
+      } else if (sort.textContent === 'Cheap' && variablesCatalogPage.nameCategory.id) {
+        const resultBooks = await requestsAPI.sortNameAndPriceWithCategory(
+          variablesCatalogPage.nameCategory.id,
+          'Cheap',
+        );
+        CACHED_BOOKS = resultBooks.results;
+        localStorage.setItem('numberPageBooks', '0');
+        PAGES_CREATED = false;
+        generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), true);
+      } else if (sort.textContent === 'Expensive' && variablesCatalogPage.nameCategory.id) {
+        const resultBooks = await requestsAPI.sortNameAndPriceWithCategory(
+          variablesCatalogPage.nameCategory.id,
+          'Expensive',
+        );
+        CACHED_BOOKS = resultBooks.results;
+        localStorage.setItem('numberPageBooks', '0');
+        PAGES_CREATED = false;
+        generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), true);
+      }
+      variablesCatalogPage.buttonSort.textContent = sort.textContent;
+    });
+  });
 }
 
 export async function getBooks() {
