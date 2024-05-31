@@ -278,9 +278,11 @@ class RequestFetch {
     }
   }
 
-  async sortNameAndPriceWithCategory(id: string, typeSort: string) {
+  async sortNameAndPriceWithCategory(id: string, typeSort: string, isCategory: boolean) {
     try {
+      const limit = 100;
       let type;
+      let url;
       if (typeSort === 'Alphabetically') {
         type = 'name.en-US asc';
       } else if (typeSort === 'Cheap') {
@@ -288,7 +290,13 @@ class RequestFetch {
       } else if (typeSort === 'Expensive') {
         type = 'price desc';
       }
-      const url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&sort=${type}`;
+
+      if (isCategory === false) {
+        url = `${this.host}/${this.projectKey}/product-projections/search?sort=${type}&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&sort=${type}&limit=${limit}`;
+      }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -298,6 +306,29 @@ class RequestFetch {
       });
       const resultCategories = await response.json();
       return resultCategories;
+    } catch (error) {
+      console.error('API error:', (error as Error).message);
+    }
+  }
+
+  async getBookWithSearch(searchTerm: string, id: string, isCategory: boolean) {
+    try {
+      let url;
+      const limit = 100;
+      if (isCategory === false) {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&fuzzy=true&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&fuzzy=true&limit=${limit}`;
+      }
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${await this.projectToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const resultBooks = await response.json();
+      return resultBooks;
     } catch (error) {
       console.error('API error:', (error as Error).message);
     }

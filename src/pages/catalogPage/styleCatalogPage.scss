@@ -93,6 +93,24 @@ $border-color: #dee2e6;
     right: 16px;
   }
 
+  &__search-text_error {
+    margin-bottom: 16px;
+    font-size: 30px;
+    font-weight: 600;
+    color: #adb5bd;
+  }
+
+  &__search-img_error {
+    width: 120px;
+    height: 120px;
+  }
+
+  &__search-text_try {
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 80px;
+  }
+
   &__cards-cover {
     width: 196px;
     height: 294px;
@@ -236,6 +254,16 @@ $border-color: #dee2e6;
     border-top-right-radius: 10px;
   }
 
+  &__search-container_error {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
   &__cards-container {
     position: relative;
     z-index: 7;
@@ -270,7 +298,7 @@ $border-color: #dee2e6;
   }
 
   &__colored {
-    background-color: #fc7e14;
+    background-color: $focus-color;
   }
 
   &__breadcrumb-arrow {
