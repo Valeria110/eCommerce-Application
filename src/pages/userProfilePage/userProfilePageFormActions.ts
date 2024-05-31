@@ -241,13 +241,6 @@ function addInputEventListener(labelText: string, input: HTMLInputElement) {
         personalInfoValidation.validateInputEmail(input, error);
       });
       break;
-    case 'Password':
-      input.addEventListener('input', () => {
-        const inputContainer = input.closest('.user-profile-form__label');
-        isNull<HTMLElement>(inputContainer);
-        personalInfoValidation.validateInputPassword(input, error, inputContainer);
-      });
-      break;
   }
 }
 
@@ -372,6 +365,45 @@ function createNewAddress(clickedBtn: HTMLButtonElement) {
   }
 }
 
+function passwordConfirmation(
+  newPasswordInput: HTMLInputElement,
+  confirmPasswordInput: HTMLInputElement,
+  confirmPasswordLabel: HTMLLabelElement,
+) {
+  const error = confirmPasswordLabel.querySelector('.error');
+  isNull<HTMLDivElement>(error);
+
+  if (confirmPasswordInput.value !== newPasswordInput.value) {
+    error.textContent = 'The password confirmation does not match';
+    confirmPasswordInput.classList.add('is-invalid');
+  } else {
+    error.textContent = '';
+    confirmPasswordInput.classList.remove('is-invalid');
+    if (!newPasswordInput.classList.contains('is-invalid')) {
+      confirmPasswordInput.classList.add('is-valid');
+    }
+  }
+}
+
+function validateChangePasswordForm(
+  newPasswordInput: HTMLInputElement,
+  confirmPasswordInput: HTMLInputElement,
+  saveBtn: HTMLButtonElement,
+): boolean {
+  if (
+    !newPasswordInput.classList.contains('is-invalid') &&
+    !confirmPasswordInput.classList.contains('is-invalid') &&
+    newPasswordInput.value !== '' &&
+    confirmPasswordInput.value !== ''
+  ) {
+    saveBtn.classList.remove('disabled');
+    return true;
+  } else {
+    saveBtn.classList.add('disabled');
+    return false;
+  }
+}
+
 export {
   resetFormValues,
   saveUpdatedData,
@@ -380,4 +412,6 @@ export {
   isInputChanged,
   isFormValid,
   createNewAddress,
+  passwordConfirmation,
+  validateChangePasswordForm,
 };

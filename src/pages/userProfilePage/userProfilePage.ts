@@ -10,9 +10,12 @@ import {
   isFormValid,
   toggleMode,
   createNewAddress,
+  passwordConfirmation,
+  validateChangePasswordForm,
 } from './userProfilePageFormActions';
 
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
+import * as personalInfoValidation from '../registration-page/validationInputsRegistrationForm';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import requestsAPI from '../../elements/requestsAPI';
 import { countriesList, isNull } from '../../utils/utils';
@@ -20,6 +23,9 @@ import eyeOffIcon from '../../img/eye-off-icon.svg';
 import { showOrHidePassword } from '../../elements/loginValidation';
 
 function userProfilePage(): HTMLElement {
+  const changePasswordModal = createChangePasswordModal();
+  document.body.appendChild(changePasswordModal);
+
   const main = Bootstrap.createElement('main', 'user-profile-main d-flex flex-column');
   const userProfileHeader = Bootstrap.createElement('div', 'user-profile-main__header d-flex');
   const userImg = Bootstrap.createElement('img', 'user-profile-header__img rounded-circle');
@@ -55,11 +61,11 @@ function userProfilePage(): HTMLElement {
     'user-profile-form__shipping-addresses d-flex flex-column',
   );
   const billingAddressesBox = Bootstrap.createElement('div', 'user-profile-form__billing-addresses d-flex flex-column');
-
+  const passwordBox = createPasswordBox();
   main.append(userProfileHeader, userProfileForm);
   userProfileHeader.append(userImg, userProfileHeaderInfo);
   userProfileHeaderInfo.append(userFullname, userEmail);
-  userProfileForm.append(personalInfoBox, addressesInfoBox);
+  userProfileForm.append(personalInfoBox, passwordBox, addressesInfoBox);
   addressesInfoBox.append(addressesInfoBoxTitle);
   addressesInfoBox.append(shippingAddressesBox, billingAddressesBox);
 
@@ -205,16 +211,6 @@ function createPersonalInfoBox(): HTMLElement {
   emailInput.value = requestsAPI.customerData.email;
   emailInput.dataset.initialValue = requestsAPI.customerData.email;
 
-  const passwordLabel = createInputAndLabelElem('Password', 'password');
-  const passwordInput = passwordLabel.querySelector('input');
-  isNull<HTMLInputElement>(passwordInput);
-  passwordInput.value = requestsAPI.customerData.password;
-  passwordInput.dataset.initialValue = requestsAPI.customerData.password;
-  const showPasswordBtn = Bootstrap.createElement('img', 'show-password-btn user-profile-form__show-password-btn');
-  showPasswordBtn.src = eyeOffIcon as string;
-  showPasswordBtn.addEventListener('click', showOrHidePassword);
-  passwordLabel.appendChild(showPasswordBtn);
-
   document.body.addEventListener(AppEvents.updateUserName, () => {
     nameInput.value = `${requestsAPI.customerData.firstName}`;
     nameInput.dataset.initialValue = `${requestsAPI.customerData.firstName}`;
@@ -224,15 +220,124 @@ function createPersonalInfoBox(): HTMLElement {
     emailInput.dataset.initialValue = `${requestsAPI.customerData.email}`;
     dateOfBirthInput.value = `${requestsAPI.customerData.dateOfBirth}`;
     dateOfBirthInput.dataset.initialValue = `${requestsAPI.customerData.dateOfBirth}`;
-    passwordInput.value = `${requestsAPI.customerData.password}`;
-    passwordInput.dataset.initialValue = `${requestsAPI.customerData.password}`;
   });
 
-  inputsContainer.append(nameLabel, lastnameLabel, dateOfBirthLabel, emailLabel, passwordLabel);
+  inputsContainer.append(nameLabel, lastnameLabel, dateOfBirthLabel, emailLabel);
 
   personalInfoBox.append(personalInfoBoxTitleWrapper, inputsContainer);
 
   return personalInfoBox;
+}
+
+function createPasswordBox(): HTMLElement {
+  const passwordInputWrapper = Bootstrap.createElement('div', 'user-profile-form__password-wrapper d-flex flex-column');
+  const passwordLabel = createInputAndLabelElem('Password', 'password');
+  const passwordInput = passwordLabel.querySelector('input');
+  isNull<HTMLInputElement>(passwordInput);
+  passwordInput.value = requestsAPI.customerData.password;
+  passwordInput.dataset.initialValue = requestsAPI.customerData.password;
+  const showPasswordBtn = Bootstrap.createElement('img', 'show-password-btn user-profile-form__show-password-btn');
+  showPasswordBtn.src = eyeOffIcon as string;
+  showPasswordBtn.addEventListener('click', showOrHidePassword);
+  passwordLabel.appendChild(showPasswordBtn);
+  const changePasswordLink = Bootstrap.createElement(
+    'a',
+    'change-password__link link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover',
+    'Change password',
+  );
+  changePasswordLink.addEventListener('click', () => {
+    const changePasswordModal = document.querySelector('.change-password-modal');
+    isNull<HTMLDivElement>(changePasswordModal);
+    changePasswordModal.classList.add('active');
+  });
+  passwordInputWrapper.append(passwordLabel, changePasswordLink);
+
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    passwordInput.value = `${requestsAPI.customerData.password}`;
+    passwordInput.dataset.initialValue = `${requestsAPI.customerData.password}`;
+  });
+
+  return passwordInputWrapper;
+}
+
+function createChangePasswordModal(): HTMLElement {
+  const modal = Bootstrap.createElement('div', 'change-password-modal');
+  const modalBox = Bootstrap.createElement('div', 'change-password-modal__box');
+  const modalTitle = Bootstrap.createElement('h3', 'change-password-modal__title', 'Password reset');
+  const changePasswordForm = Bootstrap.createElement('form', 'change-password-form d-flex flex-column');
+  const inputsContainer = Bootstrap.createElement('div', 'change-password-form__inputs-container');
+  const currentPasswordLabel = createInputAndLabelElem('Current password', 'text');
+  const currentPasswordInput = currentPasswordLabel.querySelector('input');
+  isNull<HTMLInputElement>(currentPasswordInput);
+  currentPasswordInput.value = requestsAPI.customerData.password;
+  const newPasswordLabel = createInputAndLabelElem('New password', 'text');
+  const confirmPasswordLabel = createInputAndLabelElem('Confirm new password', 'text');
+  const newPasswordInput = newPasswordLabel.querySelector('input');
+  const confirmPasswordInput = confirmPasswordLabel.querySelector('input');
+  isNull<HTMLInputElement>(newPasswordInput);
+  isNull<HTMLInputElement>(confirmPasswordInput);
+  newPasswordInput.removeAttribute('readonly');
+  confirmPasswordInput.removeAttribute('readonly');
+
+  const newPasswordError = newPasswordLabel.querySelector('.error');
+  isNull<HTMLDivElement>(newPasswordError);
+
+  newPasswordInput.addEventListener('input', () => {
+    personalInfoValidation.validateInputPassword(newPasswordInput, newPasswordError, inputsContainer);
+    validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
+  });
+
+  confirmPasswordInput.addEventListener('input', () => {
+    passwordConfirmation(newPasswordInput, confirmPasswordInput, confirmPasswordLabel);
+    validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
+  });
+
+  inputsContainer.append(currentPasswordLabel, newPasswordLabel, confirmPasswordLabel);
+  const btnsWrapper = Bootstrap.createElement('div', 'change-password-form__btns-wrapper d-flex');
+  const saveBtn = Bootstrap.createButton(
+    'Save',
+    'btn change-password-form__save-btn btn-orange border-0 btn-style-default disabled',
+  );
+  saveBtn.type = 'submit';
+  const cancelBtn = Bootstrap.createButton(
+    'Cancel',
+    'btn change-password-form__cancel-btn btn-outline-secondary border-0 btn-style-default',
+  );
+
+  cancelBtn.addEventListener('click', () => modal.classList.remove('active'));
+
+  changePasswordForm.addEventListener('submit', () => {
+    const canSave = validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
+    if (canSave) {
+      requestsAPI.changePassword(newPasswordInput.value);
+    }
+  });
+
+  saveBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const canSave = validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
+    if (canSave) {
+      requestsAPI.changePassword(newPasswordInput.value);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+    }
+  });
+  document.body.addEventListener(AppEvents.updateUserName, () => {
+    currentPasswordInput.value = requestsAPI.customerData.password;
+    console.log(requestsAPI.customerData.password);
+  });
+
+  btnsWrapper.append(saveBtn, cancelBtn);
+  changePasswordForm.append(inputsContainer, btnsWrapper);
+
+  modal.appendChild(modalBox);
+  modalBox.append(modalTitle, changePasswordForm);
+
+  return modal;
 }
 
 function createShippingAddressBlock(addressIndex: number): HTMLElement {
@@ -413,6 +518,7 @@ function createInputAndLabelElem(labelText: string, inputType: string) {
 
   if (labelText === 'Password') {
     input.classList.add('password-input');
+    label.classList.add('password-label');
   }
   if (labelText === 'City') {
     input.classList.add('city-input');

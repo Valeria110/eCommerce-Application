@@ -730,7 +730,7 @@ class RequestFetch {
         body: JSON.stringify({
           id: this.customerData.id,
           version: Number(localStorage.getItem('version')),
-          currentPassword: this.customerData.password,
+          currentPassword: this.#customerData.password,
           newPassword: newPassword,
         }),
       });
