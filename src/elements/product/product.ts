@@ -24,9 +24,9 @@ const updateActiveIndexRenderMain = (response: Product, index: number) => {
   // discount only for first page
   if (cardDiscounted) {
     if (index === 0) {
-      cardDiscounted.classList.add('mainImg__cards-discounted');
+      cardDiscounted.classList.remove('d-none');
     } else {
-      cardDiscounted.classList.remove('mainImg__cards-discounted');
+      cardDiscounted.classList.add('d-none');
     }
   }
 
@@ -190,7 +190,7 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
     switchPage(Pages.Catalog);
   });
   li1.append(a);
-  const li2 = Bootstrap.createElement('li', 'breadcrumb-item active catalogPath__title');
+  const li2 = Bootstrap.createElement('li', 'breadcrumb-item active catalogPath__title breadcrumb-link');
   li2.setAttribute('aria-current', 'page');
   li2.textContent = title;
   ol.append(li1, li2);
