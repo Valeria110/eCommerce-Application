@@ -7,6 +7,7 @@ import './product.scss';
 
 // TODO: img with proporthios
 // TODO: disable add to card & buy without price
+// TODO: 🔃 add before fetch
 
 let activeIndexImg = 0;
 let linkMainImg: HTMLElement;
@@ -50,6 +51,7 @@ export default function product(id: string) {
         cardProduct,
         Bootstrap.createElement('div', '', 'Place for You might light it'),
       ); // TODO: replace svg icon
+      page.append(createCarousel(response));
     } else {
       switchPage(Pages.Error404);
     }
@@ -218,4 +220,52 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
   ol.append(li1, li2);
   nav.append(ol);
   return nav;
+}
+
+function createCarousel(response: Product): HTMLElement {
+  const carousel = Bootstrap.createElement('div', 'carousel slide my-carousel');
+  carousel.id = 'carouselExampleIndicators';
+
+  const indicators = Bootstrap.createElement('ol', 'carousel-indicators');
+  const inner = Bootstrap.createElement('div', 'carousel-inner');
+
+  response.images.forEach((image, index) => {
+    const indicator = Bootstrap.createElement('button', index === 0 ? ['active'] : []);
+    indicator.type = 'button';
+    indicator.dataset.bsTarget = '#carouselExampleIndicators';
+    indicator.dataset.bsSlideTo = index.toString();
+    if (index === 0) {
+      indicator.setAttribute('aria-current', 'true');
+    }
+    indicator.setAttribute('aria-label', `Slide ${index + 1}`);
+    indicators.append(indicator);
+
+    const item = Bootstrap.createElement('div', index === 0 ? ['carousel-item', 'active'] : ['carousel-item']);
+    const img = Bootstrap.createElement('img', 'd-block w-100');
+    img.src = image;
+    img.alt = `Slide ${index + 1}`;
+    item.append(img);
+    inner.append(item);
+  });
+
+  const prevButton = Bootstrap.createElement('button', 'carousel-control-prev');
+  prevButton.type = 'button';
+  prevButton.dataset.bsTarget = '#carouselExampleIndicators';
+  prevButton.dataset.bsSlide = 'prev';
+  const prevIcon = Bootstrap.createElement('span', 'carousel-control-prev-icon');
+  prevIcon.setAttribute('aria-hidden', 'true');
+  const prevText = Bootstrap.createElement('span', 'visually-hidden', 'Previous');
+  prevButton.append(prevIcon, prevText);
+
+  const nextButton = Bootstrap.createElement('button', 'carousel-control-next');
+  nextButton.type = 'button';
+  nextButton.dataset.bsTarget = '#carouselExampleIndicators';
+  nextButton.dataset.bsSlide = 'next';
+  const nextIcon = Bootstrap.createElement('span', 'carousel-control-next-icon');
+  nextIcon.setAttribute('aria-hidden', 'true');
+  const nextText = Bootstrap.createElement('span', 'visually-hidden', 'Next');
+  nextButton.append(nextIcon, nextText);
+
+  carousel.append(indicators, inner, prevButton, nextButton);
+  return carousel;
 }
