@@ -33,7 +33,7 @@ export const buttonSort = createElement('div', '', 'No sort');
 export const listSort = createElement('ul', 'dropdown-menu list-sort');
 export const listItemCheap = createElement('li', 'dropdown-item list-sort__item', 'Cheap');
 export const listItemExpensive = createElement('li', 'dropdown-item list-sort__item', 'Expensive');
-export const listItemDiscounted = createElement('li', 'dropdown-item list-sort__item', 'Discounted');
+export const listItemAlphabetically = createElement('li', 'dropdown-item list-sort__item', 'Alphabetically');
 
 export const containerForPriceAndCurrency = createElement('div', 'd-flex catalog-page__container-dropdown');
 export const inputMinPrice = createElement('input', 'catalog-page__input-price catalog-page__input-price_from');
@@ -58,3 +58,10 @@ export const containerForNumbersPages = createElement('div', 'd-flex catalog-pag
 export const iconArrowRight = createElement('button', 'catalog-page__pagination-arrow');
 iconArrowRight.innerHTML =
   '<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1L6.5 6L1.5 11" stroke="black" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>';
+
+export const containerForBreadcrumb = createElement('div', 'catalog-page__breadcrumb');
+export const linkMain = createElement('a', '', 'Main');
+export const arrowToBreadcrumb = createElement('div', 'catalog-page__breadcrumb-arrow');
+export const linkCatalog = createElement('a', '', 'Catalog');
+export const newArrow = createElement('div', 'catalog-page__breadcrumb-arrow');
+export const nameCategory = createElement('div', '', '');

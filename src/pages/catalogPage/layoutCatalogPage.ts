@@ -1,5 +1,5 @@
 import createElement from '../../elements/bootstrap/createElement';
-import { InfoBook, Pages } from '../../elements/types';
+import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
 import requestsAPI from '../../elements/requestsAPI';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
 import './styleCatalogPage.scss';
@@ -16,10 +16,22 @@ const LENGTH_FOR_SLICE_BOOK_NAME = 23;
 
 export function generateCatalogPage() {
   variablesCatalogPage.containerForCatalogPage.append(
+    variablesCatalogPage.containerForBreadcrumb,
     variablesCatalogPage.containerForBooksFilterPanel,
     variablesCatalogPage.containerForAllBooks,
     variablesCatalogPage.containerForPagination,
   );
+
+  variablesCatalogPage.containerForBreadcrumb.append(
+    variablesCatalogPage.linkMain,
+    variablesCatalogPage.arrowToBreadcrumb,
+    variablesCatalogPage.linkCatalog,
+  );
+
+  variablesCatalogPage.linkMain.addEventListener('click', () => {
+    switchPage(Pages.Main);
+  });
+
   variablesCatalogPage.containerForBooksFilterPanel.append(
     variablesCatalogPage.containerForCategoryAndPrice,
     variablesCatalogPage.containerForInputSearchBooks,
@@ -59,7 +71,7 @@ export function generateCatalogPage() {
   variablesCatalogPage.listSort.append(
     variablesCatalogPage.listItemCheap,
     variablesCatalogPage.listItemExpensive,
-    variablesCatalogPage.listItemDiscounted,
+    variablesCatalogPage.listItemAlphabetically,
   );
 
   variablesCatalogPage.containerForInputSearchBooks.append(
@@ -83,6 +95,7 @@ export function generateCatalogPage() {
     getBooks();
   }, 500);
 
+  localStorage.setItem('category', 'false');
   return variablesCatalogPage.containerForCatalogPage;
 }
 
@@ -113,13 +126,33 @@ function swapCatalogPages(direction: string) {
 
 export async function getAllCategories() {
   const resultCategories = await requestsAPI.getCategories();
-  document.querySelectorAll('.list-categories__item').forEach((item) => {
+  document.querySelectorAll('.list-categories__item').forEach((category) => {
     resultCategories.results.forEach((categories: { name: string; id: string }) => {
-      if (Object.values(categories.name).includes(item.textContent as string)) {
-        item.id = categories.id;
+      if (Object.values(categories.name).includes(category.textContent as string)) {
+        category.id = categories.id;
       }
     });
+
+    category.addEventListener('click', async () => {
+      const resultBooks = await requestsAPI.getCategory(category.id);
+      CACHED_BOOKS = resultBooks.results;
+      localStorage.setItem('numberPageBooks', '0');
+      localStorage.setItem('category', 'true');
+      PAGES_CREATED = false;
+      if (!variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
+        variablesCatalogPage.containerForBreadcrumb.append(
+          variablesCatalogPage.newArrow,
+          variablesCatalogPage.nameCategory,
+        );
+      }
+      variablesCatalogPage.nameCategory.textContent = category.textContent;
+      variablesCatalogPage.nameCategory.id = category.id;
+      variablesCatalogPage.buttonAllBooks.textContent = category.textContent;
+      generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), true);
+    });
   });
+
+  // sort
 }
 
 export async function getBooks() {
@@ -128,16 +161,27 @@ export async function getBooks() {
     getAllCategories();
     CACHED_BOOKS = resultBooks.results;
   }
-  generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
+  if (localStorage.getItem('category') === 'true') {
+    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), true);
+  } else {
+    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
+  }
+
+  // search
 }
 
-function generateBooks(array: InfoBook[][]) {
+function generateBooks(array: InfoBook[][], category = false) {
   variablesCatalogPage.containerForAllBooks.innerHTML = '';
 
-  if (localStorage.getItem('numberPageBooks') === FIRST_PAGE.toString()) {
+  if (COUNT_PAGES === 1) {
     variablesCatalogPage.iconArrowLeft.disabled = true;
+    variablesCatalogPage.iconArrowRight.disabled = true;
+  } else if (localStorage.getItem('numberPageBooks') === FIRST_PAGE.toString()) {
+    variablesCatalogPage.iconArrowLeft.disabled = true;
+    variablesCatalogPage.iconArrowRight.disabled = false;
   } else if (localStorage.getItem('numberPageBooks') === (COUNT_PAGES - 1).toString()) {
     variablesCatalogPage.iconArrowRight.disabled = true;
+    variablesCatalogPage.iconArrowLeft.disabled = false;
   } else {
     variablesCatalogPage.iconArrowLeft.disabled = false;
     variablesCatalogPage.iconArrowRight.disabled = false;
@@ -145,27 +189,33 @@ function generateBooks(array: InfoBook[][]) {
 
   array.forEach((arrayWithBooks, indexArray: number) => {
     if (indexArray === Number(localStorage.getItem('numberPageBooks'))) {
-      arrayWithBooks.forEach((book: InfoBook, indexBook: number) => {
+      arrayWithBooks.forEach((book: InfoBook | InfoBookCategory, indexBook: number) => {
         if (indexBook < COUNT_CHUNKS) {
           let author: string = '';
           let description: string = '';
-          book.masterData.staged.masterVariant.attributes.forEach((itemAttributes, indexitemAttribute) => {
+          let noFilters;
+          if (category === false) {
+            noFilters = (book as InfoBook).masterData.staged;
+          } else {
+            noFilters = book as InfoBookCategory;
+          }
+          noFilters.masterVariant.attributes.forEach((itemAttributes, indexitemAttribute: number) => {
             if (itemAttributes.name === 'author') {
-              author = book.masterData.staged.masterVariant.attributes[indexitemAttribute].value;
+              author = noFilters.masterVariant.attributes[indexitemAttribute].value;
             }
             if (itemAttributes.name === 'description') {
-              description = book.masterData.staged.masterVariant.attributes[indexitemAttribute].value;
+              description = noFilters.masterVariant.attributes[indexitemAttribute].value;
             }
           });
-          const priceInfo = book.masterData.staged.masterVariant.prices[0];
+          const priceInfo = noFilters.masterVariant.prices[0];
           const hasDiscount =
             priceInfo.discounted && priceInfo.discounted.value && priceInfo.discounted.value.centAmount;
           variablesCatalogPage.containerForAllBooks.append(
             generateCards(
-              book.masterData.staged.masterVariant.images[0].url,
-              book.masterData.staged.name['en-US'],
+              noFilters.masterVariant.images[0].url,
+              noFilters.name['en-US'],
               author,
-              book.masterData.staged.masterVariant.prices[0].value.centAmount,
+              noFilters.masterVariant.prices[0].value.centAmount,
               description,
               book.id,
               hasDiscount ? priceInfo.discounted.value.centAmount.toString() : '',

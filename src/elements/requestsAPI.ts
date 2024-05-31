@@ -260,6 +260,24 @@ class RequestFetch {
     }
   }
 
+  async getCategory(id: string) {
+    try {
+      const url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${await this.projectToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const resultCategories = await response.json();
+      return resultCategories;
+    } catch (error) {
+      console.error('API error:', (error as Error).message);
+    }
+  }
+
   async getProductsByID(productID: string): Promise<Product | undefined> {
     try {
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {

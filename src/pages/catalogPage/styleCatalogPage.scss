@@ -106,9 +106,8 @@ $border-color: #dee2e6;
   &__body {
     flex-wrap: wrap;
     margin-top: 80px;
-    justify-content: space-between;
     width: 100%;
-    gap: 71px;
+    gap: 84px;
     position: relative;
   }
 
@@ -239,14 +238,14 @@ $border-color: #dee2e6;
 
   &__cards-container {
     position: relative;
-    z-index: 99;
+    z-index: 7;
     transition: transform 0.3s;
     cursor: pointer;
 
     &:hover {
       transform: scale(1.2);
       box-shadow: 0px 3px 15px 2px rgba(0, 0, 0, 0.8);
-      z-index: 9999;
+      z-index: 9;
       background-color: $secondary-color;
       border-radius: 10px;
     }
@@ -259,6 +258,27 @@ $border-color: #dee2e6;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
+  }
+
+  &__breadcrumb {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+
+  &__colored {
+    background-color: #fc7e14;
+  }
+
+  &__breadcrumb-arrow {
+    background-image: url('data:image/svg+xml,%3Csvg%20width%3D%227%22%20height%3D%2212%22%20viewBox%3D%220%200%207%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M1%201L6%206L1%2011%22%20stroke%3D%22%23999999%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E');
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   @media (max-width: 1410px) {
@@ -393,6 +413,15 @@ $border-color: #dee2e6;
       background-color: #ffe5d0 !important;
     }
   }
+}
+
+.list-categories__button-reset {
+  background-image: url('data:image/svg+xml,%3Csvg%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M1.39989%2013.3079L0.691895%2012.5999L6.29189%206.99989L0.691895%201.39989L1.39989%200.691895L6.99989%206.29189L12.5999%200.691895L13.3079%201.39989L7.70789%206.99989L13.3079%2012.5999L12.5999%2013.3079L6.99989%207.70789L1.39989%2013.3079Z%22%20fill%3D%22%23ADB5BD%22%2F%3E%3C%2Fsvg%3E');
+  width: 14px;
+  height: 14px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .active-page {
