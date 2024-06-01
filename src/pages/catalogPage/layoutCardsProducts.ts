@@ -1,10 +1,13 @@
 import createElement from '../../elements/bootstrap/createElement';
 import switchPage from '../../elements/switchPage';
-import { Pages } from '../../elements/types';
+import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
+import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
 
 const MAX_LENGTH_BOOK_NAME = 35;
 const MAX_LENGTH_BOOK_DESCRITION = 120;
 const LENGTH_FOR_SLICE_BOOK_NAME = 23;
+const FIRST_PAGE = 0;
+const COUNT_CHUNKS = 10;
 
 export function generateCards(
   imgUrl: string,
@@ -74,4 +77,67 @@ function insertDotBeforeLastTwoChars(str: string) {
   const lastTwo = str.slice(-2);
 
   return beforeLastTwo + '.' + lastTwo + '$';
+}
+
+export function extractBookInfo(array: InfoBook[][] | InfoBookCategory[][], countPages: number) {
+  variablesCatalogPage.containerForAllBooks.innerHTML = '';
+
+  if (countPages === 1) {
+    variablesCatalogPage.iconArrowLeft.disabled = true;
+    variablesCatalogPage.iconArrowRight.disabled = true;
+  } else if (localStorage.getItem('numberPageBooks') === FIRST_PAGE.toString()) {
+    variablesCatalogPage.iconArrowLeft.disabled = true;
+    variablesCatalogPage.iconArrowRight.disabled = false;
+  } else if (localStorage.getItem('numberPageBooks') === (countPages - 1).toString()) {
+    variablesCatalogPage.iconArrowRight.disabled = true;
+    variablesCatalogPage.iconArrowLeft.disabled = false;
+  } else {
+    variablesCatalogPage.iconArrowLeft.disabled = false;
+    variablesCatalogPage.iconArrowRight.disabled = false;
+  }
+
+  array.forEach((arrayWithBooks, indexArray: number) => {
+    if (indexArray === Number(localStorage.getItem('numberPageBooks'))) {
+      arrayWithBooks.forEach((book: InfoBook | InfoBookCategory, indexBook: number) => {
+        if (indexBook < COUNT_CHUNKS) {
+          let author: string = '';
+          let description: string = '';
+          let img = '';
+          let noFilters;
+
+          if (Object.prototype.hasOwnProperty.call(book, 'masterData')) {
+            noFilters = (book as InfoBook).masterData.staged;
+          } else {
+            noFilters = book as InfoBookCategory;
+          }
+
+          noFilters.masterVariant.attributes.forEach((itemAttributes, indexitemAttribute: number) => {
+            if (itemAttributes.name === 'author') {
+              author = noFilters.masterVariant.attributes[indexitemAttribute].value;
+            }
+            if (itemAttributes.name === 'description') {
+              description = noFilters.masterVariant.attributes[indexitemAttribute].value;
+            }
+          });
+          if (noFilters.masterVariant.images.length !== 0) {
+            img = noFilters.masterVariant.images[0].url;
+          }
+          const priceInfo = noFilters.masterVariant.prices[0];
+          const hasDiscount =
+            priceInfo.discounted && priceInfo.discounted.value && priceInfo.discounted.value.centAmount;
+          variablesCatalogPage.containerForAllBooks.append(
+            generateCards(
+              img,
+              noFilters.name['en-US'],
+              author,
+              noFilters.masterVariant.prices[0].value.centAmount,
+              description,
+              book.id,
+              hasDiscount ? priceInfo.discounted.value.centAmount.toString() : '',
+            ),
+          );
+        }
+      });
+    }
+  });
 }

@@ -37,11 +37,16 @@ export const listItemCheap = createElement('li', 'dropdown-item list-sort__item'
 export const listItemExpensive = createElement('li', 'dropdown-item list-sort__item', 'Expensive');
 export const listItemAlphabetically = createElement('li', 'dropdown-item list-sort__item', 'Alphabetically');
 
-export const containerForPriceAndCurrency = createElement('div', 'd-flex catalog-page__container-dropdown');
+export const containerForPriceAndCurrency = createElement('div', 'catalog-page__container-dropdown');
+export const containerForInputMinPrice = createElement('div', 'd-flex position-relative align-items-center');
 export const inputMinPrice = createElement('input', 'catalog-page__input-price catalog-page__input-price_from');
 inputMinPrice.placeholder = 'from';
+export const clearInputMinPrice = createElement('div', 'd-none catalog-page__input-price_reset');
+
+export const containerForInputMaxPrice = createElement('div', 'd-flex position-relative align-items-center');
 export const inputMaxPrice = createElement('input', 'catalog-page__input-price catalog-page__input-price_to');
 inputMaxPrice.placeholder = 'to';
+export const clearInputMaxPrice = createElement('div', 'd-none catalog-page__input-price_reset');
 export const priceCurrency = createElement('div', 'd-flex align-items-center', '$');
 
 export const containerForInputSearchBooks = createElement('div', 'd-flex position-relative align-items-center');
