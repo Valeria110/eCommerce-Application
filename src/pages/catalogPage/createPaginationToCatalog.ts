@@ -2,7 +2,7 @@ import createElement from '../../elements/bootstrap/createElement';
 import { getBooks } from './layoutCatalogPage';
 import { containerForNumbersPages } from './variablesForCatalogPage';
 
-export function createNumberPage(countPages: number) {
+export function createCatalogPagination(countPages: number) {
   localStorage.setItem('numberPageBooks', '0');
   containerForNumbersPages.innerHTML = '';
   for (let i = 0; i < countPages; i += 1) {
