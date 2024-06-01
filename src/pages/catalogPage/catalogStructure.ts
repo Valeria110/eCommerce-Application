@@ -102,7 +102,6 @@ export function attachCatalogEventListeners() {
     iconForInputSearchBooks,
     inputSearchBooks,
     linkMain,
-    linkCatalog,
     inputMinPrice,
     inputMaxPrice,
     clearInputMaxPrice,
@@ -131,10 +130,6 @@ export function attachCatalogEventListeners() {
 
   linkMain.addEventListener('click', () => {
     switchPage(Pages.Main);
-  });
-
-  linkCatalog.addEventListener('click', () => {
-    variablesCatalogPage.listItemAllBooks.click();
   });
 
   inputMinPrice.addEventListener('input', handlePriceInputChange);

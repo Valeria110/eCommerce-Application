@@ -30,8 +30,25 @@ export function generateCatalogPage() {
   CACHED_BOOKS = [];
   localStorage.setItem('category', 'false');
   localStorage.setItem('sort', 'false');
-
+  resetCatalog();
   return variablesCatalogPage.containerForCatalogPage;
+}
+
+export function resetCatalog() {
+  setTimeout(() => {
+    variablesCatalogPage.buttonAllBooks.textContent = 'All books';
+    variablesCatalogPage.buttonSort.textContent = 'No sort';
+    variablesCatalogPage.inputSearchBooks.value = '';
+    variablesCatalogPage.inputMinPrice.value = '';
+    variablesCatalogPage.inputMaxPrice.value = '';
+    toggleElementVisibility(variablesCatalogPage.listItemAllBooks, false);
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
+    toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
+    toggleElementVisibility(variablesCatalogPage.clearInputMinPrice, false);
+    toggleElementVisibility(variablesCatalogPage.clearInputMaxPrice, false);
+    resetActiveClasses('.catalog-page__active-category');
+    resetActiveClasses('.catalog-page__active-sort');
+  });
 }
 
 export async function getAllCategories() {
@@ -253,6 +270,7 @@ export const handlePriceInputChange = async () => {
   const maxPrice = String(Number(variablesCatalogPage.inputMaxPrice.value) * 100);
   variablesCatalogPage.inputSearchBooks.value = '';
   toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
+  resetActiveClasses('.catalog-page__active-sort');
   variablesCatalogPage.buttonSort.textContent = 'No sort';
 
   if (variablesCatalogPage.inputMinPrice.value.length !== 0) {
