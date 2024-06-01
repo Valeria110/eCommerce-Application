@@ -309,6 +309,13 @@ $border-color: #dee2e6;
     background-position: center;
   }
 
+  &__active-category,
+  &__active-sort {
+    background-color: $current-color !important;
+    color: $secondary-color !important;
+    border-radius: 4px !important;
+  }
+
   @media (max-width: 1410px) {
     &__body {
       justify-content: space-around;
@@ -439,6 +446,7 @@ $border-color: #dee2e6;
     &:hover,
     &:hover {
       background-color: #ffe5d0 !important;
+      color: black !important;
     }
   }
 }
@@ -453,7 +461,7 @@ $border-color: #dee2e6;
 }
 
 .active-page {
-  background-color: $current-color;
-  color: $secondary-color;
-  border-radius: 4px;
+  background-color: $current-color !important;
+  color: $secondary-color !important;
+  border-radius: 4px !important;
 }

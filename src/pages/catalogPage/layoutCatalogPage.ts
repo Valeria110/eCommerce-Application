@@ -1,22 +1,21 @@
-import createElement from '../../elements/bootstrap/createElement';
 import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
 import requestsAPI from '../../elements/requestsAPI';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
 import './styleCatalogPage.scss';
 import switchPage from '../../elements/switchPage';
+import { generateCards } from './layoutCardsProducts';
+import { createNumberPage } from './createPaginationToCatalog';
 
 const COUNT_CHUNKS = 10;
 let COUNT_PAGES: number;
 const FIRST_PAGE = 0;
 let CACHED_BOOKS: [] = [];
 let PAGES_CREATED = false;
-const MAX_LENGTH_BOOK_NAME = 35;
-const MAX_LENGTH_BOOK_DESCRITION = 120;
-const LENGTH_FOR_SLICE_BOOK_NAME = 23;
 const SORT_TYPES: { [key: string]: string } = {
   Alphabetically: 'Alphabetically',
   Cheap: 'Cheap',
   Expensive: 'Expensive',
+  'No sort': 'No sort',
 };
 
 export function generateCatalogPage() {
@@ -32,10 +31,6 @@ export function generateCatalogPage() {
     variablesCatalogPage.arrowToBreadcrumb,
     variablesCatalogPage.linkCatalog,
   );
-
-  variablesCatalogPage.linkMain.addEventListener('click', () => {
-    switchPage(Pages.Main);
-  });
 
   variablesCatalogPage.containerForBooksFilterPanel.append(
     variablesCatalogPage.containerForCategoryAndPrice,
@@ -61,10 +56,10 @@ export function generateCatalogPage() {
   );
 
   variablesCatalogPage.dropDownBooksCategories.append(variablesCatalogPage.buttonAllBooks);
-
   variablesCatalogPage.dropDownBooksSort.append(variablesCatalogPage.buttonSort);
 
   variablesCatalogPage.listCategories.append(
+    variablesCatalogPage.listItemAllBooks,
     variablesCatalogPage.listItemClassic,
     variablesCatalogPage.listItemScience,
     variablesCatalogPage.listItemRomantic,
@@ -74,6 +69,7 @@ export function generateCatalogPage() {
   );
 
   variablesCatalogPage.listSort.append(
+    variablesCatalogPage.listItemNoSort,
     variablesCatalogPage.listItemCheap,
     variablesCatalogPage.listItemExpensive,
     variablesCatalogPage.listItemAlphabetically,
@@ -90,6 +86,21 @@ export function generateCatalogPage() {
     variablesCatalogPage.iconArrowRight,
   );
 
+  if (variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
+    variablesCatalogPage.newArrow.remove();
+    variablesCatalogPage.nameCategory.remove();
+  }
+
+  CACHED_BOOKS = [];
+
+  setTimeout(async () => {
+    getBooks();
+    attachCategoryAndSortListeners();
+  }, 500);
+
+  localStorage.setItem('category', 'false');
+  localStorage.setItem('sort', 'false');
+
   variablesCatalogPage.iconArrowRight.onclick = null;
   variablesCatalogPage.iconArrowRight.onclick = swapCatalogPages.bind(null, 'right');
 
@@ -103,19 +114,17 @@ export function generateCatalogPage() {
     }
   });
 
-  CACHED_BOOKS = [];
+  variablesCatalogPage.linkMain.addEventListener('click', () => {
+    switchPage(Pages.Main);
+  });
 
-  if (variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
-    variablesCatalogPage.newArrow.remove();
-    variablesCatalogPage.nameCategory.remove();
-  }
+  variablesCatalogPage.linkCatalog.addEventListener('click', () => {
+    switchPage(Pages.Catalog);
+  });
 
-  setTimeout(async () => {
-    getBooks();
-  }, 500);
+  variablesCatalogPage.inputMinPrice.addEventListener('input', handlePriceInputChange);
+  variablesCatalogPage.inputMaxPrice.addEventListener('input', handlePriceInputChange);
 
-  localStorage.setItem('category', 'false');
-  localStorage.setItem('sort', 'false');
   return variablesCatalogPage.containerForCatalogPage;
 }
 
@@ -152,27 +161,57 @@ export async function getAllCategories() {
         category.id = categories.id;
       }
     });
+  });
+}
 
+function attachCategoryAndSortListeners() {
+  document.querySelectorAll('.list-categories__item').forEach((category) => {
     category.addEventListener('click', async () => {
-      const resultBooks = await requestsAPI.getCategory(category.id);
-      CACHED_BOOKS = resultBooks.results;
+      document
+        .querySelectorAll('.catalog-page__active-category')
+        .forEach((item) => item.classList.remove('catalog-page__active-category'));
+      document
+        .querySelectorAll('.catalog-page__active-sort')
+        .forEach((item) => item.classList.remove('catalog-page__active-sort'));
+      if (category.textContent !== 'All books') {
+        const resultBooks = await requestsAPI.getCategory(category.id);
+        CACHED_BOOKS = resultBooks.results;
+        localStorage.setItem('category', 'true');
+        variablesCatalogPage.listItemAllBooks.classList.remove('d-none');
+        variablesCatalogPage.listItemAllBooks.classList.add('d-flex');
+        category.classList.add('catalog-page__active-category');
+        if (!variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
+          variablesCatalogPage.containerForBreadcrumb.append(
+            variablesCatalogPage.newArrow,
+            variablesCatalogPage.nameCategory,
+          );
+        }
+      } else {
+        const resultBooks = await requestsAPI.getProducts();
+        CACHED_BOOKS = resultBooks.results;
+        variablesCatalogPage.listItemAllBooks.classList.remove('d-flex');
+        variablesCatalogPage.listItemAllBooks.classList.add('d-none');
+        if (variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
+          variablesCatalogPage.newArrow.remove();
+          variablesCatalogPage.nameCategory.remove();
+        }
+        localStorage.setItem('category', 'false');
+      }
       localStorage.setItem('numberPageBooks', '0');
-      localStorage.setItem('category', 'true');
       variablesCatalogPage.inputSearchBooks.value = '';
+      variablesCatalogPage.inputMinPrice.value = '';
+      variablesCatalogPage.inputMaxPrice.value = '';
       variablesCatalogPage.containerForPagination.classList.remove('d-none');
       variablesCatalogPage.containerForPagination.classList.add('d-flex');
       variablesCatalogPage.iconForInputSearchBooks.style.backgroundImage =
         "url('data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M21.0002%2021L16.6572%2016.657M16.6572%2016.657C17.4001%2015.9141%2017.9894%2015.0322%2018.3914%2014.0615C18.7935%2013.0909%2019.0004%2012.0506%2019.0004%2011C19.0004%209.94939%2018.7935%208.90908%2018.3914%207.93845C17.9894%206.96782%2017.4001%206.08588%2016.6572%205.34299C15.9143%204.6001%2015.0324%204.01081%2014.0618%203.60877C13.0911%203.20672%2012.0508%202.99979%2011.0002%202.99979C9.9496%202.99979%208.90929%203.20672%207.93866%203.60877C6.96803%204.01081%206.08609%204.6001%205.34321%205.34299C3.84288%206.84332%203%208.87821%203%2011C3%2013.1218%203.84288%2015.1567%205.34321%2016.657C6.84354%2018.1573%208.87842%2019.0002%2011.0002%2019.0002C13.122%2019.0002%2015.1569%2018.1573%2016.6572%2016.657Z%22%20stroke%3D%22%23ADB5BD%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')";
       PAGES_CREATED = false;
-      if (!variablesCatalogPage.containerForBreadcrumb.contains(variablesCatalogPage.nameCategory)) {
-        variablesCatalogPage.containerForBreadcrumb.append(
-          variablesCatalogPage.newArrow,
-          variablesCatalogPage.nameCategory,
-        );
-      }
       variablesCatalogPage.nameCategory.textContent = category.textContent;
       variablesCatalogPage.nameCategory.id = category.id;
       variablesCatalogPage.buttonAllBooks.textContent = category.textContent;
+      variablesCatalogPage.buttonSort.textContent = 'No sort';
+      variablesCatalogPage.listItemNoSort.classList.remove('d-flex');
+      variablesCatalogPage.listItemNoSort.classList.add('d-none');
       generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
     });
   });
@@ -181,13 +220,26 @@ export async function getAllCategories() {
     sort.addEventListener('click', async () => {
       localStorage.setItem('sort', 'true');
       const sortType = SORT_TYPES[sort.textContent as string];
+      document
+        .querySelectorAll('.catalog-page__active-sort')
+        .forEach((item) => item.classList.remove('catalog-page__active-sort'));
 
-      if (sortType && variablesCatalogPage.nameCategory.id) {
-        await handleSort(sortType, true);
+      if (sortType === 'No sort') {
+        const resultBooks =
+          localStorage.getItem('category') === 'true'
+            ? await requestsAPI.getCategory(variablesCatalogPage.nameCategory.id)
+            : await requestsAPI.getProducts();
+        variablesCatalogPage.listItemNoSort.classList.remove('d-flex');
+        variablesCatalogPage.listItemNoSort.classList.add('d-none');
+        CACHED_BOOKS = resultBooks.results;
       } else {
-        await handleSort(sortType, false);
+        sort.classList.add('catalog-page__active-sort');
+        variablesCatalogPage.listItemNoSort.classList.remove('d-none');
+        variablesCatalogPage.listItemNoSort.classList.add('d-flex');
+        await handleSort(sortType, !!variablesCatalogPage.nameCategory.id);
       }
 
+      generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
       variablesCatalogPage.buttonSort.textContent = sort.textContent;
       variablesCatalogPage.inputSearchBooks.value = '';
       variablesCatalogPage.containerForPagination.classList.remove('d-none');
@@ -212,20 +264,17 @@ async function handleSort(sortType: string, isCategory: boolean) {
 }
 
 export async function getBooks() {
-  if (CACHED_BOOKS.length === 0) {
-    const resultBooks = await requestsAPI.getProducts();
-    getAllCategories();
-    CACHED_BOOKS = resultBooks.results;
+  try {
+    if (CACHED_BOOKS.length === 0) {
+      const resultBooks = await requestsAPI.getProducts();
+      getAllCategories();
+      CACHED_BOOKS = resultBooks.results;
+    }
+    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
+    variablesCatalogPage.inputSearchBooks.addEventListener('input', searchBook);
+  } catch (error) {
+    console.error('Failed to get books:', error);
   }
-  if (localStorage.getItem('category') === 'true' && localStorage.getItem('sort') !== 'true') {
-    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
-  } else if (localStorage.getItem('sort') === 'true') {
-    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
-  } else {
-    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
-  }
-
-  variablesCatalogPage.inputSearchBooks.addEventListener('input', searchBook);
 }
 
 async function searchBook() {
@@ -352,98 +401,33 @@ function splitArrayIntoChunks<T>(array: T[], chunkSize: number) {
   return result;
 }
 
-function insertDotBeforeLastTwoChars(str: string) {
-  if (str.length < 2) {
-    return str;
+async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
+  try {
+    const resultBooks =
+      localStorage.getItem('category') === 'true'
+        ? await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, true, variablesCatalogPage.nameCategory.id)
+        : await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, false, variablesCatalogPage.nameCategory.id);
+    CACHED_BOOKS = resultBooks.results;
+    PAGES_CREATED = false;
+    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
+  } catch (error) {
+    console.error('Failed to fetch products by price range:', error);
   }
-
-  const beforeLastTwo = str.slice(0, -2);
-  const lastTwo = str.slice(-2);
-
-  return beforeLastTwo + '.' + lastTwo + '$';
 }
 
-function generateCards(
-  imgUrl: string,
-  nameBook: string,
-  authorBook: string,
-  price: number,
-  description: string,
-  id: string,
-  discounted = '',
-) {
-  let shortNameBook = '';
-  if (nameBook.length > MAX_LENGTH_BOOK_NAME) {
-    shortNameBook = nameBook.slice(0, LENGTH_FOR_SLICE_BOOK_NAME).trim() + '..';
+const handlePriceInputChange = async () => {
+  const minPrice = String(Number(variablesCatalogPage.inputMinPrice.value) * 100);
+  const maxPrice = String(Number(variablesCatalogPage.inputMaxPrice.value) * 100);
+  if (minPrice !== '0' && maxPrice !== '0') {
+    fetchProductsByPriceRange(minPrice, maxPrice);
   } else {
-    shortNameBook = nameBook;
+    const resultBooks =
+      localStorage.getItem('category') === 'true'
+        ? await requestsAPI.getCategory(variablesCatalogPage.nameCategory.id)
+        : await requestsAPI.getProducts();
+
+    PAGES_CREATED = false;
+    CACHED_BOOKS = resultBooks.results;
+    generateBooks(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS));
   }
-
-  let shortDescription = '';
-  if (description.length > MAX_LENGTH_BOOK_DESCRITION) {
-    shortDescription = description.slice(0, MAX_LENGTH_BOOK_DESCRITION - 1).trim() + '..';
-  } else {
-    shortDescription = description;
-  }
-
-  const containerForCard = createElement('div', 'catalog-page__cards-container');
-  const containerHover = createElement('div', 'catalog-page__cards-container_hover', shortDescription);
-  const containerForBook = createElement('div', 'catalog-page__cards-body');
-  const containerForCover = createElement('div', 'catalog-page__cards-cover');
-  containerForCover.style.backgroundImage = `url(${imgUrl})`;
-  const containerForDescription = createElement('div', 'catalog-page__cards-description');
-  const containerForNameAndAuthor = createElement('div', 'catalog-page__cards-info');
-  const name = createElement('div', 'catalog-page__cards-name', shortNameBook);
-  const author = createElement('div', 'catalog-page__cards-name_author', authorBook);
-
-  const containerForPrice = createElement('div', 'catalog-page__cards-price-container');
-  const priceBook = createElement('div', 'catalog-page__cards-price', insertDotBeforeLastTwoChars(price.toString()));
-  const containerForDiscountedPrice = createElement(
-    'div',
-    'catalog-page__cards-price_discounted',
-    insertDotBeforeLastTwoChars(discounted),
-  );
-  const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', '50%');
-
-  if (containerForDiscountedPrice.textContent !== '') {
-    containerForCover.append(cardDiscounted);
-    priceBook.textContent = insertDotBeforeLastTwoChars(discounted);
-    containerForDiscountedPrice.textContent = insertDotBeforeLastTwoChars(price.toString());
-  }
-
-  containerForCard.append(containerForBook, containerHover);
-  containerForBook.append(containerForCover, containerForDescription);
-  containerForNameAndAuthor.append(name, author);
-  containerForPrice.append(priceBook, containerForDiscountedPrice);
-  containerForDescription.append(containerForNameAndAuthor, containerForPrice);
-  containerForCard.addEventListener('click', () => {
-    switchPage(Pages.Product, id);
-  });
-  return containerForCard;
-}
-
-function createNumberPage(countPages: number) {
-  localStorage.setItem('numberPageBooks', '0');
-  variablesCatalogPage.containerForNumbersPages.innerHTML = '';
-  for (let i = 0; i < countPages; i += 1) {
-    const numberPage = createElement('div', 'catalog-page__pagination_item', `${i + 1}`);
-    numberPage.id = i.toString();
-    numberPage.addEventListener('click', () => {
-      localStorage.setItem('numberPageBooks', String(numberPage.id));
-      document
-        .querySelectorAll('.catalog-page__pagination_item.active-page')
-        .forEach((item) => item.classList.remove('active-page'));
-
-      const newPageElement = document.getElementById(String(numberPage.id));
-      if (newPageElement) {
-        newPageElement.classList.add('active-page');
-      }
-      getBooks();
-    });
-
-    if (numberPage.id === localStorage.getItem('numberPageBooks')) {
-      numberPage.classList.add('active-page');
-    }
-    variablesCatalogPage.containerForNumbersPages.append(numberPage);
-  }
-}
+};

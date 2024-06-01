@@ -262,7 +262,8 @@ class RequestFetch {
 
   async getCategory(id: string) {
     try {
-      const url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}`;
+      const limit = 100;
+      const url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&limit=${limit}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -319,6 +320,29 @@ class RequestFetch {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&fuzzy=true&limit=${limit}`;
       } else {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&fuzzy=true&limit=${limit}`;
+      }
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${await this.projectToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const resultBooks = await response.json();
+      return resultBooks;
+    } catch (error) {
+      console.error('API error:', (error as Error).message);
+    }
+  }
+
+  async getBooksByPriceRange(fromPrice: string, toPrice: string, isCategory: boolean, id: string) {
+    try {
+      let url;
+      const limit = 100;
+      if (isCategory === false) {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
       }
       const response = await fetch(url, {
         method: 'GET',
