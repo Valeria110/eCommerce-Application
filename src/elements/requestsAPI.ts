@@ -212,8 +212,6 @@ class RequestFetch {
     const customers = await response.json();
 
     if (customers.results) {
-      console.log(customers.results);
-
       this.#customerData.id = customers.results[0].id;
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
@@ -775,7 +773,6 @@ class RequestFetch {
         },
       ],
     };
-    console.log(bodyRequest);
 
     const response = await fetch(url, {
       method: 'POST',
@@ -783,25 +780,7 @@ class RequestFetch {
         Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        version: Number(localStorage.getItem('version')),
-        actions: [
-          {
-            action: 'addAddress',
-            address: {
-              title: 'My Address',
-              firstName: this.#customerData.firstName,
-              lastName: this.#customerData.lastName,
-              streetName: streetObj.name,
-              streetNumber: streetObj.number,
-              postalCode: postalCode,
-              city: city,
-              country,
-              email: this.#customerData.email,
-            },
-          },
-        ],
-      }),
+      body: JSON.stringify(bodyRequest),
     });
 
     if (response.ok) {

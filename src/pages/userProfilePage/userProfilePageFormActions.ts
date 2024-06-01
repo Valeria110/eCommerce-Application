@@ -43,11 +43,8 @@ function saveUpdatedData(form: HTMLElement) {
 
     if (!checkboxInput.checked) {
       if (form.dataset.addressId) {
-        console.log('надо поменять адрес');
         requestsAPI.changeAddress(getUpdatedAddressData(form));
       } else {
-        console.log('создаём адрес');
-
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI
           .addNewAddress(street, postalCode, city, country)
@@ -66,8 +63,6 @@ function saveUpdatedData(form: HTMLElement) {
           addressBoxTitle.textContent = 'Default billing address';
         }
       } else {
-        console.log('создаём адрес');
-
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressId) => {
           form.dataset.addressId = newAddressId;
@@ -184,9 +179,15 @@ function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement, fo
 }
 
 function isFormValid() {
-  const inputs = Array.from(document.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
-  const isValid =
-    !inputs.some((input) => input.classList.contains('is-invalid')) && !inputs.some((input) => input.value === '');
+  let isValid = false;
+
+  const forms = Array.from(document.querySelectorAll('.form-in-edit-mode')) as HTMLElement[];
+  forms.forEach((form) => {
+    const inputs = Array.from(form.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
+    isValid =
+      !inputs.some((input) => input.classList.contains('is-invalid')) && !inputs.some((input) => input.value === '');
+  });
+
   return isValid;
 }
 

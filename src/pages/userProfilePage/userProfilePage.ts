@@ -72,11 +72,8 @@ function userProfilePage(): HTMLElement {
   const createAddressBoxes = () => {
     userFullname.textContent = `${requestsAPI.customerData.firstName} ${requestsAPI.customerData.lastName}`;
     userEmail.textContent = `${requestsAPI.customerData.email}`;
-    console.log(requestsAPI.customerData.id);
 
     const shippingAddresses = requestsAPI.getCustomerAddresses().shippingAddresses;
-    console.log(shippingAddresses);
-
     const shippingAddressesNum = shippingAddresses ? shippingAddresses.length : 0;
     for (let i = 0; i < shippingAddressesNum; i += 1) {
       const shippingAddressBox = createShippingAddressBlock(i);
@@ -328,7 +325,6 @@ function createChangePasswordModal(): HTMLElement {
   });
   document.body.addEventListener(AppEvents.updateUserName, () => {
     currentPasswordInput.value = requestsAPI.customerData.password;
-    console.log(requestsAPI.customerData.password);
   });
 
   btnsWrapper.append(saveBtn, cancelBtn);
