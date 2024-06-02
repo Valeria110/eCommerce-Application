@@ -15,6 +15,8 @@ import * as bootstrap from 'bootstrap';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
+let modalWihCarousel: HTMLDivElement;
+let carousel: HTMLElement;
 const updateLinkMainImg = (response: Product, index: number) => {
   // discount only for first page
   if (cardDiscounted) {
@@ -50,29 +52,28 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   cardProduct.append(createLeftColumn(response));
   cardProduct.append(createRightColumn(response));
 
-  const carousel = createCarousel(response);
-  const bsCarousel = new bootstrap.Carousel(carousel);
+  carousel = createCarousel(response);
+  const bsCarousel: bootstrap.Carousel = new bootstrap.Carousel(carousel);
   const indicatorCarosel = createImgTabs(response, (index) => {
     bsCarousel.to(index);
-    console.log(index);
   });
 
-  const modal = createModal('productModal', [carousel, indicatorCarosel]);
-  const linkTest = Bootstrap.createElement('a', '', 'test');
-  linkTest.addEventListener('click', () => showModal(modal));
+  modalWihCarousel = createModal('productModal', [carousel, indicatorCarosel]);
 
   carousel.addEventListener('slide.bs.carousel', (event: unknown) => {
     const objEvent = event as object;
-    if ('to' in objEvent) {
+    if ('to' in objEvent && typeof objEvent.to === 'number') {
       console.log('событие слайдер карусели', objEvent.to);
+      const dots = Array.from(indicatorCarosel.querySelectorAll('.productTabs__circle')) as HTMLElement[];
+      updateActiveIndexImgTabs(dots, objEvent.to);
     }
   });
 
   page.append(
-    modal,
+    modalWihCarousel,
     createCatalogPath(response.title),
     cardProduct,
-    linkTest,
+    // ,
     Bootstrap.createElement('div', '', 'Place for You might light it'),
   ); // TODO: replace svg icon
 }
@@ -165,7 +166,7 @@ function createPreviewsImg(response: Product, limitImg = 3) {
       const preview = Bootstrap.createElement('div', 'productPreviewImg__img');
       preview.style.backgroundImage = `url(${img})`;
 
-      preview.addEventListener('click', () => console.log(`вызвать модальное с индексом ${index}`));
+      preview.addEventListener('click', () => showModalWithCarousel(index));
       container.append(preview);
     }
   });
@@ -191,10 +192,18 @@ function createMainImgPage(response: Product) {
   const imgTabs = createImgTabs(response, (index) => updateLinkMainImg(response, index));
   containerForCard.append(imgTabs);
 
+  containerForCard.addEventListener('click', () => showModalWithCarousel(0));
+
   return containerForCard;
 }
 
-// function updateActiveIndexImgTabs
+function updateActiveIndexImgTabs(dots: HTMLElement[], index: number) {
+  dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
+  const dot = dots.at(index);
+  if (dot) {
+    dot.classList.add('productTabs__circle_active');
+  }
+}
 
 function createImgTabs(response: Product, clickCallback: (index: number) => void, startIndex = 0) {
   const dots: HTMLElement[] = [];
@@ -204,28 +213,20 @@ function createImgTabs(response: Product, clickCallback: (index: number) => void
     return container;
   }
 
-  const updateActiveIndex = (index: number) => {
-    dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
-    const dot = dots.at(index);
-    if (dot) {
-      dot.classList.add('productTabs__circle_active');
-    }
-  };
-
   response.images.forEach((img, index) => {
     const dotWrapper = Bootstrap.createElement('div', 'productTabs__circleWrapper');
     const dot = Bootstrap.createElement('div', 'productTabs__circle');
     dotWrapper.append(dot);
 
     dotWrapper.addEventListener('click', () => {
-      updateActiveIndex(index);
+      updateActiveIndexImgTabs(dots, index);
       clickCallback(index);
     });
     dots.push(dot);
     container.append(dotWrapper);
   });
 
-  updateActiveIndex(startIndex);
+  updateActiveIndexImgTabs(dots, startIndex);
   return container;
 }
 
@@ -251,25 +252,17 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
   return nav;
 }
 
-function createCarousel(response: Product): HTMLElement {
-  const carousel = Bootstrap.createElement('div', 'carousel slide my-carousel');
-  carousel.id = 'carouselExampleIndicators';
+function createCarousel(response: Product, startIndex = 0): HTMLElement {
+  const carouselId = 'carouselExampleIndicators';
 
-  const indicators = Bootstrap.createElement('ol', 'carousel-indicators');
+  const carouselDiv = Bootstrap.createElement('div', 'carousel slide my-carousel');
+  carouselDiv.id = carouselId;
+  carouselDiv.dataset.bsInterval = 'false'; // Disable automatic sliding
+
   const inner = Bootstrap.createElement('div', 'carousel-inner');
 
   response.images.forEach((image, index) => {
-    const indicator = Bootstrap.createElement('button', index === 0 ? ['active'] : []);
-    indicator.type = 'button';
-    indicator.dataset.bsTarget = '#carouselExampleIndicators';
-    indicator.dataset.bsSlideTo = index.toString();
-    if (index === 0) {
-      indicator.setAttribute('aria-current', 'true');
-    }
-    indicator.setAttribute('aria-label', `Slide ${index + 1}`);
-    indicators.append(indicator);
-
-    const item = Bootstrap.createElement('div', index === 0 ? ['carousel-item', 'active'] : ['carousel-item']);
+    const item = Bootstrap.createElement('div', index === startIndex ? ['carousel-item', 'active'] : ['carousel-item']);
     const img = Bootstrap.createElement('img', 'd-block w-100');
     img.src = image;
     img.alt = `Slide ${index + 1}`;
@@ -279,7 +272,7 @@ function createCarousel(response: Product): HTMLElement {
 
   const prevButton = Bootstrap.createElement('button', 'carousel-control-prev');
   prevButton.type = 'button';
-  prevButton.dataset.bsTarget = '#carouselExampleIndicators';
+  prevButton.dataset.bsTarget = `#${carouselId}`;
   prevButton.dataset.bsSlide = 'prev';
   const prevIcon = Bootstrap.createElement('span', 'carousel-control-prev-icon');
   prevIcon.setAttribute('aria-hidden', 'true');
@@ -288,15 +281,20 @@ function createCarousel(response: Product): HTMLElement {
 
   const nextButton = Bootstrap.createElement('button', 'carousel-control-next');
   nextButton.type = 'button';
-  nextButton.dataset.bsTarget = '#carouselExampleIndicators';
+  nextButton.dataset.bsTarget = `#${carouselId}`;
   nextButton.dataset.bsSlide = 'next';
   const nextIcon = Bootstrap.createElement('span', 'carousel-control-next-icon');
   nextIcon.setAttribute('aria-hidden', 'true');
   const nextText = Bootstrap.createElement('span', 'visually-hidden', 'Next');
   nextButton.append(nextIcon, nextText);
 
-  carousel.append(indicators, inner, prevButton, nextButton);
-  return carousel;
+  carouselDiv.append(inner, prevButton, nextButton);
+
+  // Programmatically go to the start index
+  const bsCarousel = new bootstrap.Carousel(carouselDiv);
+  bsCarousel.to(startIndex);
+
+  return carouselDiv;
 }
 
 function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
@@ -332,7 +330,11 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
   return modal;
 }
 
-function showModal(modal: HTMLDivElement) {
-  const bootstrapModal = new bootstrap.Modal(modal);
+function showModalWithCarousel(index: number) {
+  console.log(`открыть на ${index}`);
+  const bootstrapModal = new bootstrap.Modal(modalWihCarousel);
   bootstrapModal.show();
+
+  const bsCarousel = new bootstrap.Carousel(carousel);
+  bsCarousel.to(index);
 }
