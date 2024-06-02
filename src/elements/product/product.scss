@@ -215,7 +215,7 @@ $width_change_img: ($screen-width-tablet + 116px);
   flex-direction: column;
   gap: 36px;
 
-  @media (width <= $screen-width-tablet) {
+  @media (width <= $width_change_img) {
     gap: 14.77px;
   }
 

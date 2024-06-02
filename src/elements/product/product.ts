@@ -7,12 +7,8 @@ import { Pages, Product } from '../types';
 import './product.scss';
 import * as bootstrap from 'bootstrap';
 
-// TODO: img with proporthios
 // TODO: disable add to card & buy without price
 // TODO: 🔃 add before fetch
-// TODO: Modal widnow slider
-// TODO: Modal window and custom slider indicator
-// TODO: syns height preview & main page
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
