@@ -12,6 +12,7 @@ import * as bootstrap from 'bootstrap';
 // TODO: 🔃 add before fetch
 // TODO: Modal widnow slider
 // TODO: Modal window and custom slider indicator
+// TODO: syns height preview & main page
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -63,7 +64,6 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   carousel.addEventListener('slide.bs.carousel', (event: unknown) => {
     const objEvent = event as object;
     if ('to' in objEvent && typeof objEvent.to === 'number') {
-      console.log('событие слайдер карусели', objEvent.to);
       const dots = Array.from(indicatorCarosel.querySelectorAll('.productTabs__circle')) as HTMLElement[];
       updateActiveIndexImgTabs(dots, objEvent.to);
     }
@@ -73,9 +73,8 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
     modalWihCarousel,
     createCatalogPath(response.title),
     cardProduct,
-    // ,
     Bootstrap.createElement('div', '', 'Place for You might light it'),
-  ); // TODO: replace svg icon
+  );
 }
 
 function createRightColumn(response: Product) {
@@ -192,7 +191,7 @@ function createMainImgPage(response: Product) {
   const imgTabs = createImgTabs(response, (index) => updateLinkMainImg(response, index));
   containerForCard.append(imgTabs);
 
-  containerForCard.addEventListener('click', () => showModalWithCarousel(0));
+  containerForBook.addEventListener('click', () => showModalWithCarousel(0));
 
   return containerForCard;
 }
@@ -310,12 +309,12 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
   const content = Bootstrap.createElement('div', 'modal-content');
   dialog.append(content);
 
-  const header = Bootstrap.createElement('div', 'modal-header');
+  const header = Bootstrap.createElement('div', 'modal-header border-bottom-0');
   content.append(header);
 
-  const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', 'Title');
-  titleElement.id = `${id}Label`;
-  header.append(titleElement);
+  // const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', 'Title');
+  // titleElement.id = `${id}Label`;
+  // header.append(titleElement);
 
   const closeButton = Bootstrap.createElement('button', 'btn-close');
   closeButton.type = 'button';
@@ -331,7 +330,6 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
 }
 
 function showModalWithCarousel(index: number) {
-  console.log(`открыть на ${index}`);
   const bootstrapModal = new bootstrap.Modal(modalWihCarousel);
   bootstrapModal.show();
 
