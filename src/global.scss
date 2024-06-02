@@ -9,8 +9,7 @@
 body {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  padding: 10px;
+  width: 100%; // replace vw on %, because"100vw can cause horizontal scrolling because it does not take into account the browser's scrollbar.
   max-width: 100%;
   height: 100vh;
   font-family: 'Inter', sans-serif;

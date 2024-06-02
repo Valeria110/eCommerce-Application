@@ -1,6 +1,6 @@
 @import './../../breakpoints.scss';
 $gray_text: rgb(153, 153, 153);
-$width_change_img: ($screen-width-tablet + 116px);
+$width_change_preview: ($screen-width-tablet + 116px);
 
 .product {
   &__title {
@@ -10,7 +10,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     line-height: 39px;
     margin-bottom: 8px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-size: 24px;
       line-height: 29px;
     }
@@ -27,7 +27,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     line-height: 29px;
     margin-bottom: 32px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-size: 20px;
       line-height: 24px;
       margin-bottom: 20px;
@@ -45,7 +45,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     line-height: 18px;
     margin-bottom: 8px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-size: 14px;
     }
   }
@@ -62,7 +62,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     -webkit-box-orient: vertical;
     overflow: hidden;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-size: 14px;
     }
 
@@ -96,7 +96,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     margin-top: 32px;
     margin-bottom: 24px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       margin-bottom: 16px;
     }
   }
@@ -106,7 +106,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     font-weight: 600;
     line-height: 48px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-size: 32px;
       line-height: 39px;
     }
@@ -119,7 +119,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     line-height: 29px;
     text-decoration-line: line-through;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       font-family: Inter;
       font-size: 20px;
       line-height: 24px;
@@ -163,7 +163,7 @@ $width_change_img: ($screen-width-tablet + 116px);
 
   margin-bottom: 144px;
 
-  @media (width <= $width_change_img) {
+  @media (width <= $width_change_preview) {
     margin-bottom: 64px;
   }
 
@@ -171,7 +171,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     display: flex;
     gap: 22px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       justify-content: center;
     }
   }
@@ -181,7 +181,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     flex-direction: column;
     width: 50% !important;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       width: 100% !important;
     }
   }
@@ -215,7 +215,7 @@ $width_change_img: ($screen-width-tablet + 116px);
   flex-direction: column;
   gap: 36px;
 
-  @media (width <= $width_change_img) {
+  @media (width <= $width_change_preview) {
     gap: 14.77px;
   }
 
@@ -229,7 +229,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     background-repeat: no-repeat;
     background-position: center;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       width: 64px;
       height: 93.82px;
     }
@@ -249,7 +249,7 @@ $width_change_img: ($screen-width-tablet + 116px);
     width: 306px;
     height: 459px;
 
-    @media (width <= $width_change_img) {
+    @media (width <= $width_change_preview) {
       width: 208px;
       height: 311px;
     }
