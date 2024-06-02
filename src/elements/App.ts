@@ -7,7 +7,7 @@ import aboutUS from '../pages/aboutUs';
 import header from './header/header';
 import error404Page from '../pages/error404Page';
 import footer from './footer/footer';
-import product from './product/product';
+import product from '../pages/productPage/product';
 import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
 

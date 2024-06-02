@@ -1,8 +1,8 @@
-import Bootstrap from '../bootstrap/Bootstrap';
-import createElement from '../bootstrap/createElement';
-import requestsAPI from '../requestsAPI';
-import switchPage from '../switchPage';
-import { Pages, Product } from '../types';
+import Bootstrap from '../../elements/bootstrap/Bootstrap';
+import createElement from '../../elements/bootstrap/createElement';
+import requestsAPI from '../../elements/requestsAPI';
+import switchPage from '../../elements/switchPage';
+import { Pages, Product } from '../../elements/types';
 import './product.scss';
 import * as bootstrap from 'bootstrap';
 
