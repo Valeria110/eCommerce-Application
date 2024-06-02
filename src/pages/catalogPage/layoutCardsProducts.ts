@@ -79,7 +79,11 @@ function insertDotBeforeLastTwoChars(str: string) {
   return beforeLastTwo + '.' + lastTwo + '$';
 }
 
-export function extractBookInfo(array: InfoBook[][] | InfoBookCategory[][], countPages: number) {
+export function extractBookInfo(
+  array: InfoBook[][] | InfoBookCategory[][],
+  countPages: number,
+  container: HTMLDivElement,
+) {
   variablesCatalogPage.containerForAllBooks.innerHTML = '';
 
   if (countPages === 1) {
@@ -125,7 +129,7 @@ export function extractBookInfo(array: InfoBook[][] | InfoBookCategory[][], coun
           const priceInfo = noFilters.masterVariant.prices[0];
           const hasDiscount =
             priceInfo.discounted && priceInfo.discounted.value && priceInfo.discounted.value.centAmount;
-          variablesCatalogPage.containerForAllBooks.append(
+          container.append(
             generateCards(
               img,
               noFilters.name['en-US'],

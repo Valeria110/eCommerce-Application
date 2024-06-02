@@ -18,6 +18,10 @@
     padding: 0 34px 64px 34px;
   }
 
+  @media(width <= 540px) {
+    padding: 0 12px 64px 12px;
+  }
+
   &__leftColumn {
     display: flex;
     flex-direction: column;

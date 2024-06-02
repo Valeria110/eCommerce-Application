@@ -116,7 +116,11 @@ async function handleCategoryClick(category: HTMLLIElement) {
     toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
     toggleElementVisibility(variablesCatalogPage.clearInputMinPrice, false);
     toggleElementVisibility(variablesCatalogPage.clearInputMaxPrice, false);
-    extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+    extractBookInfo(
+      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+      COUNT_PAGES,
+      variablesCatalogPage.containerForAllBooks,
+    );
   } catch (error) {
     console.error('Error handling category click:', error);
   }
@@ -141,7 +145,11 @@ async function handleSortClick(sort: HTMLLIElement) {
       await handleSort(sortType, !!variablesCatalogPage.nameCategory.id);
     }
 
-    extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+    extractBookInfo(
+      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+      COUNT_PAGES,
+      variablesCatalogPage.containerForAllBooks,
+    );
     variablesCatalogPage.buttonSort.textContent = sort.textContent;
     variablesCatalogPage.inputSearchBooks.value = '';
     toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
@@ -166,7 +174,11 @@ async function handleSort(sortType: string, isCategory: boolean) {
   localStorage.setItem('numberPageBooks', '0');
   PAGES_CREATED = false;
 
-  extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+  extractBookInfo(
+    splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+    COUNT_PAGES,
+    variablesCatalogPage.containerForAllBooks,
+  );
 }
 
 export async function getBooks() {
@@ -176,7 +188,11 @@ export async function getBooks() {
       getAllCategories();
       CACHED_BOOKS = resultBooks.results;
     }
-    extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+    extractBookInfo(
+      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+      COUNT_PAGES,
+      variablesCatalogPage.containerForAllBooks,
+    );
     variablesCatalogPage.inputSearchBooks.addEventListener('input', searchBook);
   } catch (error) {
     console.error('Failed to get books:', error);
@@ -209,7 +225,11 @@ export async function searchBook() {
   toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
   resetActiveClasses('.catalog-page__active-sort');
   variablesCatalogPage.buttonSort.textContent = 'No sort';
-  extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+  extractBookInfo(
+    splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+    COUNT_PAGES,
+    variablesCatalogPage.containerForAllBooks,
+  );
 
   if (resultBooks.results.length === 0) {
     handleSearchError(variablesCatalogPage.inputSearchBooks.value);
@@ -228,14 +248,14 @@ export async function searchBook() {
   });
 }
 
-function splitArrayIntoChunks<T>(array: T[], chunkSize: number) {
+export function splitArrayIntoChunks<T>(array: T[], chunkSize: number, isCatalog: boolean) {
   const result: T[][] = [];
   for (let i = 0; i < array.length; i += chunkSize) {
     const chunk = array.slice(i, i + chunkSize);
     result.push(chunk);
   }
   COUNT_PAGES = result.length;
-  if (!PAGES_CREATED) {
+  if (!PAGES_CREATED && isCatalog !== false) {
     createCatalogPagination(COUNT_PAGES);
     PAGES_CREATED = true;
   }
@@ -252,7 +272,11 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
     CACHED_BOOKS = resultBooks.results;
     PAGES_CREATED = false;
     toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
-    extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+    extractBookInfo(
+      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+      COUNT_PAGES,
+      variablesCatalogPage.containerForAllBooks,
+    );
 
     if (resultBooks.results.length === 0) {
       handleSearchError(
@@ -296,6 +320,10 @@ export const handlePriceInputChange = async () => {
     PAGES_CREATED = false;
     CACHED_BOOKS = resultBooks.results;
     toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
-    extractBookInfo(splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS), COUNT_PAGES);
+    extractBookInfo(
+      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+      COUNT_PAGES,
+      variablesCatalogPage.containerForAllBooks,
+    );
   }
 };
