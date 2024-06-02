@@ -1,3 +1,4 @@
+// import { modalWindow } from '../../pages/registration-page/variablesForRegistrationPage';
 import Bootstrap from '../bootstrap/Bootstrap';
 import createElement from '../bootstrap/createElement';
 import requestsAPI from '../requestsAPI';
@@ -8,6 +9,8 @@ import './product.scss';
 // TODO: img with proporthios
 // TODO: disable add to card & buy without price
 // TODO: 🔃 add before fetch
+// TODO: Modal widnow slider
+// TODO: Modal window and custom slider indicator
 
 let activeIndexImg = 0;
 let linkMainImg: HTMLElement;
@@ -34,6 +37,9 @@ const updateActiveIndexRenderMain = (response: Product, index: number) => {
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
 };
 
+const backdrop = Bootstrap.createElement('div', 'modal-backdrop fade show');
+backdrop.addEventListener('click', () => console.log('клик'));
+
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
@@ -42,22 +48,37 @@ export default function product(id: string) {
     const response = await requestsAPI.getProductsByID(id);
     console.log('product response', response);
     if (response) {
-      const cardProduct = Bootstrap.createElement('div', 'productCard');
-      cardProduct.append(createLeftColumn(response));
-      cardProduct.append(createRightColumn(response));
-
-      page.append(
-        createCatalogPath(response.title),
-        cardProduct,
-        Bootstrap.createElement('div', '', 'Place for You might light it'),
-      ); // TODO: replace svg icon
-      page.append(createCarousel(response));
+      generateProductPage(response, page);
     } else {
       switchPage(Pages.Error404);
     }
   })();
 
   return page;
+}
+
+function generateProductPage(response: Product, page: HTMLDivElement) {
+  const cardProduct = Bootstrap.createElement('div', 'productCard');
+  cardProduct.append(createLeftColumn(response));
+  cardProduct.append(createRightColumn(response));
+
+  const modalPreview = createModalWindow2('Title', 'body');
+  hideModal(modalPreview);
+  const btnModal = Bootstrap.createButton('modal', 'btn-orange border-0 btn-style-defaultmx-1');
+  btnModal.addEventListener('click', () => {
+    showModal(modalPreview);
+  });
+  backdrop.addEventListener('click', () => hideModal(modalPreview));
+
+  page.append(
+    backdrop,
+    modalPreview,
+    createCatalogPath(response.title),
+    cardProduct,
+    btnModal,
+    Bootstrap.createElement('div', '', 'Place for You might light it'),
+  ); // TODO: replace svg icon
+  page.append(createCarousel(response));
 }
 
 function createRightColumn(response: Product) {
@@ -268,4 +289,93 @@ function createCarousel(response: Product): HTMLElement {
 
   carousel.append(indicators, inner, prevButton, nextButton);
   return carousel;
+}
+
+// function createModalWindow(title: string, bodyContent: string): HTMLDivElement {
+//   const id = 'product_modal';
+//   const modalFadeDiv = Bootstrap.createElement('div', 'modal');
+//   modalFadeDiv.id = id;
+//   modalFadeDiv.setAttribute('data-bs-backdrop', 'static');
+//   modalFadeDiv.setAttribute('data-bs-keyboard', 'false');
+//   modalFadeDiv.tabIndex = -1;
+//   modalFadeDiv.setAttribute('aria-labelledby', `${id}Label`);
+//   modalFadeDiv.setAttribute('aria-hidden', 'true');
+
+//   const modalDialogDiv = Bootstrap.createElement('div', 'modal-dialog');
+//   const modalContentDiv = Bootstrap.createElement('div', 'modal-content');
+//   const modalHeaderDiv = Bootstrap.createElement('div', 'modal-header');
+
+//   const modalTitleH1 = Bootstrap.createElement('h1', 'modal-title fs-5');
+//   modalTitleH1.id = `${id}Label`;
+//   modalTitleH1.textContent = title;
+
+//   const closeButton = Bootstrap.createButton('', 'btn-close');
+//   closeButton.setAttribute('data-bs-dismiss', 'modal');
+//   closeButton.setAttribute('aria-label', 'Close');
+
+//   const modalBodyDiv = Bootstrap.createElement('div');
+//   modalBodyDiv.classList.add('modal-body');
+//   modalBodyDiv.textContent = bodyContent;
+
+//   // const closeButtonFooter = Bootstrap.createButton('Close', 'btn-secondary');
+//   // closeButtonFooter.setAttribute('data-bs-dismiss', 'modal');
+
+//   modalHeaderDiv.append(modalTitleH1, closeButton);
+//   modalContentDiv.append(modalHeaderDiv, modalBodyDiv);
+//   modalDialogDiv.append(modalContentDiv);
+//   modalFadeDiv.append(modalDialogDiv);
+//   return modalFadeDiv;
+// }
+
+function showModal(modalDiv: HTMLDivElement) {
+  modalDiv.classList.add('show');
+  modalDiv.style.display = 'block';
+  modalDiv.setAttribute('aria-modal', 'true');
+  modalDiv.removeAttribute('aria-hidden');
+
+  backdrop.classList.add('modal-backdrop', 'fade', 'show');
+  document.body.append(backdrop);
+}
+
+function hideModal(modalDiv: HTMLDivElement) {
+  console.log('hideModal');
+
+  modalDiv.classList.remove('show');
+  modalDiv.style.display = 'none';
+  modalDiv.setAttribute('aria-hidden', 'true');
+  modalDiv.removeAttribute('aria-modal');
+
+  backdrop.classList.remove('modal-backdrop', 'fade', 'show');
+}
+
+function createModalWindow2(title: string, bodyContent: string): HTMLDivElement {
+  console.log(bodyContent);
+  const modal = Bootstrap.createElement('div', 'modal');
+  modal.tabIndex = -1;
+
+  const dialog = Bootstrap.createElement('div', 'modal-dialog');
+  modal.append(dialog);
+
+  const content = Bootstrap.createElement('div', 'modal-content');
+  dialog.append(content);
+
+  const header = Bootstrap.createElement('div', 'modal-header');
+  content.append(header);
+
+  const titleElement = Bootstrap.createElement('h5', 'modal-title', title);
+  header.append(titleElement);
+
+  const closeButton = Bootstrap.createElement('button', 'btn-close');
+  closeButton.type = 'button';
+  closeButton.dataset.bsDismiss = 'modal';
+  closeButton.setAttribute('aria-label', 'Close');
+  header.append(closeButton);
+  closeButton.addEventListener('click', () => hideModal(modal));
+
+  const body = Bootstrap.createElement('div', 'modal-body');
+  const bodyText = Bootstrap.createElement('p', '', 'Modal body text goes here.');
+  body.append(bodyText);
+  content.append(body);
+
+  return modal;
 }

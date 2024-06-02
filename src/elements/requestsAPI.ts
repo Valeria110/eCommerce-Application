@@ -279,11 +279,18 @@ class RequestFetch {
 
   async getProductsByID(productID: string): Promise<Product | undefined> {
     try {
+      // now - always use project token, but in Sprint 4, replace on #customerToken for logined user
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
-          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+          Authorization: `Bearer ${this.projectToken}`,
         },
       });
+
+      // const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
+      //   },
+      // });
 
       await this.checkResponse(response);
 
