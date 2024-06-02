@@ -13,19 +13,9 @@ import * as bootstrap from 'bootstrap';
 // TODO: Modal widnow slider
 // TODO: Modal window and custom slider indicator
 
-let activeIndexImg = 0;
 let linkMainImg: HTMLElement;
-let dots: HTMLElement[] = [];
 let cardDiscounted: HTMLDivElement;
-const updateActiveIndexRenderMain = (response: Product, index: number) => {
-  activeIndexImg = index;
-
-  dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
-  const dot = dots.at(index);
-  if (dot) {
-    dot.classList.add('productTabs__circle_active');
-  }
-
+const updateLinkMainImg = (response: Product, index: number) => {
   // discount only for first page
   if (cardDiscounted) {
     if (index === 0) {
@@ -60,21 +50,31 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   cardProduct.append(createLeftColumn(response));
   cardProduct.append(createRightColumn(response));
 
-  const modal = createModal('productModal', 'title', 'body');
-  const modalBtn = createModalTriggerButton('productModal', 'Launch demo modal');
+  const carousel = createCarousel(response);
+  const bsCarousel = new bootstrap.Carousel(carousel);
+  const indicatorCarosel = createImgTabs(response, (index) => {
+    bsCarousel.to(index);
+    console.log(index);
+  });
+
+  const modal = createModal('productModal', [carousel, indicatorCarosel]);
   const linkTest = Bootstrap.createElement('a', '', 'test');
   linkTest.addEventListener('click', () => showModal(modal));
-  document.body.append(modalBtn);
+
+  carousel.addEventListener('slide.bs.carousel', (event: unknown) => {
+    const objEvent = event as object;
+    if ('to' in objEvent) {
+      console.log('событие слайдер карусели', objEvent.to);
+    }
+  });
 
   page.append(
     modal,
     createCatalogPath(response.title),
     cardProduct,
-    modalBtn,
     linkTest,
     Bootstrap.createElement('div', '', 'Place for You might light it'),
   ); // TODO: replace svg icon
-  page.append(createCarousel(response));
 }
 
 function createRightColumn(response: Product) {
@@ -165,7 +165,7 @@ function createPreviewsImg(response: Product, limitImg = 3) {
       const preview = Bootstrap.createElement('div', 'productPreviewImg__img');
       preview.style.backgroundImage = `url(${img})`;
 
-      preview.addEventListener('click', () => updateActiveIndexRenderMain(response, index));
+      preview.addEventListener('click', () => console.log(`вызвать модальное с индексом ${index}`));
       container.append(preview);
     }
   });
@@ -178,7 +178,7 @@ function createMainImgPage(response: Product) {
   const containerForBook = createElement('div', 'mainImg__cards-body');
   linkMainImg = createElement('div', 'mainImg__cards-cover');
 
-  updateActiveIndexRenderMain(response, 0);
+  updateLinkMainImg(response, 0);
 
   if (response.prices.discounted) {
     cardDiscounted = createElement('div', 'mainImg__cards-discounted', getProcentDiscount(response));
@@ -188,18 +188,29 @@ function createMainImgPage(response: Product) {
   containerForCard.append(containerForBook);
   containerForBook.append(linkMainImg);
 
-  containerForCard.append(createImgTabs(response));
+  const imgTabs = createImgTabs(response, (index) => updateLinkMainImg(response, index));
+  containerForCard.append(imgTabs);
 
   return containerForCard;
 }
 
-function createImgTabs(response: Product) {
-  dots = [];
+// function updateActiveIndexImgTabs
+
+function createImgTabs(response: Product, clickCallback: (index: number) => void, startIndex = 0) {
+  const dots: HTMLElement[] = [];
   const container = Bootstrap.createElement('div', 'productTabs');
 
   if (response.images.length <= 1) {
     return container;
   }
+
+  const updateActiveIndex = (index: number) => {
+    dots.forEach((item) => item.classList.remove('productTabs__circle_active'));
+    const dot = dots.at(index);
+    if (dot) {
+      dot.classList.add('productTabs__circle_active');
+    }
+  };
 
   response.images.forEach((img, index) => {
     const dotWrapper = Bootstrap.createElement('div', 'productTabs__circleWrapper');
@@ -207,13 +218,14 @@ function createImgTabs(response: Product) {
     dotWrapper.append(dot);
 
     dotWrapper.addEventListener('click', () => {
-      updateActiveIndexRenderMain(response, index);
+      updateActiveIndex(index);
+      clickCallback(index);
     });
     dots.push(dot);
     container.append(dotWrapper);
   });
 
-  updateActiveIndexRenderMain(response, activeIndexImg); // 0 - in first time
+  updateActiveIndex(startIndex);
   return container;
 }
 
@@ -287,7 +299,7 @@ function createCarousel(response: Product): HTMLElement {
   return carousel;
 }
 
-function createModal(id: string, title: string, bodyContent: string): HTMLDivElement {
+function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
   const modal = Bootstrap.createElement('div', 'modal fade', '');
   modal.id = id;
   modal.tabIndex = -1;
@@ -303,7 +315,7 @@ function createModal(id: string, title: string, bodyContent: string): HTMLDivEle
   const header = Bootstrap.createElement('div', 'modal-header');
   content.append(header);
 
-  const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', title);
+  const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', 'Title');
   titleElement.id = `${id}Label`;
   header.append(titleElement);
 
@@ -313,21 +325,11 @@ function createModal(id: string, title: string, bodyContent: string): HTMLDivEle
   closeButton.setAttribute('aria-label', 'Close');
   header.append(closeButton);
 
-  const body = Bootstrap.createElement('div', 'modal-body', bodyContent);
+  const body = Bootstrap.createElement('div', 'modal-body');
+  body.append(...bodyContent);
   content.append(body);
 
   return modal;
-}
-
-function createModalTriggerButton(modalId: string, buttonText: string): HTMLButtonElement {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.classList.add('btn', 'btn-primary');
-  button.dataset.bsToggle = 'modal';
-  button.dataset.bsTarget = `#${modalId}`;
-  button.textContent = buttonText;
-
-  return button;
 }
 
 function showModal(modal: HTMLDivElement) {
