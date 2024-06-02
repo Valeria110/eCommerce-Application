@@ -314,8 +314,6 @@ $width_change_img: ($screen-width-tablet + 116px);
 }
 
 .my-carousel {
-  // $carousel-control-color: rgb(173, 181, 189);
-
   $carousel-control-color: orange;
 
   .carousel-control-prev-icon {
@@ -325,11 +323,5 @@ $width_change_img: ($screen-width-tablet + 116px);
   .carousel-control-next-icon {
     // background-image: none;
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$carousel-control-color}'><path d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/></svg>");
-  }
-
-  .carousel-indicators {
-    button {
-      background-color: orange !important;
-    }
   }
 }

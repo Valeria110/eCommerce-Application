@@ -1,4 +1,3 @@
-// import { modalWindow } from '../../pages/registration-page/variablesForRegistrationPage';
 import Bootstrap from '../bootstrap/Bootstrap';
 import createElement from '../bootstrap/createElement';
 import requestsAPI from '../requestsAPI';
@@ -6,9 +5,6 @@ import switchPage from '../switchPage';
 import { Pages, Product } from '../types';
 import './product.scss';
 import * as bootstrap from 'bootstrap';
-
-// TODO: disable add to card & buy without price
-// TODO: 🔃 add before fetch
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -30,11 +26,14 @@ const updateLinkMainImg = (response: Product, index: number) => {
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
+  const spinerElement = createLoadingSpiner();
+  page.append(spinerElement);
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
     console.log('product response', response);
     if (response) {
+      spinerElement.classList.add('d-none');
       generateProductPage(response, page);
     } else {
       switchPage(Pages.Error404);
@@ -331,4 +330,20 @@ function showModalWithCarousel(index: number) {
 
   const bsCarousel = new bootstrap.Carousel(carousel);
   bsCarousel.to(index);
+}
+
+function createLoadingSpiner(): HTMLDivElement {
+  const container = Bootstrap.createElement('div', 'd-flex align-items-center');
+  container.style.height = '400px';
+
+  const status = Bootstrap.createElement('strong', '', 'Loading...');
+  status.setAttribute('role', 'status');
+  container.appendChild(status);
+
+  const spinner = Bootstrap.createElement('div', 'spinner-border ms-auto');
+  spinner.className = 'spinner-border ms-auto';
+  spinner.setAttribute('aria-hidden', 'true');
+  container.appendChild(spinner);
+
+  return container;
 }
