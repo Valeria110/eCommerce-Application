@@ -24,7 +24,6 @@ const updateLinkMainImg = (response: Product, index: number) => {
 };
 
 export default function product(id: string) {
-  console.log(`id product ${id}`); // TODO: del
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
   const spinerElement = createLoadingSpiner();
   page.append(spinerElement);
@@ -186,7 +185,7 @@ function createMainImgPage(response: Product) {
   const imgTabs = createImgTabs(response, (index) => updateLinkMainImg(response, index));
   containerForCard.append(imgTabs);
 
-  containerForBook.addEventListener('click', () => showModalWithCarousel(0));
+  containerForBook.addEventListener('click', () => showModalWithCarousel(0)); // TODO: fix this
 
   return containerForCard;
 }
@@ -247,9 +246,9 @@ function createCatalogPath(title: string, folder = 'Catalog'): HTMLElement {
 }
 
 function createCarousel(response: Product, startIndex = 0): HTMLElement {
-  const carouselId = 'carouselExampleIndicators';
+  const carouselId = 'productCarousel';
 
-  const carouselDiv = Bootstrap.createElement('div', 'carousel slide my-carousel');
+  const carouselDiv = Bootstrap.createElement('div', 'carousel slide productCarousel');
   carouselDiv.id = carouselId;
   carouselDiv.dataset.bsInterval = 'false'; // Disable automatic sliding
 
@@ -307,10 +306,6 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
   const header = Bootstrap.createElement('div', 'modal-header border-bottom-0');
   content.append(header);
 
-  // const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', 'Title');
-  // titleElement.id = `${id}Label`;
-  // header.append(titleElement);
-
   const closeButton = Bootstrap.createElement('button', 'btn-close');
   closeButton.type = 'button';
   closeButton.dataset.bsDismiss = 'modal';
@@ -333,8 +328,7 @@ function showModalWithCarousel(index: number) {
 }
 
 function createLoadingSpiner(): HTMLDivElement {
-  const container = Bootstrap.createElement('div', 'd-flex align-items-center');
-  container.style.height = '400px';
+  const container = Bootstrap.createElement('div', 'productSpiner d-flex align-items-center');
 
   const status = Bootstrap.createElement('strong', '', 'Loading...');
   status.setAttribute('role', 'status');
