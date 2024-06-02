@@ -5,6 +5,7 @@ import requestsAPI from '../requestsAPI';
 import switchPage from '../switchPage';
 import { Pages, Product } from '../types';
 import './product.scss';
+import * as bootstrap from 'bootstrap';
 
 // TODO: img with proporthios
 // TODO: disable add to card & buy without price
@@ -37,9 +38,6 @@ const updateActiveIndexRenderMain = (response: Product, index: number) => {
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
 };
 
-const backdrop = Bootstrap.createElement('div', 'modal-backdrop fade show');
-backdrop.addEventListener('click', () => console.log('клик'));
-
 export default function product(id: string) {
   console.log(`id product ${id}`); // TODO: del
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
@@ -62,20 +60,18 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   cardProduct.append(createLeftColumn(response));
   cardProduct.append(createRightColumn(response));
 
-  const modalPreview = createModalWindow2('Title', 'body');
-  hideModal(modalPreview);
-  const btnModal = Bootstrap.createButton('modal', 'btn-orange border-0 btn-style-defaultmx-1');
-  btnModal.addEventListener('click', () => {
-    showModal(modalPreview);
-  });
-  backdrop.addEventListener('click', () => hideModal(modalPreview));
+  const modal = createModal('productModal', 'title', 'body');
+  const modalBtn = createModalTriggerButton('productModal', 'Launch demo modal');
+  const linkTest = Bootstrap.createElement('a', '', 'test');
+  linkTest.addEventListener('click', () => showModal(modal));
+  document.body.append(modalBtn);
 
   page.append(
-    backdrop,
-    modalPreview,
+    modal,
     createCatalogPath(response.title),
     cardProduct,
-    btnModal,
+    modalBtn,
+    linkTest,
     Bootstrap.createElement('div', '', 'Place for You might light it'),
   ); // TODO: replace svg icon
   page.append(createCarousel(response));
@@ -291,67 +287,12 @@ function createCarousel(response: Product): HTMLElement {
   return carousel;
 }
 
-// function createModalWindow(title: string, bodyContent: string): HTMLDivElement {
-//   const id = 'product_modal';
-//   const modalFadeDiv = Bootstrap.createElement('div', 'modal');
-//   modalFadeDiv.id = id;
-//   modalFadeDiv.setAttribute('data-bs-backdrop', 'static');
-//   modalFadeDiv.setAttribute('data-bs-keyboard', 'false');
-//   modalFadeDiv.tabIndex = -1;
-//   modalFadeDiv.setAttribute('aria-labelledby', `${id}Label`);
-//   modalFadeDiv.setAttribute('aria-hidden', 'true');
-
-//   const modalDialogDiv = Bootstrap.createElement('div', 'modal-dialog');
-//   const modalContentDiv = Bootstrap.createElement('div', 'modal-content');
-//   const modalHeaderDiv = Bootstrap.createElement('div', 'modal-header');
-
-//   const modalTitleH1 = Bootstrap.createElement('h1', 'modal-title fs-5');
-//   modalTitleH1.id = `${id}Label`;
-//   modalTitleH1.textContent = title;
-
-//   const closeButton = Bootstrap.createButton('', 'btn-close');
-//   closeButton.setAttribute('data-bs-dismiss', 'modal');
-//   closeButton.setAttribute('aria-label', 'Close');
-
-//   const modalBodyDiv = Bootstrap.createElement('div');
-//   modalBodyDiv.classList.add('modal-body');
-//   modalBodyDiv.textContent = bodyContent;
-
-//   // const closeButtonFooter = Bootstrap.createButton('Close', 'btn-secondary');
-//   // closeButtonFooter.setAttribute('data-bs-dismiss', 'modal');
-
-//   modalHeaderDiv.append(modalTitleH1, closeButton);
-//   modalContentDiv.append(modalHeaderDiv, modalBodyDiv);
-//   modalDialogDiv.append(modalContentDiv);
-//   modalFadeDiv.append(modalDialogDiv);
-//   return modalFadeDiv;
-// }
-
-function showModal(modalDiv: HTMLDivElement) {
-  modalDiv.classList.add('show');
-  modalDiv.style.display = 'block';
-  modalDiv.setAttribute('aria-modal', 'true');
-  modalDiv.removeAttribute('aria-hidden');
-
-  backdrop.classList.add('modal-backdrop', 'fade', 'show');
-  document.body.append(backdrop);
-}
-
-function hideModal(modalDiv: HTMLDivElement) {
-  console.log('hideModal');
-
-  modalDiv.classList.remove('show');
-  modalDiv.style.display = 'none';
-  modalDiv.setAttribute('aria-hidden', 'true');
-  modalDiv.removeAttribute('aria-modal');
-
-  backdrop.classList.remove('modal-backdrop', 'fade', 'show');
-}
-
-function createModalWindow2(title: string, bodyContent: string): HTMLDivElement {
-  console.log(bodyContent);
-  const modal = Bootstrap.createElement('div', 'modal');
+function createModal(id: string, title: string, bodyContent: string): HTMLDivElement {
+  const modal = Bootstrap.createElement('div', 'modal fade', '');
+  modal.id = id;
   modal.tabIndex = -1;
+  modal.setAttribute('aria-labelledby', `${id}Label`);
+  modal.setAttribute('aria-hidden', 'true');
 
   const dialog = Bootstrap.createElement('div', 'modal-dialog');
   modal.append(dialog);
@@ -362,7 +303,8 @@ function createModalWindow2(title: string, bodyContent: string): HTMLDivElement 
   const header = Bootstrap.createElement('div', 'modal-header');
   content.append(header);
 
-  const titleElement = Bootstrap.createElement('h5', 'modal-title', title);
+  const titleElement = Bootstrap.createElement('h1', 'modal-title fs-5', title);
+  titleElement.id = `${id}Label`;
   header.append(titleElement);
 
   const closeButton = Bootstrap.createElement('button', 'btn-close');
@@ -370,12 +312,25 @@ function createModalWindow2(title: string, bodyContent: string): HTMLDivElement 
   closeButton.dataset.bsDismiss = 'modal';
   closeButton.setAttribute('aria-label', 'Close');
   header.append(closeButton);
-  closeButton.addEventListener('click', () => hideModal(modal));
 
-  const body = Bootstrap.createElement('div', 'modal-body');
-  const bodyText = Bootstrap.createElement('p', '', 'Modal body text goes here.');
-  body.append(bodyText);
+  const body = Bootstrap.createElement('div', 'modal-body', bodyContent);
   content.append(body);
 
   return modal;
+}
+
+function createModalTriggerButton(modalId: string, buttonText: string): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.classList.add('btn', 'btn-primary');
+  button.dataset.bsToggle = 'modal';
+  button.dataset.bsTarget = `#${modalId}`;
+  button.textContent = buttonText;
+
+  return button;
+}
+
+function showModal(modal: HTMLDivElement) {
+  const bootstrapModal = new bootstrap.Modal(modal);
+  bootstrapModal.show();
 }
