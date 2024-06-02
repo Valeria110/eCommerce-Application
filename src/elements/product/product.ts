@@ -10,6 +10,7 @@ let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
 let modalWihCarousel: HTMLDivElement;
 let carousel: HTMLElement;
+let curentActiveIndex = 0;
 const updateLinkMainImg = (response: Product, index: number) => {
   // discount only for first page
   if (cardDiscounted) {
@@ -20,6 +21,7 @@ const updateLinkMainImg = (response: Product, index: number) => {
     }
   }
 
+  curentActiveIndex = index;
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
 };
 
@@ -63,12 +65,7 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
     }
   });
 
-  page.append(
-    modalWihCarousel,
-    createCatalogPath(response.title),
-    cardProduct,
-    Bootstrap.createElement('div', '', 'Place for You might light it'),
-  );
+  page.append(modalWihCarousel, createCatalogPath(response.title), cardProduct);
 }
 
 function createRightColumn(response: Product) {
@@ -185,7 +182,7 @@ function createMainImgPage(response: Product) {
   const imgTabs = createImgTabs(response, (index) => updateLinkMainImg(response, index));
   containerForCard.append(imgTabs);
 
-  containerForBook.addEventListener('click', () => showModalWithCarousel(0)); // TODO: fix this
+  containerForBook.addEventListener('click', () => showModalWithCarousel(curentActiveIndex));
 
   return containerForCard;
 }
