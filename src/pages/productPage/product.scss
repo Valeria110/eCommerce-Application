@@ -1,0 +1,331 @@
+@import './../../breakpoints.scss';
+$gray_text: rgb(153, 153, 153);
+$width_change_preview: ($screen-width-tablet + 116px);
+
+.product {
+  &__title {
+    color: black;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 39px;
+    margin-bottom: 8px;
+
+    @media (width <= $width_change_preview) {
+      font-size: 24px;
+      line-height: 29px;
+    }
+
+    @media (width <= $screen-burger) {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+  &__author {
+    color: $gray_text;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 29px;
+    margin-bottom: 32px;
+
+    @media (width <= $width_change_preview) {
+      font-size: 20px;
+      line-height: 24px;
+      margin-bottom: 20px;
+    }
+    @media (width <= $screen-burger) {
+      font-size: 16px;
+      line-height: 19px;
+      margin-bottom: 32px;
+    }
+  }
+  &__summary {
+    color: black;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
+    margin-bottom: 8px;
+
+    @media (width <= $width_change_preview) {
+      font-size: 14px;
+    }
+  }
+  &__description {
+    color: $gray_text;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+
+    margin-bottom: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    @media (width <= $width_change_preview) {
+      font-size: 14px;
+    }
+
+    @media (width >= $screen-burger) {
+      -webkit-line-clamp: initial;
+    }
+  }
+
+  &__readCompletely {
+    color: rgb(92, 177, 255);
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0%;
+    text-decoration: none;
+
+    @media (width >= $screen-burger) {
+      display: none;
+    }
+  }
+
+  &__description-expanded {
+    -webkit-line-clamp: initial;
+  }
+
+  &__cards-price-container {
+    display: flex;
+    gap: 4px;
+
+    margin-top: 32px;
+    margin-bottom: 24px;
+
+    @media (width <= $width_change_preview) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__cards-price_current {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 48px;
+
+    @media (width <= $width_change_preview) {
+      font-size: 32px;
+      line-height: 39px;
+    }
+  }
+
+  &__cards-price_previous {
+    color: $gray_text;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
+    text-decoration-line: line-through;
+
+    @media (width <= $width_change_preview) {
+      font-family: Inter;
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+
+  &__btnAddToCard {
+    padding: 16px 24px 16px 24px;
+    width: clamp(115px, 30%, 134px) !important;
+  }
+
+  &__btnBuy {
+    padding: 16px 24px 16px 24px;
+    width: clamp(100px, 40%, 304px) !important;
+  }
+}
+
+.productPage {
+  margin-left: 62px;
+  margin-right: 62px;
+
+  @media (width <= $screen-width-tablet) {
+    margin-left: 56px;
+    margin-right: 56px;
+  }
+  @media (width <= $screen-width-mobile) {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+}
+
+.productCard {
+  display: flex;
+  gap: clamp(48px, 6.6%, 96px);
+
+  @media (width <= $screen-burger) {
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  margin-bottom: 144px;
+
+  @media (width <= $width_change_preview) {
+    margin-bottom: 64px;
+  }
+
+  &__left {
+    display: flex;
+    gap: 22px;
+
+    @media (width <= $width_change_preview) {
+      justify-content: center;
+    }
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    width: 50% !important;
+
+    @media (width <= $width_change_preview) {
+      width: 100% !important;
+    }
+  }
+}
+
+.productTabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  margin-top: 19px;
+
+  &__circleWrapper {
+    padding: 5px;
+  }
+
+  &__circle {
+    width: 10px;
+    height: 10px;
+    background: rgb(222, 226, 230);
+    border-radius: 50%;
+
+    &_active {
+      background: rgb(253, 126, 20);
+    }
+  }
+}
+
+.productPreviewImg {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+
+  @media (width <= $width_change_preview) {
+    gap: 14.77px;
+  }
+
+  &__img {
+    box-sizing: border-box;
+    border: 1px solid rgb(173, 181, 189);
+    border-radius: 6px;
+    width: 88px;
+    height: 129px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    @media (width <= $width_change_preview) {
+      width: 64px;
+      height: 93.82px;
+    }
+
+    cursor: pointer;
+  }
+}
+
+.mainImg {
+  &__cards-body {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  &__cards-cover {
+    width: 306px;
+    height: 459px;
+
+    @media (width <= $width_change_preview) {
+      width: 208px;
+      height: 311px;
+    }
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    position: relative;
+    // object-fit: cover;
+  }
+
+  &__cards-discounted {
+    color: white;
+    background-color: #fc7e14;
+
+    padding: 10px 24px;
+    position: absolute;
+    bottom: 0px;
+
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
+  }
+}
+
+.catalogPath {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 130%;
+
+  margin-bottom: 65px !important;
+
+  @media (width <= $screen-burger) {
+    margin-bottom: 42px !important;
+  }
+
+  overflow: hidden;
+
+  .breadcrumb-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__folder {
+    color: $gray_text;
+    text-decoration: none;
+  }
+
+  &__title {
+    color: black !important;
+    text-decoration: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (width <= 500px) {
+      width: 75%;
+    }
+  }
+}
+
+.productCarousel {
+  $carousel-control-color: rgb(253, 126, 20);
+
+  .carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$carousel-control-color}'><path d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/></svg>");
+  }
+
+  .carousel-control-next-icon {
+    // background-image: none;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$carousel-control-color}'><path d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/></svg>");
+  }
+}
+
+.productSpiner {
+  height: 400px;
+}

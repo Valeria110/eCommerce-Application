@@ -1,78 +1,78 @@
 .main-page {
-    &__popular-books-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 96px;
-      padding: 30px 62px;
-      width: 100%;
-    }
-  
+  &__popular-books-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 96px;
+    padding: 30px 62px;
+    width: 100%;
+  }
+
+  &__popular-books-title {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 80%;
+    margin-top: 96px;
+  }
+
+  &__popular-books {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 90px;
+    flex-wrap: wrap;
+  }
+
+  @media (width <= 1100px) {
     &__popular-books-title {
-      font-weight: 600;
-      font-size: 32px;
-      line-height: 80%;
-      margin-top: 96px;
+      font-size: 24px;
+      margin-top: 32px;
+    }
+
+    &__popular-books-container {
+      gap: 32px;
     }
 
     &__popular-books {
-      width: 100%;
-      display: flex;
+      gap: 24px;
+      justify-content: space-around;
+      margin-bottom: 50px;
+    }
+  }
+
+  @media (width <= 780px) {
+    &__popular-books-title {
+      font-size: 24px;
+      margin-top: 32px;
+    }
+
+    &__popular-books-container {
+      gap: 32px;
+    }
+
+    &__popular-books {
+      margin-bottom: 32px;
+      align-items: center;
+      gap: 24px;
       justify-content: space-between;
-      margin-bottom: 90px;
-      flex-wrap: wrap;
+    }
+  }
+
+  @media (width <= 540px) {
+    &__popular-books-title {
+      font-size: 20px;
+      margin-top: 32px;
     }
 
-    @media(width <= 1100px) {
-      &__popular-books-title {
-        font-size: 24px;
-        margin-top: 32px;
-      }
-
-      &__popular-books-container {
-        gap: 32px;
-      }
-
-      &__popular-books {
-        gap: 24px;
-        justify-content: space-around;
-        margin-bottom: 50px;
-      }
+    &__popular-books-container {
+      gap: 32px;
+      padding: 30px 12px;
     }
 
-    @media(width <= 780px) {
-      &__popular-books-title {
-        font-size: 24px;
-        margin-top: 32px;
-      }
-
-      &__popular-books-container {
-        gap: 32px;
-      }
-
-      &__popular-books {
-        margin-bottom: 32px;
-        align-items: center;
-        gap: 24px;
-        justify-content: space-between;
-      }
+    &__popular-books {
+      margin-bottom: 0px;
+      justify-content: flex-start;
+      gap: 0px;
     }
-
-    @media(width <= 540px) {
-      &__popular-books-title {
-        font-size: 20px;
-        margin-top: 32px;
-      }
-
-      &__popular-books-container {
-        gap: 32px;
-        padding: 30px 12px;
-      }
-
-      &__popular-books {
-        margin-bottom: 0px;
-        justify-content: flex-start;
-        gap: 0px;
-      }
-    }
+  }
 }

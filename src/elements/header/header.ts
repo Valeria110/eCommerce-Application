@@ -32,7 +32,7 @@ export default function header(currentPage: Pages): HTMLElement {
 
   const menuLinks = createLinksMenu(currentPage, 'header__linkCollapse');
 
-  const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-3');
+  const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
   profileBtn.addEventListener('click', () => {
     switchPage(Pages.UserProfile);

@@ -18,6 +18,12 @@ export interface Product {
   title: string;
   description: string;
   slug: string;
+  author: string;
+  images: string[];
+  prices: {
+    regular: number;
+    discounted: number | undefined;
+  };
 }
 
 export interface InfoBook {
