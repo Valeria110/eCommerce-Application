@@ -39,12 +39,31 @@ export interface InfoBook {
         }[];
       };
       name: {
+        includes(value: string): unknown;
         'en-US': string;
         ru: string;
       };
     };
   };
 }
+
+export interface InfoBookCategory {
+  masterVariant: {
+    attributes: { name: string; value: string }[];
+    images: { url: string }[];
+    prices: {
+      value: { centAmount: number };
+      discounted: { value: { centAmount: number } };
+    }[];
+  };
+  name: {
+    'en-US': string;
+    ru: string;
+  };
+  id: string;
+}
+
+export type Info<T> = T extends InfoBookCategory ? InfoBookCategory : InfoBook;
 
 export interface IAddressObj {
   id: string;

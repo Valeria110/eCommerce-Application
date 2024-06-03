@@ -1,5 +1,6 @@
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import createElement from '../../elements/bootstrap/createElement';
+import { generateSectionPopularBooks } from '../../elements/popularBooks/generateSectionPopularBooks';
 import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
 import { Pages, Product } from '../../elements/types';
@@ -65,7 +66,12 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
     }
   });
 
-  page.append(modalWihCarousel, createCatalogPath(response.title), cardProduct);
+  page.append(
+    modalWihCarousel,
+    createCatalogPath(response.title),
+    cardProduct,
+    generateSectionPopularBooks('You might like it'),
+  );
 }
 
 function createRightColumn(response: Product) {

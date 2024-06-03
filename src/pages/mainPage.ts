@@ -1,6 +1,7 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
 import discount from '../elements/discount/discount';
 import findYourBook from '../elements/findYourBook/findYourBook';
+import { generateSectionPopularBooks } from '../elements/popularBooks/generateSectionPopularBooks';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -17,6 +18,7 @@ export default function mainPage() {
   div.append(containerForModalWindow, shadowButton);
   div.append(findYourBook());
   div.append(discount());
+  div.append(generateSectionPopularBooks('Popular books'));
 
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
