@@ -5,8 +5,7 @@ import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
 import { Pages, Product } from '../../elements/types';
 import './product.scss';
-import Modal from 'bootstrap/js/dist/modal';
-import Carousel from 'bootstrap/js/dist/carousel';
+import * as bootstrap from 'bootstrap';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -46,47 +45,15 @@ export default function product(id: string) {
   return page;
 }
 
-function generateDropdown() {
-  const dropdown = document.createElement('div');
-  dropdown.className = 'dropdown';
-
-  const button = document.createElement('button');
-  button.className = 'btn btn-secondary dropdown-toggle';
-  button.type = 'button';
-  button.dataset.bsToggle = 'dropdown';
-  button.setAttribute('aria-expanded', 'false');
-  button.textContent = 'Dropdown button';
-
-  const ul = document.createElement('ul');
-  ul.className = 'dropdown-menu';
-
-  const actions = ['Action', 'Another action', 'Something else here'];
-  actions.forEach((action) => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.className = 'dropdown-item';
-    a.href = '#';
-    a.textContent = action;
-    li.appendChild(a);
-    ul.appendChild(li);
-  });
-
-  dropdown.appendChild(button);
-  dropdown.appendChild(ul);
-
-  return dropdown;
-}
-
 function generateProductPage(response: Product, page: HTMLDivElement) {
   const cardProduct = Bootstrap.createElement('div', 'productCard');
   cardProduct.append(createLeftColumn(response));
   cardProduct.append(createRightColumn(response));
 
   carousel = createCarousel(response);
-  const bsCarousel = new Carousel(carousel);
+  const bsCarousel: bootstrap.Carousel = new bootstrap.Carousel(carousel);
   const indicatorCarosel = createImgTabs(response, (index) => {
     bsCarousel.to(index);
-    console.log(index);
   });
 
   modalWihCarousel = createModal('productModal', [carousel, indicatorCarosel]);
@@ -105,8 +72,6 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
     cardProduct,
     generateSectionPopularBooks('You might like it'),
   );
-
-  setTimeout(() => page.append(generateDropdown()), 2000);
 }
 
 function createRightColumn(response: Product) {
@@ -322,10 +287,9 @@ function createCarousel(response: Product, startIndex = 0): HTMLElement {
   carouselDiv.append(inner, prevButton, nextButton);
 
   // Programmatically go to the start index
-  if (startIndex !== 0) {
-    const bsCarousel = new Carousel(carouselDiv);
-    bsCarousel.to(startIndex);
-  }
+  const bsCarousel = new bootstrap.Carousel(carouselDiv);
+  bsCarousel.to(startIndex);
+
   return carouselDiv;
 }
 
@@ -359,10 +323,10 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
 }
 
 function showModalWithCarousel(index: number) {
-  const bootstrapModal = new Modal(modalWihCarousel);
+  const bootstrapModal = new bootstrap.Modal(modalWihCarousel);
   bootstrapModal.show();
 
-  const bsCarousel = new Carousel(carousel);
+  const bsCarousel = new bootstrap.Carousel(carousel);
   bsCarousel.to(index);
 }
 
