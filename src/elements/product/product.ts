@@ -1,4 +1,5 @@
 import Bootstrap from '../bootstrap/Bootstrap';
+import { generateSectionPopularBooks } from '../popularBooks/generateSectionPopularBooks';
 import requestsAPI from '../requestsAPI';
 import switchPage from '../switchPage';
 import { Pages } from '../types';
@@ -11,6 +12,7 @@ export default function product(id: string) {
     if (response) {
       page.append(Bootstrap.createElement('h2', '', response.title));
       page.append(Bootstrap.createElement('p', '', response.description));
+      page.append(generateSectionPopularBooks('You might like it'));
     } else {
       switchPage(Pages.Error404);
     }
