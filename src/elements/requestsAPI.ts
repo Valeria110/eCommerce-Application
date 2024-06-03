@@ -425,7 +425,6 @@ class RequestFetch {
           h: number;
         };
       }[] = obj.masterData.current.masterVariant.images;
-      console.log('attributes', attributes);
       return {
         title: obj.masterData.current.name['en-US'],
         description:

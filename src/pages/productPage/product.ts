@@ -34,7 +34,6 @@ export default function product(id: string) {
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
-    // console.log('product response', response);
     if (response) {
       spinerElement.classList.add('d-none');
       generateProductPage(response, page);
@@ -55,7 +54,6 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   const bsCarousel = new Carousel(carousel);
   const indicatorCarosel = createImgTabs(response, (index) => {
     bsCarousel.to(index);
-    console.log(index);
   });
 
   modalWihCarousel = createModal('productModal', [carousel, indicatorCarosel]);
