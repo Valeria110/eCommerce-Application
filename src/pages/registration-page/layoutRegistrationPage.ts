@@ -112,10 +112,10 @@ export default function generateRegistrationPage() {
   containerForCheckboxDefault.append(checkboxDefault, labelForCheckboxDefault);
   containerForButtonSignUpAndLogin.append(buttonSignUp, buttonToMainPage, buttonToLoginPage);
 
-  inputForFirstName.addEventListener('input', validationRegistrationForms.validateInputFirstName);
-  inputForLastName.addEventListener('input', validationRegistrationForms.validateInputLastName);
-  inputForEmail.addEventListener('input', validationRegistrationForms.validateInputEmail);
-  inputForPassword.addEventListener('input', validationRegistrationForms.validateInputPassword);
+  inputForFirstName.addEventListener('input', () => validationRegistrationForms.validateInputFirstName());
+  inputForLastName.addEventListener('input', () => validationRegistrationForms.validateInputLastName());
+  inputForEmail.addEventListener('input', () => validationRegistrationForms.validateInputEmail());
+  inputForPassword.addEventListener('input', () => validationRegistrationForms.validateInputPassword());
   inputForStreet.addEventListener(
     'input',
     validationShippingAndBillingForms.validateInputStreet.bind(null, inputForStreet, errorForInputStreet),

@@ -1,9 +1,12 @@
 $grey-400: #999999;
 $input-bgc: rgba(254, 178, 114, 0.08);
 $input-border-color: rgba(254, 178, 114, 0.3);
+$orange-400: #fd9843;
+$orange-500: #fd7e14;
+$edited-form-bgc: rgba(254, 178, 114, 0.08);
 
 .user-profile-main {
-  width: 47rem;
+  width: auto;
   margin: 0 auto;
   margin-top: 9rem;
   gap: 96px;
@@ -53,8 +56,26 @@ $input-border-color: rgba(254, 178, 114, 0.3);
   }
 
   .user-profile-form {
+    max-width: 766px;
     margin-bottom: 144px;
+    padding: 10px;
     gap: 96px;
+    box-shadow: (0px 4px 30px rgba(181, 181, 181, 0.2));
+
+    .edit-btn {
+      gap: 7px;
+      margin-left: auto;
+      align-items: center;
+      color: $orange-400;
+    }
+
+    .read-form-btn {
+      color: #999999;
+    }
+
+    .form-in-edit-mode {
+      background-color: $edited-form-bgc;
+    }
 
     .user-profile-form__personal-info {
       gap: 40px;
@@ -65,7 +86,8 @@ $input-border-color: rgba(254, 178, 114, 0.3);
       }
     }
 
-    .personal-info__inputs-container {
+    .personal-info__inputs-container,
+    .addresses-info__inputs-container {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
       column-gap: 134px;
@@ -74,30 +96,78 @@ $input-border-color: rgba(254, 178, 114, 0.3);
       @media screen and (max-width: 768px) {
         & {
           grid-template-columns: 1fr;
-          grid-template-rows: repeat(3, 1fr);
+          grid-template-rows: repeat(4, 1fr);
           column-gap: 24px;
         }
       }
+    }
 
-      .user-profile-form__label {
-        gap: 8px;
-        color: $grey-400;
+    .user-profile-form__password-wrapper {
+      @media screen and (max-width: 768px) {
+        align-items: center;
+        justify-content: center;
+      }
+      .password-label {
+        width: fit-content;
+      }
 
-        .user-profile-form__input {
-          width: 306px;
-          height: 52px;
-          padding: 16px;
-          background-color: $input-bgc;
-          border: 1px solid $input-border-color;
+      .change-password__link:hover {
+        cursor: pointer;
+      }
+    }
+
+    input[type='date'] {
+      padding-right: 40px !important;
+    }
+
+    .addresses-info__inputs-container {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+
+      @media screen and (max-width: 768px) {
+        & {
+          grid-template-columns: 1fr;
+          grid-template-rows: repeat(4, 1fr);
+          column-gap: 24px;
         }
       }
     }
 
     .user-profile-form__addresses-info {
-      gap: 40px;
+      gap: 50px;
       @media screen and (max-width: 768px) {
         & {
           align-items: center;
+        }
+      }
+
+      .user-profile-form__shipping-addresses,
+      .user-profile-form__billing-addresses {
+        gap: 50px;
+        align-items: center;
+
+        .add-shipping-address-btn,
+        .add-billing-address-btn {
+          width: 306px;
+          height: 50px;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          border-color: $orange-500;
+          font-weight: 500;
+
+          &:hover {
+            background-color: $orange-500;
+            color: #fff;
+          }
+
+          .plus {
+            font-size: 20px;
+          }
+        }
+
+        .delete-btn {
+          gap: 8px;
         }
       }
 
@@ -110,12 +180,110 @@ $input-border-color: rgba(254, 178, 114, 0.3);
       .billing-address-box__title {
         margin-top: 20px;
       }
+
+      .address-box__checkbox {
+        appearance: none;
+        border: 2px solid $orange-500;
+        outline: none;
+        cursor: pointer;
+
+        &:checked {
+          background-color: $orange-500;
+        }
+      }
     }
 
     .save-changes-btn {
       width: 306px;
       height: 52px;
       margin: 0 auto;
+    }
+  }
+}
+
+.user-profile-form__label {
+  position: relative;
+  gap: 8px;
+  color: $grey-400;
+
+  .user-profile-form__input {
+    width: 306px;
+    height: 52px;
+    padding: 16px;
+    background-color: $input-bgc;
+    border: 1px solid $input-border-color;
+  }
+
+  .user-profile-form__show-password-btn {
+    position: absolute;
+    top: 43px;
+    right: 45px;
+    cursor: pointer;
+  }
+
+  .error {
+    margin-top: 8px;
+    text-align: left;
+  }
+}
+
+.change-password-modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease-in-out,
+    visibility 0.4s ease-in-out;
+  z-index: 2;
+
+  .change-password-modal__box {
+    position: relative;
+    display: flex;
+    max-width: 466px;
+    width: 100%;
+    padding: 64px 80px;
+    flex-direction: column;
+    gap: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #fff;
+    transform: scale(0);
+    transition: all 0.6s ease-in-out;
+
+    .change-password-form {
+      gap: 40px;
+
+      .change-password-form__inputs-container {
+        gap: 32px;
+      }
+
+      .change-password-form__btns-wrapper {
+        justify-content: space-between;
+
+        .change-password-form__save-btn,
+        .change-password-form__cancel-btn {
+          width: 143px;
+          height: 50px;
+        }
+      }
+    }
+  }
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+
+    .change-password-modal__box {
+      transform: scale(1);
     }
   }
 }
