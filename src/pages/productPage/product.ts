@@ -34,7 +34,7 @@ export default function product(id: string) {
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
-    console.log('product response', response);
+    // console.log('product response', response);
     if (response) {
       spinerElement.classList.add('d-none');
       generateProductPage(response, page);
@@ -44,37 +44,6 @@ export default function product(id: string) {
   })();
 
   return page;
-}
-
-function generateDropdown() {
-  const dropdown = document.createElement('div');
-  dropdown.className = 'dropdown';
-
-  const button = document.createElement('button');
-  button.className = 'btn btn-secondary dropdown-toggle';
-  button.type = 'button';
-  button.dataset.bsToggle = 'dropdown';
-  button.setAttribute('aria-expanded', 'false');
-  button.textContent = 'Dropdown button';
-
-  const ul = document.createElement('ul');
-  ul.className = 'dropdown-menu';
-
-  const actions = ['Action', 'Another action', 'Something else here'];
-  actions.forEach((action) => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.className = 'dropdown-item';
-    a.href = '#';
-    a.textContent = action;
-    li.appendChild(a);
-    ul.appendChild(li);
-  });
-
-  dropdown.appendChild(button);
-  dropdown.appendChild(ul);
-
-  return dropdown;
 }
 
 function generateProductPage(response: Product, page: HTMLDivElement) {
@@ -105,8 +74,6 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
     cardProduct,
     generateSectionPopularBooks('You might like it'),
   );
-
-  setTimeout(() => page.append(generateDropdown()), 2000);
 }
 
 function createRightColumn(response: Product) {
