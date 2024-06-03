@@ -41,10 +41,16 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
   }
 }
 
-const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page'];
+const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page', '/product/'];
 
 function handleLocation() {
-  const pathname = window.location.pathname;
+  let pathname = window.location.pathname;
+  let productId = '';
+
+  if (pathname.startsWith('/product/')) {
+    productId = retrieveProductId(pathname);
+    pathname = '/product/';
+  }
 
   if (pathname === '/') {
     switchPage(Pages.Main);
@@ -82,8 +88,16 @@ function handleLocation() {
           switchPage(Pages.Main);
         }
         break;
+      case '/product/':
+        switchPage(Pages.Product, productId);
+        break;
     }
   }
+}
+
+function retrieveProductId(pathname: string) {
+  const productId = pathname.slice(9);
+  return productId;
 }
 
 function isUserLogined() {
