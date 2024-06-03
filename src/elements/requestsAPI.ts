@@ -425,7 +425,6 @@ class RequestFetch {
           h: number;
         };
       }[] = obj.masterData.current.masterVariant.images;
-      console.log('attributes', attributes);
       return {
         title: obj.masterData.current.name['en-US'],
         description:
@@ -472,10 +471,10 @@ class RequestFetch {
       body: JSON.stringify(bodyRequest),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('version', data.version);
-    }
+    // if (response.ok) {
+    //   const data = await response.json();
+    //   localStorage.setItem('version', data.version);
+    // }
 
     return response.json();
   }

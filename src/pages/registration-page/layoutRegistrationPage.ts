@@ -188,7 +188,8 @@ async function handleFormSubmit(event: SubmitEvent) {
     } else if (
       !variablesRegPage.checkboxSameAddress.checked &&
       !variablesRegPage.checkboxDefault.checked &&
-      !variablesRegPage.checkboxDefaultBillingForm.checked
+      !variablesRegPage.checkboxDefaultBillingForm.checked &&
+      variablesRegPage.containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)
     ) {
       await requestsAPI.addAddress(
         customerId,
@@ -308,7 +309,8 @@ async function handleFormSubmit(event: SubmitEvent) {
     } else if (
       !variablesRegPage.checkboxSameAddress.checked &&
       variablesRegPage.checkboxDefault.checked &&
-      !variablesRegPage.checkboxDefaultBillingForm.checked
+      !variablesRegPage.checkboxDefaultBillingForm.checked &&
+      variablesRegPage.containerForBillingForm.contains(variablesRegPage.inputForCountryBillingForm)
     ) {
       await requestsAPI.addAddress(
         customerId,

@@ -161,11 +161,11 @@ $width_change_preview: ($screen-width-tablet + 116px);
     gap: 32px;
   }
 
-  margin-bottom: 144px;
+  // margin-bottom: 144px;
 
-  @media (width <= $width_change_preview) {
-    margin-bottom: 64px;
-  }
+  // @media (width <= $width_change_preview) {
+  //   margin-bottom: 64px;
+  // }
 
   &__left {
     display: flex;

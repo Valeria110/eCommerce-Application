@@ -5,7 +5,8 @@ import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
 import { Pages, Product } from '../../elements/types';
 import './product.scss';
-import * as bootstrap from 'bootstrap';
+import Modal from 'bootstrap/js/dist/modal';
+import Carousel from 'bootstrap/js/dist/carousel';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -33,7 +34,6 @@ export default function product(id: string) {
 
   (async () => {
     const response = await requestsAPI.getProductsByID(id);
-    console.log('product response', response);
     if (response) {
       spinerElement.classList.add('d-none');
       generateProductPage(response, page);
@@ -51,7 +51,7 @@ function generateProductPage(response: Product, page: HTMLDivElement) {
   cardProduct.append(createRightColumn(response));
 
   carousel = createCarousel(response);
-  const bsCarousel: bootstrap.Carousel = new bootstrap.Carousel(carousel);
+  const bsCarousel = new Carousel(carousel);
   const indicatorCarosel = createImgTabs(response, (index) => {
     bsCarousel.to(index);
   });
@@ -287,9 +287,10 @@ function createCarousel(response: Product, startIndex = 0): HTMLElement {
   carouselDiv.append(inner, prevButton, nextButton);
 
   // Programmatically go to the start index
-  const bsCarousel = new bootstrap.Carousel(carouselDiv);
-  bsCarousel.to(startIndex);
-
+  if (startIndex !== 0) {
+    const bsCarousel = new Carousel(carouselDiv);
+    bsCarousel.to(startIndex);
+  }
   return carouselDiv;
 }
 
@@ -323,10 +324,10 @@ function createModal(id: string, bodyContent: HTMLElement[]): HTMLDivElement {
 }
 
 function showModalWithCarousel(index: number) {
-  const bootstrapModal = new bootstrap.Modal(modalWihCarousel);
+  const bootstrapModal = new Modal(modalWihCarousel);
   bootstrapModal.show();
 
-  const bsCarousel = new bootstrap.Carousel(carousel);
+  const bsCarousel = new Carousel(carousel);
   bsCarousel.to(index);
 }
 

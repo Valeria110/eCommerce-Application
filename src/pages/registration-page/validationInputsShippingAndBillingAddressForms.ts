@@ -99,8 +99,6 @@ export function validateInputCountry(inputCountry: HTMLInputElement, error: HTML
   }
 
   if (resultsCountries.length === 0 && !isEmpty) {
-    console.log('error');
-
     showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
   }
 
