@@ -232,7 +232,6 @@ class RequestFetch {
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
       this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
-      this.#customerData.password = customers.results[0].password;
 
       localStorage.setItem(
         'shippingAddressIds',
@@ -904,7 +903,6 @@ class RequestFetch {
         const data = await response.json();
         const newVersion = data.version;
         localStorage.setItem('version', newVersion);
-        console.log('changes password!');
       }
     } catch (err) {
       console.error(err);
