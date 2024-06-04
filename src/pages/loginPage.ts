@@ -113,6 +113,7 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
       .then((serverAnswer) => {
         if (serverAnswer.isOk) {
           switchPage(Pages.Main);
+          requestsAPI.customerData.password = passwordField.value;
         } else {
           if (serverAnswer.field === 'login') {
             showError(loginField, serverAnswer.message);

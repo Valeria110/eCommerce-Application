@@ -233,7 +233,6 @@ class RequestFetch {
       this.#customerData.firstName = customers.results[0].firstName;
       this.#customerData.lastName = customers.results[0].lastName;
       this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
-      this.#customerData.password = customers.results[0].password;
       this.#customerAddresses.billingAddresses = customers.results[0].billingAddressIds.length
         ? customers.results[0].billingAddressIds
         : null;
@@ -878,7 +877,7 @@ class RequestFetch {
     }
   }
 
-  public async changePassword(newPassword: string) {
+  public async changePassword(currentPassword: string, newPassword: string) {
     const url = `${this.host}/${this.projectKey}/customers/password`;
 
     try {
@@ -891,7 +890,7 @@ class RequestFetch {
         body: JSON.stringify({
           id: this.customerData.id,
           version: Number(localStorage.getItem('version')),
-          currentPassword: this.#customerData.password,
+          currentPassword: currentPassword,
           newPassword: newPassword,
         }),
       });
@@ -901,6 +900,7 @@ class RequestFetch {
         const data = await response.json();
         const newVersion = data.version;
         localStorage.setItem('version', newVersion);
+        console.log('changes password!');
       }
     } catch (err) {
       console.error(err);

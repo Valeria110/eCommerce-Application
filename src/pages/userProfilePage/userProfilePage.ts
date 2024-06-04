@@ -12,6 +12,7 @@ import {
   createNewAddress,
   passwordConfirmation,
   validateChangePasswordForm,
+  checkCurrentPassword,
 } from './userProfilePageFormActions';
 
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
@@ -250,8 +251,11 @@ function createPasswordBox(): HTMLElement {
   passwordInputWrapper.append(passwordLabel, changePasswordLink);
 
   document.body.addEventListener(AppEvents.updateUserName, () => {
-    passwordInput.value = `${requestsAPI.customerData.password}`;
-    passwordInput.dataset.initialValue = `${requestsAPI.customerData.password}`;
+    if (requestsAPI.customerData.password === '') {
+      requestsAPI.getCustomer().then((data) => (passwordInput.value = data ? data.password : ''));
+    } else {
+      passwordInput.value = `${requestsAPI.customerData.password}`;
+    }
   });
 
   return passwordInputWrapper;
@@ -265,16 +269,16 @@ function createChangePasswordModal(): HTMLElement {
   const inputsContainer = Bootstrap.createElement('div', 'change-password-form__inputs-container');
   const currentPasswordLabel = createInputAndLabelElem('Current password', 'text');
   const currentPasswordInput = currentPasswordLabel.querySelector('input');
-  isNull<HTMLInputElement>(currentPasswordInput);
-  currentPasswordInput.value = requestsAPI.customerData.password;
   const newPasswordLabel = createInputAndLabelElem('New password', 'text');
   const confirmPasswordLabel = createInputAndLabelElem('Confirm new password', 'text');
   const newPasswordInput = newPasswordLabel.querySelector('input');
   const confirmPasswordInput = confirmPasswordLabel.querySelector('input');
+  isNull<HTMLInputElement>(currentPasswordInput);
   isNull<HTMLInputElement>(newPasswordInput);
   isNull<HTMLInputElement>(confirmPasswordInput);
   newPasswordInput.removeAttribute('readonly');
   confirmPasswordInput.removeAttribute('readonly');
+  currentPasswordInput.removeAttribute('readonly');
 
   const newPasswordError = newPasswordLabel.querySelector('.error');
   isNull<HTMLDivElement>(newPasswordError);
@@ -304,18 +308,12 @@ function createChangePasswordModal(): HTMLElement {
   cancelBtn.addEventListener('click', () => modal.classList.remove('active'));
 
   changePasswordForm.addEventListener('submit', () => {
-    const canSave = validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
-    if (canSave) {
-      requestsAPI.changePassword(newPasswordInput.value);
-    }
+    checkCurrentPassword(currentPasswordInput, newPasswordInput, confirmPasswordInput, saveBtn);
   });
 
   saveBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    const canSave = validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn);
-    if (canSave) {
-      requestsAPI.changePassword(newPasswordInput.value);
-    }
+    checkCurrentPassword(currentPasswordInput, newPasswordInput, confirmPasswordInput, saveBtn);
   });
 
   document.addEventListener('keydown', (e) => {
