@@ -1,5 +1,5 @@
 export const ALL_NUMBERS = /\d/;
-export const ALL_SPECIAL_CHARACTERS = /[!@#$%^&*()_+\-=[\]{};':"`\\|,.<>~/?]/;
+export const ALL_SPECIAL_CHARACTERS = /[!@#$%^&*]/;
 export const ALL_UPPERCASE_LETTERS = /[A-Z]/;
 export const ALL_LOWERCASE_LETTERS = /[a-z]/;
 
