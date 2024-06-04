@@ -68,7 +68,7 @@ export function generateCards(
   return containerForCard;
 }
 
-function insertDotBeforeLastTwoChars(str: string) {
+export function insertDotBeforeLastTwoChars(str: string) {
   if (str.length < 2) {
     return str;
   }
