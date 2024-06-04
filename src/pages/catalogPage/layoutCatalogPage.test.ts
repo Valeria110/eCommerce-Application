@@ -19,11 +19,6 @@ describe('generateCards function', () => {
     }
   };
 
-  // it('should create a card with the correct background image', () => {
-  //   const cover = card.querySelector('.catalog-page__cards-cover');
-  //   checkAndExpect(cover, (el) => expect(el.style.backgroundImage).toBe(`url(${imgUrl})`));
-  // });
-
   it('should create a card with the correct book name', () => {
     const name = card.querySelector('.catalog-page__cards-name');
     checkAndExpect(name, (el) => expect(el.textContent).toBe(nameBook));
