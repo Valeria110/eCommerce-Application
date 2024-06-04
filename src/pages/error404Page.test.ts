@@ -9,7 +9,7 @@ jest.mock('../elements/requestsAPI', () => ({
   },
 }));
 
-describe('Bootstrap', () => {
+describe('404 page', () => {
   const errorWrapper = error404Page();
   describe('createElement', () => {
     it('should create an element with the given tag name', () => {
