@@ -4,6 +4,7 @@ import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import * as validationRegPage from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import * as personalInfoValidation from '../registration-page/validationInputsRegistrationForm';
 import { createAddressBoxBottomPart, createInputAndLabelElem, createEditBtn } from './userProfilePage';
+import { IAddressObj } from '../../elements/types';
 
 function resetFormValues(clickedEditBtn: HTMLButtonElement) {
   const form = clickedEditBtn.closest('.user-profile__form');
@@ -31,6 +32,15 @@ function clearFormAfterSaving(form: HTMLElement) {
 
 function saveUpdatedData(form: HTMLElement) {
   const inputs = Array.from(form.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
+  const addresses = localStorage.getItem('addresses') ? JSON.parse(localStorage.getItem('addresses') as string) : [];
+  const shippingAddressesIds: string[] = localStorage.getItem('shippingAddressIds')
+    ? JSON.parse(localStorage.getItem('shippingAddressIds') as string)
+    : [];
+  const billingAddressIds: string[] = localStorage.getItem('billingAddressIds')
+    ? JSON.parse(localStorage.getItem('billingAddressIds') as string)
+    : [];
+  const isShippingAddress = form.classList.contains('user-profile-form__shipping-address-box');
+  const customerId = requestsAPI.customerData.id;
 
   if (
     form.classList.contains('user-profile-form__shipping-address-box') ||
@@ -44,33 +54,60 @@ function saveUpdatedData(form: HTMLElement) {
     if (!checkboxInput.checked) {
       if (form.dataset.addressId) {
         requestsAPI.changeAddress(getUpdatedAddressData(form));
+        updateAddress(getUpdatedAddressData(form));
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
-        requestsAPI
-          .addNewAddress(street, postalCode, city, country)
-          .then((newAddressId) => (form.dataset.addressId = newAddressId));
+        requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
+          addresses.push(newAddressData);
+          localStorage.setItem('addresses', JSON.stringify(addresses));
+
+          if (isShippingAddress) {
+            requestsAPI.setShippingAddress(newAddressData.id, customerId);
+            shippingAddressesIds.push(newAddressData.id);
+            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+          } else {
+            requestsAPI.setBillingAddress(newAddressData.id, customerId);
+            billingAddressIds.push(newAddressData.id);
+            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+          }
+        });
       }
     } else {
-      const isShippingAddress = form.classList.contains('user-profile-form__shipping-address');
-
       if (form.dataset.addressId) {
         requestsAPI.changeAddress(getUpdatedAddressData(form));
+        updateAddress(getUpdatedAddressData(form));
         if (isShippingAddress) {
           requestsAPI.setDefShippingAddress(form.dataset.addressId, requestsAPI.customerData.id);
+          localStorage.setItem('defaultShippingAddressId', form.dataset.addressId);
           addressBoxTitle.textContent = 'Default shipping address';
         } else {
           requestsAPI.setDefBillingAddress(form.dataset.addressId, requestsAPI.customerData.id);
+          localStorage.setItem('defaultBillingAddressId', form.dataset.addressId);
           addressBoxTitle.textContent = 'Default billing address';
         }
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
-        requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressId) => {
-          form.dataset.addressId = newAddressId;
+        requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
+          form.dataset.addressId = newAddressData.id;
+          addresses.push(newAddressData);
+          localStorage.setItem('addresses', JSON.stringify(addresses));
           if (isShippingAddress) {
-            requestsAPI.setDefShippingAddress(newAddressId, requestsAPI.customerData.id);
+            requestsAPI.setShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+            shippingAddressesIds.push(newAddressData.id);
+            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+          } else {
+            requestsAPI.setBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+            billingAddressIds.push(newAddressData.id);
+            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+          }
+
+          if (isShippingAddress) {
+            requestsAPI.setDefShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+            localStorage.setItem('defaultShippingAddressId', newAddressData.id);
             addressBoxTitle.textContent = 'Default shipping address';
           } else {
-            requestsAPI.setDefBillingAddress(newAddressId, requestsAPI.customerData.id);
+            requestsAPI.setDefBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+            localStorage.setItem('defaultBillingAddressId', newAddressData.id);
             addressBoxTitle.textContent = 'Default billing address';
           }
         });
@@ -113,7 +150,60 @@ function saveUpdatedData(form: HTMLElement) {
   clearFormAfterSaving(form);
 }
 
-function getUpdatedAddressData(editedForm: HTMLElement) {
+function updateAddress(updatedAddressData: IAddressObj) {
+  const addresses: IAddressObj[] = localStorage.getItem('addresses')
+    ? JSON.parse(localStorage.getItem('addresses') as string)
+    : [];
+  const addressId = updatedAddressData.id;
+  const updatedAddressIndex = addresses.findIndex((address) => address.id === addressId);
+  addresses.splice(updatedAddressIndex, 1);
+  addresses.push(updatedAddressData);
+  localStorage.setItem('addresses', JSON.stringify(addresses));
+}
+
+function deleteAddressInLocalStorage(addressId: string, clickedBtn: HTMLButtonElement) {
+  const addresses: IAddressObj[] = localStorage.getItem('addresses')
+    ? JSON.parse(localStorage.getItem('addresses') as string)
+    : [];
+  const shippingAddressesIds: string[] = localStorage.getItem('shippingAddressIds')
+    ? JSON.parse(localStorage.getItem('shippingAddressIds') as string)
+    : [];
+  const billingAddressIds: string[] = localStorage.getItem('billingAddressIds')
+    ? JSON.parse(localStorage.getItem('billingAddressIds') as string)
+    : [];
+
+  const deletedAddressIndex = addresses.findIndex((address) => address.id === addressId);
+  addresses.splice(deletedAddressIndex, 1);
+  localStorage.setItem('addresses', JSON.stringify(addresses));
+
+  const form = clickedBtn.closest('.user-profile__form');
+  isNull<HTMLDivElement>(form);
+  const isShipping = form?.classList.contains('user-profile-form__shipping-address-box');
+  const checkbox = form.querySelector('.address-box__checkbox') as HTMLInputElement;
+  const isDefaultAddress = checkbox.checked;
+
+  if (isShipping) {
+    const deletedShippingAddressIndex = shippingAddressesIds.findIndex(
+      (shippingAddressesId) => shippingAddressesId === addressId,
+    );
+    shippingAddressesIds.splice(deletedShippingAddressIndex, 1);
+    localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+    if (isDefaultAddress) {
+      localStorage.setItem('defaultShippingAddressId', '');
+    }
+  } else {
+    const deletedBillingAddressIndex = billingAddressIds.findIndex(
+      (billingAddressesId) => billingAddressesId === addressId,
+    );
+    billingAddressIds.splice(deletedBillingAddressIndex, 1);
+    localStorage.setItem('billingAddressIds', JSON.stringify(billingAddressIds));
+    if (isDefaultAddress) {
+      localStorage.setItem('defaultBillingAddressId', '');
+    }
+  }
+}
+
+function getUpdatedAddressData(editedForm: HTMLElement): IAddressObj {
   const addressId = editedForm.dataset.addressId as string;
   const countryInput = editedForm.querySelector('.country-input');
   const cityInput = editedForm.querySelector('.city-input');
@@ -124,7 +214,7 @@ function getUpdatedAddressData(editedForm: HTMLElement) {
   isNull<HTMLInputElement>(streetInput);
   isNull<HTMLInputElement>(postalCodeInput);
   const newAddressData = {
-    addressId,
+    id: addressId,
     street: streetInput.value ? streetInput.value : '',
     postalCode: postalCodeInput.value ? postalCodeInput.value : '',
     city: cityInput.value ? cityInput.value : '',
@@ -415,4 +505,5 @@ export {
   createNewAddress,
   passwordConfirmation,
   validateChangePasswordForm,
+  deleteAddressInLocalStorage,
 };

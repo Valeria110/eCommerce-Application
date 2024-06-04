@@ -85,7 +85,6 @@ class RequestFetch {
       await this.authProjectToken();
       if (this.#customerData.email) {
         await this.updateUserData();
-        await this.setUserAddresses();
       }
       document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     })();
@@ -180,7 +179,6 @@ class RequestFetch {
       this.customerToken = obj.access_token;
       this.updateUserEmail(email);
       await this.updateUserData();
-      await this.setUserAddresses();
     }
 
     return { isOk: response.ok, field, message };
@@ -189,6 +187,7 @@ class RequestFetch {
   authCustomersLogout() {
     this.customerToken = undefined;
     this.updateUserEmail(undefined);
+    localStorage.clear();
   }
 
   async isExistCustomer(email: string): Promise<boolean> {
@@ -234,18 +233,27 @@ class RequestFetch {
       this.#customerData.lastName = customers.results[0].lastName;
       this.#customerData.dateOfBirth = customers.results[0].dateOfBirth;
       this.#customerData.password = customers.results[0].password;
-      this.#customerAddresses.billingAddresses = customers.results[0].billingAddressIds.length
-        ? customers.results[0].billingAddressIds
-        : null;
-      this.#customerAddresses.shippingAddresses = customers.results[0].shippingAddressIds.length
-        ? customers.results[0].shippingAddressIds
-        : null;
-      this.#customerAddresses.defBillingAddress = customers.results[0].defaultBillingAddressId
-        ? customers.results[0].defaultBillingAddressId
-        : null;
-      this.#customerAddresses.defShippingAddress = customers.results[0].defaultShippingAddressId
-        ? customers.results[0].defaultShippingAddressId
-        : null;
+
+      localStorage.setItem(
+        'shippingAddressIds',
+        customers.results[0].shippingAddressIds.length ? JSON.stringify(customers.results[0].shippingAddressIds) : '',
+      );
+      localStorage.setItem(
+        'billingAddressIds',
+        customers.results[0].billingAddressIds.length ? JSON.stringify(customers.results[0].billingAddressIds) : '',
+      );
+      localStorage.setItem(
+        'defaultBillingAddressId',
+        customers.results[0].defaultBillingAddressId ? customers.results[0].defaultBillingAddressId : '',
+      );
+      localStorage.setItem(
+        'defaultShippingAddressId',
+        customers.results[0].defaultShippingAddressId ? customers.results[0].defaultShippingAddressId : '',
+      );
+      localStorage.setItem(
+        'addresses',
+        customers.results[0].addresses ? JSON.stringify(customers.results[0].addresses) : '',
+      );
 
       localStorage.setItem('version', customers.results[0].version);
     } else {
@@ -471,11 +479,6 @@ class RequestFetch {
       body: JSON.stringify(bodyRequest),
     });
 
-    // if (response.ok) {
-    //   const data = await response.json();
-    //   localStorage.setItem('version', data.version);
-    // }
-
     return response.json();
   }
 
@@ -547,7 +550,7 @@ class RequestFetch {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.projectToken}`,
+        Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(bodyRequest),
@@ -573,7 +576,7 @@ class RequestFetch {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.projectToken}`,
+        Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(bodyRequest),
@@ -949,18 +952,11 @@ class RequestFetch {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('version', data.version);
-      return data.addresses[data.addresses.length - 1].id;
+      return data.addresses[data.addresses.length - 1];
     }
   }
 
-  async changeAddress(addressData: {
-    addressId: string;
-    street: string;
-    postalCode: string;
-    city: string;
-    country: string;
-    email: string;
-  }) {
+  async changeAddress(addressData: IAddressObj) {
     const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
     const streetObj = splitStreetNameAndNumber(addressData.street);
     const countryName = addressData.country.includes(' ') ? addressData.country.split(' ')[0] : addressData.country;
@@ -972,7 +968,7 @@ class RequestFetch {
       actions: [
         {
           action: 'changeAddress',
-          addressId: addressData.addressId,
+          addressId: addressData.id,
           address: {
             title: 'My Address',
             streetName: streetObj.name,
@@ -1043,8 +1039,6 @@ class RequestFetch {
 
   async setDefaultShippingAddress(addAddressId: string) {
     const url = `${this.host}/${this.projectKey}/customers/${this.customerData.id}`;
-    await this.updateUserVersion();
-
     const bodyRequest = {
       version: Number(localStorage.getItem('version')),
       actions: [
