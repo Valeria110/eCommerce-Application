@@ -12,6 +12,7 @@ import {
   createNewAddress,
   passwordConfirmation,
   validateChangePasswordForm,
+  deleteAddressInLocalStorage,
   checkCurrentPassword,
 } from './userProfilePageFormActions';
 
@@ -74,11 +75,14 @@ function userProfilePage(): HTMLElement {
     userFullname.textContent = `${requestsAPI.customerData.firstName} ${requestsAPI.customerData.lastName}`;
     userEmail.textContent = `${requestsAPI.customerData.email}`;
 
-    const shippingAddresses = requestsAPI.getCustomerAddresses().shippingAddresses;
-    const shippingAddressesNum = shippingAddresses ? shippingAddresses.length : 0;
-    for (let i = 0; i < shippingAddressesNum; i += 1) {
-      const shippingAddressBox = createShippingAddressBlock(i);
-      shippingAddressesBox.append(shippingAddressBox);
+    const shippingAddressesIds: string[] = localStorage.getItem('shippingAddressIds')
+      ? JSON.parse(localStorage.getItem('shippingAddressIds') as string)
+      : [];
+
+    if (shippingAddressesIds.length) {
+      shippingAddressesIds.forEach((shippingAddressId) => {
+        shippingAddressesBox.append(createShippingAddressBlock(shippingAddressId));
+      });
     }
 
     const addShippingAddressBtn = Bootstrap.createElement(
@@ -94,11 +98,14 @@ function userProfilePage(): HTMLElement {
     });
     shippingAddressesBox.append(addShippingAddressBtn);
 
-    const billingAddresses = requestsAPI.getCustomerAddresses().billingAddresses;
-    const billingAddressesNum = billingAddresses ? billingAddresses.length : 0;
-    for (let i = 0; i < billingAddressesNum; i += 1) {
-      const billingAddressBox = createBillingAddressBlock(i);
-      billingAddressesBox.append(billingAddressBox);
+    const billingAddressesIds: string[] = localStorage.getItem('billingAddressIds')
+      ? JSON.parse(localStorage.getItem('billingAddressIds') as string)
+      : [];
+
+    if (billingAddressesIds.length) {
+      billingAddressesIds.forEach((billingAddressesId) => {
+        billingAddressesBox.append(createBillingAddressBlock(billingAddressesId));
+      });
     }
 
     const addBillingAddressBtn = Bootstrap.createElement(
@@ -334,9 +341,11 @@ function createChangePasswordModal(): HTMLElement {
   return modal;
 }
 
-function createShippingAddressBlock(addressIndex: number): HTMLElement {
-  const shippingAddresses = requestsAPI.getCustomerAddresses().shippingAddresses;
-  const shippingAddressObj = shippingAddresses !== null ? shippingAddresses[addressIndex] : null;
+function createShippingAddressBlock(shippingAddressId: string): HTMLElement {
+  const shippingAddressObj = JSON.parse(localStorage.getItem('addresses') as string).find(
+    (address: IAddressObj) => address.id === shippingAddressId,
+  );
+
   let isDefShippingAddress: boolean = false;
 
   if (shippingAddressObj) {
@@ -384,25 +393,15 @@ function createShippingAddressBlock(addressIndex: number): HTMLElement {
   const zipcodeInput = zipcodeLabel.querySelector('input');
   isNull<HTMLInputElement>(zipcodeInput);
 
-  const updateAddress = (addressObj: IAddressObj | null) => {
-    shippingAddressBox.dataset.addressId = addressObj ? addressObj.id : '';
-    countryInput.value = addressObj ? countriesList[addressObj.country] : '';
-    countryInput.dataset.initialValue = addressObj ? countriesList[addressObj.country] : '';
-    cityInput.value = addressObj ? addressObj.city : '';
-    cityInput.dataset.initialValue = addressObj ? addressObj.city : '';
-    streetInput.value = addressObj ? addressObj.streetName : '';
-    streetInput.dataset.initialValue = addressObj ? addressObj.streetName : '';
-    zipcodeInput.value = addressObj ? addressObj.postalCode : '';
-    zipcodeInput.dataset.initialValue = addressObj ? addressObj.postalCode : '';
-  };
-
-  updateAddress(shippingAddressObj);
-  document.body.addEventListener(AppEvents.updateUserName, () => {
-    const shippingAddresses2 = requestsAPI.getCustomerAddresses().shippingAddresses;
-    if (shippingAddresses2) {
-      updateAddress(shippingAddresses2[addressIndex]);
-    }
-  });
+  shippingAddressBox.dataset.addressId = shippingAddressObj ? shippingAddressObj.id : '';
+  countryInput.value = shippingAddressObj ? countriesList[shippingAddressObj.country] : '';
+  countryInput.dataset.initialValue = shippingAddressObj ? countriesList[shippingAddressObj.country] : '';
+  cityInput.value = shippingAddressObj ? shippingAddressObj.city : '';
+  cityInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.city : '';
+  streetInput.value = shippingAddressObj ? shippingAddressObj.streetName : '';
+  streetInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.streetName : '';
+  zipcodeInput.value = shippingAddressObj ? shippingAddressObj.postalCode : '';
+  zipcodeInput.dataset.initialValue = shippingAddressObj ? shippingAddressObj.postalCode : '';
 
   const addressBoxBottomPart = createAddressBoxBottomPart();
   inputsContainer.append(countryLabel, cityLabel, streetLabel, zipcodeLabel);
@@ -411,9 +410,10 @@ function createShippingAddressBlock(addressIndex: number): HTMLElement {
   return shippingAddressBox;
 }
 
-function createBillingAddressBlock(addressIndex: number): HTMLElement {
-  const billingAddresses = requestsAPI.getCustomerAddresses().billingAddresses;
-  const billingAddressObj = billingAddresses !== null ? billingAddresses[addressIndex] : null;
+function createBillingAddressBlock(billingAddressId: string): HTMLElement {
+  const billingAddressObj = JSON.parse(localStorage.getItem('addresses') as string).find(
+    (address: IAddressObj) => address.id === billingAddressId,
+  );
 
   let isDefBillingAddress: boolean = false;
   if (billingAddressObj) {
@@ -457,25 +457,15 @@ function createBillingAddressBlock(addressIndex: number): HTMLElement {
   const zipcodeInput = zipcodeLabel.querySelector('input');
   isNull<HTMLInputElement>(zipcodeInput);
 
-  const updateAddress = (addressObj: IAddressObj | null) => {
-    billingAddressBox.dataset.addressId = addressObj ? addressObj.id : '';
-    countryInput.value = addressObj ? countriesList[addressObj.country] : '';
-    countryInput.dataset.initialValue = addressObj ? countriesList[addressObj.country] : '';
-    cityInput.value = addressObj ? addressObj.city : '';
-    cityInput.dataset.initialValue = addressObj ? addressObj.city : '';
-    streetInput.value = addressObj ? addressObj.streetName : '';
-    streetInput.dataset.initialValue = addressObj ? addressObj.streetName : '';
-    zipcodeInput.value = addressObj ? addressObj.postalCode : '';
-    zipcodeInput.dataset.initialValue = addressObj ? addressObj.postalCode : '';
-  };
-  updateAddress(billingAddressObj);
-
-  document.body.addEventListener(AppEvents.updateUserName, () => {
-    const billingAddresses2 = requestsAPI.getCustomerAddresses().shippingAddresses;
-    if (billingAddresses2) {
-      updateAddress(billingAddresses2[addressIndex]);
-    }
-  });
+  billingAddressBox.dataset.addressId = billingAddressObj ? billingAddressObj.id : '';
+  countryInput.value = billingAddressObj ? countriesList[billingAddressObj.country] : '';
+  countryInput.dataset.initialValue = billingAddressObj ? countriesList[billingAddressObj.country] : '';
+  cityInput.value = billingAddressObj ? billingAddressObj.city : '';
+  cityInput.dataset.initialValue = billingAddressObj ? billingAddressObj.city : '';
+  streetInput.value = billingAddressObj ? billingAddressObj.streetName : '';
+  streetInput.dataset.initialValue = billingAddressObj ? billingAddressObj.streetName : '';
+  zipcodeInput.value = billingAddressObj ? billingAddressObj.postalCode : '';
+  zipcodeInput.dataset.initialValue = billingAddressObj ? billingAddressObj.postalCode : '';
 
   const addressBoxBottomPart = createAddressBoxBottomPart();
 
@@ -532,23 +522,26 @@ function createInputAndLabelElem(labelText: string, inputType: string) {
   return label;
 }
 
-function isDefaultAddress(addressType: 'shipping' | 'billing', shippingAddressId: string): boolean {
+function isDefaultAddress(addressType: 'shipping' | 'billing', addressId: string): boolean {
   if (addressType === 'shipping') {
-    const defaultShippingAddress = requestsAPI.getCustomerAddresses().defShippingAddress;
-    if (!defaultShippingAddress) {
+    const defaultShippingAddressId = localStorage.getItem('defaultShippingAddressId')
+      ? localStorage.getItem('defaultShippingAddressId' as string)
+      : '';
+
+    if (!defaultShippingAddressId) {
       return false;
     } else {
-      const defaultShippingAddressId = defaultShippingAddress.id;
-      return defaultShippingAddressId === shippingAddressId;
+      return defaultShippingAddressId === addressId;
     }
   }
 
-  const defaultBillingAddress = requestsAPI.getCustomerAddresses().defBillingAddress;
-  if (!defaultBillingAddress) {
+  const defaultBillingAddressId = localStorage.getItem('defaultBillingAddressId')
+    ? localStorage.getItem('defaultBillingAddressId' as string)
+    : '';
+  if (!defaultBillingAddressId) {
     return false;
   } else {
-    const defaultBillingAddressId = defaultBillingAddress.id;
-    return defaultBillingAddressId === shippingAddressId;
+    return defaultBillingAddressId === addressId;
   }
 }
 
@@ -597,6 +590,7 @@ function createAddressBoxBottomPart(): HTMLElement {
     const addressId = deletedAddressBox.dataset.addressId;
     if (addressId) {
       requestsAPI.removeAddress(addressId);
+      deleteAddressInLocalStorage(addressId, clickedBtn);
     }
     deletedAddressBox.remove();
   });
