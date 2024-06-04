@@ -70,8 +70,7 @@ export interface IAddressObj {
   city: string;
   country: string;
   postalCode: string;
-  streetName: string;
-  streetNumber: string;
+  street: string;
 }
 
 export interface IUserData {
