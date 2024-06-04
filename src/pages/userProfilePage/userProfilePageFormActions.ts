@@ -4,6 +4,7 @@ import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import * as validationRegPage from '../registration-page/validationInputsShippingAndBillingAddressForms';
 import * as personalInfoValidation from '../registration-page/validationInputsRegistrationForm';
 import { createAddressBoxBottomPart, createInputAndLabelElem, createEditBtn } from './userProfilePage';
+import { showError } from '../../elements/loginValidation';
 
 function resetFormValues(clickedEditBtn: HTMLButtonElement) {
   const form = clickedEditBtn.closest('.user-profile__form');
@@ -98,9 +99,6 @@ function saveUpdatedData(form: HTMLElement) {
           case 'Email':
             requestsAPI.changeUserEmail(input.value);
             userProfileHeaderEmail.textContent = input.value;
-            break;
-          case 'Password':
-            requestsAPI.changePassword(input.value);
             break;
           case 'Date of birth':
             requestsAPI.setDateOfBirth(input.value);
@@ -399,10 +397,50 @@ function validateChangePasswordForm(
   ) {
     saveBtn.classList.remove('disabled');
     return true;
-  } else {
-    saveBtn.classList.add('disabled');
-    return false;
   }
+  saveBtn.classList.add('disabled');
+  return false;
+}
+
+function checkCurrentPassword(
+  currentPasswordInput: HTMLInputElement,
+  newPasswordInput: HTMLInputElement,
+  confirmPasswordInput: HTMLInputElement,
+  saveBtn: HTMLButtonElement,
+) {
+  const error = currentPasswordInput.nextElementSibling;
+  isNull<HTMLDivElement>(error);
+
+  requestsAPI
+    .authCustomersLogin(requestsAPI.customerData.email, currentPasswordInput.value)
+    .then((serverAnswer) => {
+      if (serverAnswer.isOk) {
+        currentPasswordInput.classList.add('is-valid');
+        currentPasswordInput.classList.remove('is-invalid');
+        error.textContent = '';
+        if (validateChangePasswordForm(newPasswordInput, confirmPasswordInput, saveBtn)) {
+          saveBtn.classList.remove('disabled');
+          requestsAPI.changePassword(currentPasswordInput.value, newPasswordInput.value);
+          const modal = document.querySelector('.change-password-modal');
+          isNull<HTMLDivElement>(modal);
+          modal.classList.remove('active');
+
+          const userForm = document.querySelector('.user-profile-form');
+          isNull<HTMLFormElement>(userForm);
+          const passwordInput = userForm.querySelector('.password-input');
+          isNull<HTMLInputElement>(passwordInput);
+          passwordInput.value = newPasswordInput.value;
+        }
+      } else {
+        if (serverAnswer.field === 'password') {
+          showError(currentPasswordInput, serverAnswer.message);
+          currentPasswordInput.classList.add('is-invalid');
+        }
+      }
+    })
+    .catch((err) => {
+      console.error(`Error: ${err}`);
+    });
 }
 
 export {
@@ -415,4 +453,5 @@ export {
   createNewAddress,
   passwordConfirmation,
   validateChangePasswordForm,
+  checkCurrentPassword,
 };
