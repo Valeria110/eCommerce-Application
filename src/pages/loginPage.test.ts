@@ -1,4 +1,4 @@
-import error404Page from './error404Page';
+import { loginPage } from './loginPage';
 
 jest.mock('../elements/requestsAPI', () => ({
   isLogined: false,
@@ -9,15 +9,15 @@ jest.mock('../elements/requestsAPI', () => ({
   },
 }));
 
-describe('404 page', () => {
-  const errorWrapper = error404Page();
+describe('login page', () => {
+  const errorWrapper = loginPage();
   describe('createElement', () => {
     it('should create an element with the given tag name', () => {
-      expect(errorWrapper.tagName).toBe('DIV');
+      expect(errorWrapper.tagName).toBe('MAIN');
     });
 
     it('should assign class names to the created element', () => {
-      expect(errorWrapper.classList.contains('error-wrapper')).toBe(true);
+      expect(errorWrapper.classList.contains('login-page-main')).toBe(true);
     });
   });
 });
