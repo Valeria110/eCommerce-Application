@@ -28,6 +28,7 @@ export function generateCatalogPage() {
   }, 500);
 
   CACHED_BOOKS = [];
+  PAGES_CREATED = false;
   localStorage.setItem('category', 'false');
   localStorage.setItem('sort', 'false');
   resetCatalog();
