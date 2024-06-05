@@ -12,7 +12,7 @@ describe('switchPage', () => {
     expect(mockFn).toHaveBeenCalledWith(
       expect.objectContaining({
         type: AppEvents.switchPage,
-        detail: page,
+        detail: { page, productId: undefined },
       }),
     );
   });

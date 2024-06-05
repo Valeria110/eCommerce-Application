@@ -145,7 +145,7 @@ export const shadowButton = createElement('button', 'btn btn-primary d-none');
 shadowButton.setAttribute('data-bs-toggle', 'modal');
 shadowButton.setAttribute('data-bs-target', '#1234');
 
-export const containerForModalWindow = createElement('div', 'modal fade');
+export const containerForModalWindow = createElement('div', 'modal fade modal_registration_successful');
 containerForModalWindow.id = '1234';
 containerForModalWindow.setAttribute('tabindex', '-1');
 containerForModalWindow.setAttribute('aria-hidden', 'true');

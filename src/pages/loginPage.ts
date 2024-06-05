@@ -61,13 +61,13 @@ function loginPage(): HTMLElement {
     }
 
     if (i === 1) {
-      input.classList.add('login-form__password-input');
+      input.classList.add('login-form__password-input', 'password-input');
       input.setAttribute('type', 'password');
       input.setAttribute('placeholder', 'Password');
       input.setAttribute('minlength', '8');
 
       const showPasswordBtn = document.createElement('img');
-      showPasswordBtn.classList.add('login-form__show-password-btn');
+      showPasswordBtn.classList.add('login-form__show-password-btn', 'show-password-btn');
       showPasswordBtn.src = eyeOffIcon as string;
       showPasswordBtn.addEventListener('click', showOrHidePassword);
       inputWrapper.appendChild(showPasswordBtn);
@@ -80,7 +80,7 @@ function loginPage(): HTMLElement {
 
   const submitFormBtn = document.createElement('button');
   submitFormBtn.type = 'submit';
-  submitFormBtn.classList.add('login-form__submit-btn', 'btn', 'disabled');
+  submitFormBtn.classList.add('login-form__submit-btn', 'submit-btn', 'btn', 'disabled');
 
   const registrationLink = document.createElement('a');
   registrationLink.classList.add('login-form-wrapper__registration-link');
@@ -113,6 +113,7 @@ function handleServerLogin(inputsContainer: HTMLDivElement) {
       .then((serverAnswer) => {
         if (serverAnswer.isOk) {
           switchPage(Pages.Main);
+          requestsAPI.customerData.password = passwordField.value;
         } else {
           if (serverAnswer.field === 'login') {
             showError(loginField, serverAnswer.message);

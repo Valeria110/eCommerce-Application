@@ -14,12 +14,13 @@ $screen-burger: $screen-width-tablet - 80px;
     margin: 22px 56px;
   }
   @media (width <= $screen-width-mobile) {
-    margin: 22px 25px;
+    margin: 22px 12px;
   }
 
   .header__brand {
     font-weight: 500;
     font-size: 16px;
+    cursor: pointer;
 
     display: flex;
     align-items: center;

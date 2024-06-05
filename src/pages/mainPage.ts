@@ -1,5 +1,7 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
-import header from '../elements/header/header';
+import discount from '../elements/discount/discount';
+import findYourBook from '../elements/findYourBook/findYourBook';
+import { generateSectionPopularBooks } from '../elements/popularBooks/generateSectionPopularBooks';
 import {
   bodyModalWindow,
   buttonCloseModalWindow,
@@ -13,8 +15,11 @@ import {
 
 export default function mainPage() {
   const div = Bootstrap.createElement('div');
-  div.append(header());
   div.append(containerForModalWindow, shadowButton);
+  div.append(findYourBook());
+  div.append(discount());
+  div.append(generateSectionPopularBooks('Popular books'));
+
   containerForModalWindow.append(modalWindow);
   modalWindow.append(contentModalWindow);
   contentModalWindow.append(headerModalWindow, bodyModalWindow);
@@ -25,5 +30,6 @@ export default function mainPage() {
       localStorage.setItem('registerTrue', '');
     }, 100);
   }
+
   return div;
 }

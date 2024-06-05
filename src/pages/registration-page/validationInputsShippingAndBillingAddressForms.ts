@@ -98,7 +98,7 @@ export function validateInputCountry(inputCountry: HTMLInputElement, error: HTML
     });
   }
 
-  if (resultsCountries.length === 0 || !isEmpty) {
+  if (resultsCountries.length === 0 && !isEmpty) {
     showErrorOnRegistration(inputCountry, error, true, 'Country must be a valid');
   }
 

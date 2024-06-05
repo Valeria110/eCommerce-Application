@@ -1,3 +1,5 @@
+import switchPage from '../switchPage';
+import { Pages } from '../types';
 import './color-default.scss';
 import './style-default.scss';
 
@@ -15,13 +17,12 @@ export default class Bootstrap {
     textContent?: string,
   ): HTMLElementTagNameMap[T] {
     const element = document.createElement(tagName);
-    if (typeof className === 'string') {
-      element.className = className;
-    }
+
     if (Array.isArray(className)) {
-      className.forEach((classItem) => {
-        element.classList.add(classItem);
-      });
+      className = className.join(' ');
+    }
+    if (className) {
+      element.className = className;
     }
     if (textContent !== undefined) {
       element.textContent = textContent;
@@ -51,17 +52,25 @@ export default class Bootstrap {
     isActive = false,
     isDisabled = false,
     className = '',
+    page: Pages | undefined = undefined,
   ) {
     const li = this.createElement('li', liClass + ' ' + className);
-    if (isActive) {
-      li.classList.add('active');
-    }
 
     const a = this.createElement('a', 'nav-link', text);
     a.href = '#';
     if (isDisabled) {
       a.classList.add('disabled');
     }
+    if (isActive) {
+      a.classList.add('active');
+    }
+    if (page) {
+      a.addEventListener('click', (event) => {
+        event.preventDefault();
+        switchPage(page);
+      });
+    }
+
     li.append(a);
     return li;
   }
