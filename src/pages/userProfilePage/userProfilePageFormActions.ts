@@ -56,6 +56,11 @@ function saveUpdatedData(form: HTMLElement) {
       if (form.dataset.addressId) {
         requestsAPI.changeAddress(getUpdatedAddressData(form));
         updateAddress(getUpdatedAddressData(form));
+        if (isShippingAddress) {
+          addressBoxTitle.textContent = 'Shipping address';
+        } else {
+          addressBoxTitle.textContent = 'Billing address';
+        }
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
@@ -277,6 +282,11 @@ function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement, fo
   const inputs = Array.from(form.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
   const saveChangesBtn = document.querySelector('.save-changes-btn');
   isNull<HTMLButtonElement>(saveChangesBtn);
+  const checkboxContainer = form.querySelector('.address-box__checkbox-container');
+  isNull<HTMLDivElement>(checkboxContainer);
+  const checkboxInput = checkboxContainer.querySelector('input');
+  isNull<HTMLInputElement>(checkboxInput);
+  const isAddressDefault = form.querySelector('.address-box__title')?.textContent?.includes('Default');
 
   inputs.forEach((input: HTMLInputElement | null) => {
     isNull<HTMLInputElement>(input);
@@ -286,12 +296,22 @@ function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement, fo
       editBtn.classList.add('read-form-btn');
       editBtnText.textContent = 'cancel';
       form.classList.add('form-in-edit-mode');
+      checkboxContainer.classList.remove('d-none');
+      if (isAddressDefault) {
+        checkboxInput.setAttribute('checked', '');
+      } else {
+        checkboxInput.removeAttribute('checked');
+      }
+      checkboxInput.addEventListener('change', () => {
+        saveChangesBtn.classList.remove('disabled');
+      });
     } else {
       input.setAttribute('readonly', '');
       saveChangesBtn.classList.add('d-none');
       editBtn.classList.remove('read-form-btn');
       editBtnText.textContent = 'edit';
       form.classList.remove('form-in-edit-mode');
+      checkboxContainer.classList.add('d-none');
     }
   });
 }
