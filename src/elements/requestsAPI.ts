@@ -951,7 +951,8 @@ class RequestFetch {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('version', data.version);
-      return data.addresses[data.addresses.length - 1];
+      const newAddressData: IAddressObj = data.addresses[data.addresses.length - 1];
+      return newAddressData;
     }
   }
 

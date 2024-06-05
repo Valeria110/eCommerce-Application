@@ -62,14 +62,16 @@ function saveUpdatedData(form: HTMLElement) {
           addresses.push(newAddressData);
           localStorage.setItem('addresses', JSON.stringify(addresses));
 
-          if (isShippingAddress) {
-            requestsAPI.setShippingAddress(newAddressData.id, customerId);
-            shippingAddressesIds.push(newAddressData.id);
-            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
-          } else {
-            requestsAPI.setBillingAddress(newAddressData.id, customerId);
-            billingAddressIds.push(newAddressData.id);
-            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+          if (newAddressData) {
+            if (isShippingAddress) {
+              requestsAPI.setShippingAddress(newAddressData.id, customerId);
+              shippingAddressesIds.push(newAddressData.id);
+              localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+            } else {
+              requestsAPI.setBillingAddress(newAddressData.id, customerId);
+              billingAddressIds.push(newAddressData.id);
+              localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+            }
           }
         });
       }
@@ -80,36 +82,42 @@ function saveUpdatedData(form: HTMLElement) {
         if (isShippingAddress) {
           requestsAPI.setDefShippingAddress(form.dataset.addressId, requestsAPI.customerData.id);
           localStorage.setItem('defaultShippingAddressId', form.dataset.addressId);
+          resetDefaultAddresses('shipping');
           addressBoxTitle.textContent = 'Default shipping address';
         } else {
           requestsAPI.setDefBillingAddress(form.dataset.addressId, requestsAPI.customerData.id);
           localStorage.setItem('defaultBillingAddressId', form.dataset.addressId);
+          resetDefaultAddresses('billing');
           addressBoxTitle.textContent = 'Default billing address';
         }
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
-          form.dataset.addressId = newAddressData.id;
-          addresses.push(newAddressData);
-          localStorage.setItem('addresses', JSON.stringify(addresses));
-          if (isShippingAddress) {
-            requestsAPI.setShippingAddress(newAddressData.id, requestsAPI.customerData.id);
-            shippingAddressesIds.push(newAddressData.id);
-            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
-          } else {
-            requestsAPI.setBillingAddress(newAddressData.id, requestsAPI.customerData.id);
-            billingAddressIds.push(newAddressData.id);
-            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
-          }
+          if (newAddressData) {
+            form.dataset.addressId = newAddressData.id;
+            addresses.push(newAddressData);
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            if (isShippingAddress) {
+              requestsAPI.setShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+              shippingAddressesIds.push(newAddressData.id);
+              localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+            } else {
+              requestsAPI.setBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+              billingAddressIds.push(newAddressData.id);
+              localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+            }
 
-          if (isShippingAddress) {
-            requestsAPI.setDefShippingAddress(newAddressData.id, requestsAPI.customerData.id);
-            localStorage.setItem('defaultShippingAddressId', newAddressData.id);
-            addressBoxTitle.textContent = 'Default shipping address';
-          } else {
-            requestsAPI.setDefBillingAddress(newAddressData.id, requestsAPI.customerData.id);
-            localStorage.setItem('defaultBillingAddressId', newAddressData.id);
-            addressBoxTitle.textContent = 'Default billing address';
+            if (isShippingAddress) {
+              requestsAPI.setDefShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+              localStorage.setItem('defaultShippingAddressId', newAddressData.id);
+              resetDefaultAddresses('shipping');
+              addressBoxTitle.textContent = 'Default shipping address';
+            } else {
+              requestsAPI.setDefBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+              localStorage.setItem('defaultBillingAddressId', newAddressData.id);
+              resetDefaultAddresses('billing');
+              addressBoxTitle.textContent = 'Default billing address';
+            }
           }
         });
       }
@@ -198,6 +206,28 @@ function deleteAddressInLocalStorage(addressId: string, clickedBtn: HTMLButtonEl
     if (isDefaultAddress) {
       localStorage.setItem('defaultBillingAddressId', '');
     }
+  }
+}
+
+function resetDefaultAddresses(addressType: 'shipping' | 'billing') {
+  if (addressType === 'shipping') {
+    const defaultAddressesTitles = Array.from(
+      document.querySelectorAll('.shipping-address-box__title '),
+    ) as HTMLElement[];
+    defaultAddressesTitles.forEach((defaultAddressesTitle) => {
+      if (defaultAddressesTitle.textContent === 'Default shipping address') {
+        defaultAddressesTitle.textContent = 'Shipping address';
+      }
+    });
+  } else {
+    const defaultAddressesTitles = Array.from(
+      document.querySelectorAll('.billing-address-box__title '),
+    ) as HTMLElement[];
+    defaultAddressesTitles.forEach((defaultAddressesTitle) => {
+      if (defaultAddressesTitle.textContent === 'Default billing address') {
+        defaultAddressesTitle.textContent = 'Billing address';
+      }
+    });
   }
 }
 
