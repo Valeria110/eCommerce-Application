@@ -405,7 +405,7 @@ class RequestFetch {
       // now - always use project token, but in Sprint 4, replace on #customerToken for logined user
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
-          Authorization: `Bearer ${this.projectToken}`,
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         },
       });
 
