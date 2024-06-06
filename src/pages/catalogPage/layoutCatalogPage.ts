@@ -308,7 +308,8 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
   try {
     if (
       variablesCatalogPage.inputMaxPrice.value.length === 0 &&
-      variablesCatalogPage.inputMinPrice.value.length === 0
+      variablesCatalogPage.inputMinPrice.value.length === 0 &&
+      variablesCatalogPage.inputSearchBooks.value.length === 0
     ) {
       const resultBooks2 =
         localStorage.getItem('category') === 'true'
@@ -322,6 +323,12 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
         COUNT_PAGES,
         variablesCatalogPage.containerForAllBooks,
       );
+    } else if (
+      variablesCatalogPage.inputMaxPrice.value.length === 0 &&
+      variablesCatalogPage.inputMinPrice.value.length === 0 &&
+      variablesCatalogPage.inputSearchBooks.value.length !== 0
+    ) {
+      searchBook();
     } else {
       const resultBooks =
         localStorage.getItem('category') === 'true'
