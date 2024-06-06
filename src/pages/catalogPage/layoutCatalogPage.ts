@@ -132,7 +132,9 @@ async function handleSortClick(sort: HTMLLIElement) {
 
   try {
     if (sortType === 'No sort') {
-      if (variablesCatalogPage.inputMinPrice.value !== '' || variablesCatalogPage.inputMaxPrice.value !== '') {
+      if (variablesCatalogPage.inputSearchBooks.value !== '') {
+        searchBook();
+      } else if (variablesCatalogPage.inputMinPrice.value !== '' || variablesCatalogPage.inputMaxPrice.value !== '') {
         const minPrice = String(Number(variablesCatalogPage.inputMinPrice.value) * 100);
         const maxPrice = String(Number(variablesCatalogPage.inputMaxPrice.value) * 100);
         fetchProductsByPriceRange(minPrice, maxPrice);
@@ -157,9 +159,6 @@ async function handleSortClick(sort: HTMLLIElement) {
       variablesCatalogPage.containerForAllBooks,
     );
     variablesCatalogPage.buttonSort.textContent = sort.textContent;
-    variablesCatalogPage.inputSearchBooks.value = '';
-    variablesCatalogPage.iconForInputSearchBooks.style.backgroundImage =
-      "url('data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M21.0002%2021L16.6572%2016.657M16.6572%2016.657C17.4001%2015.9141%2017.9894%2015.0322%2018.3914%2014.0615C18.7935%2013.0909%2019.0004%2012.0506%2019.0004%2011C19.0004%209.94939%2018.7935%208.90908%2018.3914%207.93845C17.9894%206.96782%2017.4001%206.08588%2016.6572%205.34299C15.9143%204.6001%2015.0324%204.01081%2014.0618%203.60877C13.0911%203.20672%2012.0508%202.99979%2011.0002%202.99979C9.9496%202.99979%208.90929%203.20672%207.93866%203.60877C6.96803%204.01081%206.08609%204.6001%205.34321%205.34299C3.84288%206.84332%203%208.87821%203%2011C3%2013.1218%203.84288%2015.1567%205.34321%2016.657C6.84354%2018.1573%208.87842%2019.0002%2011.0002%2019.0002C13.122%2019.0002%2015.1569%2018.1573%2016.6572%2016.657Z%22%20stroke%3D%22%23ADB5BD%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')";
   } catch (error) {
     console.error('Error handling sort click:', error);
   }
@@ -206,6 +205,7 @@ async function handleSort(sortType: string, isCategory: boolean) {
       isCategory,
       minPrice,
       maxPrice,
+      variablesCatalogPage.inputSearchBooks.value,
     );
 
     CACHED_BOOKS = resultBooks.results;
@@ -251,18 +251,26 @@ export async function searchBook() {
       "url('data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M21.0002%2021L16.6572%2016.657M16.6572%2016.657C17.4001%2015.9141%2017.9894%2015.0322%2018.3914%2014.0615C18.7935%2013.0909%2019.0004%2012.0506%2019.0004%2011C19.0004%209.94939%2018.7935%208.90908%2018.3914%207.93845C17.9894%206.96782%2017.4001%206.08588%2016.6572%205.34299C15.9143%204.6001%2015.0324%204.01081%2014.0618%203.60877C13.0911%203.20672%2012.0508%202.99979%2011.0002%202.99979C9.9496%202.99979%208.90929%203.20672%207.93866%203.60877C6.96803%204.01081%206.08609%204.6001%205.34321%205.34299C3.84288%206.84332%203%208.87821%203%2011C3%2013.1218%203.84288%2015.1567%205.34321%2016.657C6.84354%2018.1573%208.87842%2019.0002%2011.0002%2019.0002C13.122%2019.0002%2015.1569%2018.1573%2016.6572%2016.657Z%22%20stroke%3D%22%23ADB5BD%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')";
   }
 
+  let minPrice;
+  let maxPrice;
+  if (variablesCatalogPage.inputMinPrice.value === '' || variablesCatalogPage.inputMaxPrice.value === '') {
+    minPrice = '';
+    maxPrice = '';
+  } else {
+    minPrice = String(Number(variablesCatalogPage.inputMinPrice.value) * 100);
+    maxPrice = String(Number(variablesCatalogPage.inputMaxPrice.value) * 100);
+  }
+
   const resultBooks = await requestsAPI.getBookWithSearch(
     variablesCatalogPage.inputSearchBooks.value,
     variablesCatalogPage.nameCategory.id,
     isCategoryTrue,
+    minPrice,
+    maxPrice,
   );
 
   CACHED_BOOKS = resultBooks.results;
   PAGES_CREATED = false;
-  variablesCatalogPage.inputMinPrice.value = '';
-  variablesCatalogPage.inputMaxPrice.value = '';
-  toggleElementVisibility(variablesCatalogPage.clearInputMinPrice, false);
-  toggleElementVisibility(variablesCatalogPage.clearInputMaxPrice, false);
   toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
   resetActiveClasses('.catalog-page__active-sort');
   variablesCatalogPage.buttonSort.textContent = 'No sort';
@@ -317,8 +325,20 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
     } else {
       const resultBooks =
         localStorage.getItem('category') === 'true'
-          ? await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, true, variablesCatalogPage.nameCategory.id)
-          : await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, false, variablesCatalogPage.nameCategory.id);
+          ? await requestsAPI.getBooksByPriceRange(
+              minPrice,
+              maxPrice,
+              true,
+              variablesCatalogPage.nameCategory.id,
+              variablesCatalogPage.inputSearchBooks.value,
+            )
+          : await requestsAPI.getBooksByPriceRange(
+              minPrice,
+              maxPrice,
+              false,
+              variablesCatalogPage.nameCategory.id,
+              variablesCatalogPage.inputSearchBooks.value,
+            );
 
       CACHED_BOOKS = resultBooks.results;
       PAGES_CREATED = false;
@@ -344,7 +364,6 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
 export const handlePriceInputChange = async () => {
   const minPrice = String(Number(variablesCatalogPage.inputMinPrice.value) * 100);
   const maxPrice = String(Number(variablesCatalogPage.inputMaxPrice.value) * 100);
-  variablesCatalogPage.inputSearchBooks.value = '';
   toggleElementVisibility(variablesCatalogPage.listItemNoSort, false);
   resetActiveClasses('.catalog-page__active-sort');
   variablesCatalogPage.buttonSort.textContent = 'No sort';
