@@ -1,7 +1,7 @@
 import switchPage from '../../elements/switchPage';
 import { Pages } from '../../elements/types';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
-import { getBooks, handlePriceInputChange, qwe, searchBook } from './layoutCatalogPage';
+import { getBooks, handlePriceInputChange, resetSorting, searchBook } from './layoutCatalogPage';
 
 export function buildCatalogStructure() {
   const {
@@ -140,7 +140,7 @@ export function attachCatalogEventListeners() {
   });
 
   buttonClearSorting.addEventListener('click', () => {
-    qwe();
+    resetSorting();
   });
 
   inputMinPrice.addEventListener('input', handlePriceInputChange);

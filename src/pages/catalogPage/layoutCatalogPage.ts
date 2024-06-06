@@ -166,7 +166,7 @@ async function handleSortClick(sort: HTMLLIElement) {
   }
 }
 
-export async function qwe() {
+export async function resetSorting() {
   const resultBooks =
     localStorage.getItem('category') === 'true'
       ? await requestsAPI.getCategory(variablesCatalogPage.nameCategory.id)
@@ -302,27 +302,6 @@ export function splitArrayIntoChunks<T>(array: T[], chunkSize: number, isCatalog
 
 async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
   try {
-    const resultBooks =
-      localStorage.getItem('category') === 'true'
-        ? await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, true, variablesCatalogPage.nameCategory.id)
-        : await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, false, variablesCatalogPage.nameCategory.id);
-
-    CACHED_BOOKS = resultBooks.results;
-    PAGES_CREATED = false;
-    toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
-    extractBookInfo(
-      splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
-      COUNT_PAGES,
-      variablesCatalogPage.containerForAllBooks,
-    );
-
-    if (resultBooks.results.length === 0) {
-      handleSearchError(
-        `from $${variablesCatalogPage.inputMinPrice.value} to $${variablesCatalogPage.inputMaxPrice.value}`,
-      );
-      toggleElementVisibility(variablesCatalogPage.containerForPagination, false);
-    }
-
     if (
       variablesCatalogPage.inputMaxPrice.value.length === 0 &&
       variablesCatalogPage.inputMinPrice.value.length === 0
@@ -340,6 +319,27 @@ async function fetchProductsByPriceRange(minPrice: string, maxPrice: string) {
         COUNT_PAGES,
         variablesCatalogPage.containerForAllBooks,
       );
+    } else {
+      const resultBooks =
+        localStorage.getItem('category') === 'true'
+          ? await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, true, variablesCatalogPage.nameCategory.id)
+          : await requestsAPI.getBooksByPriceRange(minPrice, maxPrice, false, variablesCatalogPage.nameCategory.id);
+
+      CACHED_BOOKS = resultBooks.results;
+      PAGES_CREATED = false;
+      toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
+      extractBookInfo(
+        splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
+        COUNT_PAGES,
+        variablesCatalogPage.containerForAllBooks,
+      );
+
+      if (resultBooks.results.length === 0) {
+        handleSearchError(
+          `from $${variablesCatalogPage.inputMinPrice.value} to $${variablesCatalogPage.inputMaxPrice.value}`,
+        );
+        toggleElementVisibility(variablesCatalogPage.containerForPagination, false);
+      }
     }
   } catch (error) {
     CACHED_BOOKS = [];
