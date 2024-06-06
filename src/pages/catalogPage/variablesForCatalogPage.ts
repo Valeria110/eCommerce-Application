@@ -3,9 +3,12 @@ import './styleCatalogPage.scss';
 
 export const containerForCatalogPage = createElement('div', 'catalog-page__container');
 
-export const containerForBooksFilterPanel = createElement('div', 'd-flex catalog-page__header');
+export const containerForBooksFilterPanel = createElement('div', 'd-flex catalog-page__header align-items-center');
 
-export const containerForCategoryAndPrice = createElement('div', 'd-flex catalog-page__header-container');
+export const containerForCategoryAndPrice = createElement(
+  'div',
+  'd-flex catalog-page__header-container align-items-center',
+);
 
 export const containerforCategoryAndSort = createElement('div', 'd-flex catalog-page__container-dropdown');
 export const dropDownBooksCategories = createElement(
@@ -49,7 +52,10 @@ inputMaxPrice.placeholder = 'to';
 export const clearInputMaxPrice = createElement('div', 'd-none catalog-page__input-price_reset');
 export const priceCurrency = createElement('div', 'd-flex align-items-center', '$');
 
-export const containerForInputSearchBooks = createElement('div', 'd-flex position-relative align-items-center');
+export const containerForInputSearchBooks = createElement(
+  'div',
+  'd-flex position-relative align-items-center catalog-page__container-input-search',
+);
 export const inputSearchBooks = createElement('input', 'catalog-page__input-search');
 inputSearchBooks.placeholder = 'Search';
 inputSearchBooks.style.height = '36px';
@@ -83,3 +89,5 @@ export const containerForTextToTrySearch = createElement(
   'catalog-page__search-text_try',
   'Try changing your search criteria',
 );
+
+export const buttonClearSorting = createElement('div', 'catalog-page__button-reset-sort', 'Clear');

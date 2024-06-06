@@ -321,11 +321,18 @@ class RequestFetch {
     }
   }
 
-  async sortNameAndPriceWithCategory(id: string, typeSort: string, isCategory: boolean) {
+  async sortNameAndPriceWithCategory(
+    id: string,
+    typeSort: string,
+    isCategory: boolean,
+    fromPrice = '',
+    toPrice = '',
+    search = '',
+  ) {
     try {
       const limit = 100;
       let type;
-      let url;
+      let url: string;
       if (typeSort === 'Alphabetically') {
         type = 'name.en-US asc';
       } else if (typeSort === 'Cheap') {
@@ -334,10 +341,22 @@ class RequestFetch {
         type = 'price desc';
       }
 
-      if (isCategory === false) {
+      if (isCategory === false && fromPrice === '' && toPrice === '' && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?sort=${type}&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && fromPrice === '' && toPrice === '' && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice === '' && toPrice === '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&fuzzy=true&sort=${type}&limit=${limit}`;
+      } else if (isCategory === true && fromPrice === '' && toPrice === '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&text.en-US=${search}&fuzzy=true&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '' && search === '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else if (isCategory === true && fromPrice !== '' && toPrice !== '' && search === '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&fuzzy=true&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&text.en-US=${search}&fuzzy=true&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
       }
 
       const response = await fetch(url, {
@@ -354,15 +373,20 @@ class RequestFetch {
     }
   }
 
-  async getBookWithSearch(searchTerm: string, id: string, isCategory: boolean) {
+  async getBookWithSearch(searchTerm: string, id: string, isCategory: boolean, fromPrice = '', toPrice = '') {
     try {
       let url;
       const limit = 100;
-      if (isCategory === false) {
+      if (isCategory === false && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&fuzzy=true&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&fuzzy=true&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&fuzzy=true&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&fuzzy=true&limit=${limit}`;
       }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -377,14 +401,18 @@ class RequestFetch {
     }
   }
 
-  async getBooksByPriceRange(fromPrice: string, toPrice: string, isCategory: boolean, id: string) {
+  async getBooksByPriceRange(fromPrice: string, toPrice: string, isCategory: boolean, id: string, search = '') {
     try {
       let url;
       const limit = 100;
-      if (isCategory === false) {
+      if (isCategory === false && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
+      } else if (isCategory === true && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
       }
       const response = await fetch(url, {
         method: 'GET',
