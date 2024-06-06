@@ -321,11 +321,11 @@ class RequestFetch {
     }
   }
 
-  async sortNameAndPriceWithCategory(id: string, typeSort: string, isCategory: boolean) {
+  async sortNameAndPriceWithCategory(id: string, typeSort: string, isCategory: boolean, fromPrice = '', toPrice = '') {
     try {
       const limit = 100;
       let type;
-      let url;
+      let url: string;
       if (typeSort === 'Alphabetically') {
         type = 'name.en-US asc';
       } else if (typeSort === 'Cheap') {
@@ -334,10 +334,14 @@ class RequestFetch {
         type = 'price desc';
       }
 
-      if (isCategory === false) {
+      if (isCategory === false && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?sort=${type}&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
       }
 
       const response = await fetch(url, {

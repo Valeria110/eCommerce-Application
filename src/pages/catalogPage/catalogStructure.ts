@@ -1,7 +1,7 @@
 import switchPage from '../../elements/switchPage';
 import { Pages } from '../../elements/types';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
-import { getBooks, handlePriceInputChange, searchBook } from './layoutCatalogPage';
+import { getBooks, handlePriceInputChange, qwe, searchBook } from './layoutCatalogPage';
 
 export function buildCatalogStructure() {
   const {
@@ -48,6 +48,7 @@ export function buildCatalogStructure() {
     containerForInputMinPrice,
     containerForInputMaxPrice,
     clearInputMaxPrice,
+    buttonClearSorting,
   } = variablesCatalogPage;
 
   containerForCatalogPage.append(
@@ -65,7 +66,12 @@ export function buildCatalogStructure() {
 
   containerforCategoryAndSort.append(dropDownBooksCategories, listCategories, dropDownBooksSort, listSort);
 
-  containerForPriceAndCurrency.append(containerForInputMinPrice, containerForInputMaxPrice, priceCurrency);
+  containerForPriceAndCurrency.append(
+    containerForInputMinPrice,
+    containerForInputMaxPrice,
+    priceCurrency,
+    buttonClearSorting,
+  );
 
   containerForInputMinPrice.append(inputMinPrice, clearInputMinPrice);
   containerForInputMaxPrice.append(inputMaxPrice, clearInputMaxPrice);
@@ -106,6 +112,7 @@ export function attachCatalogEventListeners() {
     inputMaxPrice,
     clearInputMaxPrice,
     clearInputMinPrice,
+    buttonClearSorting,
   } = variablesCatalogPage;
 
   iconArrowRight.onclick = swapCatalogPages.bind(null, 'right');
@@ -130,6 +137,10 @@ export function attachCatalogEventListeners() {
 
   linkMain.addEventListener('click', () => {
     switchPage(Pages.Main);
+  });
+
+  buttonClearSorting.addEventListener('click', () => {
+    qwe();
   });
 
   inputMinPrice.addEventListener('input', handlePriceInputChange);

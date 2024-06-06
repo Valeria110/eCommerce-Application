@@ -14,6 +14,18 @@ $border-color: #dee2e6;
     justify-content: space-between;
   }
 
+  &__button-reset-sort {
+    background-color: #fc7e14;
+    color: white;
+    width: 50px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+  }
+
   &__input-price {
     width: 100px;
     height: 36px;
@@ -346,7 +358,7 @@ $border-color: #dee2e6;
     }
   }
 
-  @media (max-width: 840px) {
+  @media (max-width: 940px) {
     &__container-dropdown {
       width: 100%;
       justify-content: flex-end;
@@ -358,6 +370,10 @@ $border-color: #dee2e6;
     }
 
     &__header-container {
+      width: 100%;
+    }
+
+    &__container-input-search {
       width: 100%;
     }
 
