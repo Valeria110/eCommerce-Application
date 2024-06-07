@@ -2,6 +2,8 @@ import createElement from '../../elements/bootstrap/createElement';
 import switchPage from '../../elements/switchPage';
 import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
+import { toggleElementVisibility } from './catalogPageUtils';
+import { handleSearchError } from './searchErrorHandler';
 
 const MAX_LENGTH_BOOK_NAME = 35;
 const MAX_LENGTH_BOOK_DESCRITION = 120;
@@ -85,6 +87,13 @@ export function extractBookInfo(
   container: HTMLDivElement,
 ) {
   variablesCatalogPage.containerForAllBooks.innerHTML = '';
+
+  if (array.length === 0) {
+    handleSearchError();
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, false);
+  } else {
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
+  }
 
   if (countPages === 1) {
     variablesCatalogPage.iconArrowLeft.disabled = true;

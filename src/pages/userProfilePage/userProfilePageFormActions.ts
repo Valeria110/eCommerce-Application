@@ -56,20 +56,27 @@ function saveUpdatedData(form: HTMLElement) {
       if (form.dataset.addressId) {
         requestsAPI.changeAddress(getUpdatedAddressData(form));
         updateAddress(getUpdatedAddressData(form));
+        if (isShippingAddress) {
+          addressBoxTitle.textContent = 'Shipping address';
+        } else {
+          addressBoxTitle.textContent = 'Billing address';
+        }
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
           addresses.push(newAddressData);
           localStorage.setItem('addresses', JSON.stringify(addresses));
 
-          if (isShippingAddress) {
-            requestsAPI.setShippingAddress(newAddressData.id, customerId);
-            shippingAddressesIds.push(newAddressData.id);
-            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
-          } else {
-            requestsAPI.setBillingAddress(newAddressData.id, customerId);
-            billingAddressIds.push(newAddressData.id);
-            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+          if (newAddressData) {
+            if (isShippingAddress) {
+              requestsAPI.setShippingAddress(newAddressData.id, customerId);
+              shippingAddressesIds.push(newAddressData.id);
+              localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+            } else {
+              requestsAPI.setBillingAddress(newAddressData.id, customerId);
+              billingAddressIds.push(newAddressData.id);
+              localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+            }
           }
         });
       }
@@ -80,36 +87,42 @@ function saveUpdatedData(form: HTMLElement) {
         if (isShippingAddress) {
           requestsAPI.setDefShippingAddress(form.dataset.addressId, requestsAPI.customerData.id);
           localStorage.setItem('defaultShippingAddressId', form.dataset.addressId);
+          resetDefaultAddresses('shipping');
           addressBoxTitle.textContent = 'Default shipping address';
         } else {
           requestsAPI.setDefBillingAddress(form.dataset.addressId, requestsAPI.customerData.id);
           localStorage.setItem('defaultBillingAddressId', form.dataset.addressId);
+          resetDefaultAddresses('billing');
           addressBoxTitle.textContent = 'Default billing address';
         }
       } else {
         const { street, postalCode, city, country } = getnewAddressData(form);
         requestsAPI.addNewAddress(street, postalCode, city, country).then((newAddressData) => {
-          form.dataset.addressId = newAddressData.id;
-          addresses.push(newAddressData);
-          localStorage.setItem('addresses', JSON.stringify(addresses));
-          if (isShippingAddress) {
-            requestsAPI.setShippingAddress(newAddressData.id, requestsAPI.customerData.id);
-            shippingAddressesIds.push(newAddressData.id);
-            localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
-          } else {
-            requestsAPI.setBillingAddress(newAddressData.id, requestsAPI.customerData.id);
-            billingAddressIds.push(newAddressData.id);
-            localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
-          }
+          if (newAddressData) {
+            form.dataset.addressId = newAddressData.id;
+            addresses.push(newAddressData);
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            if (isShippingAddress) {
+              requestsAPI.setShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+              shippingAddressesIds.push(newAddressData.id);
+              localStorage.setItem('shippingAddressIds', JSON.stringify(shippingAddressesIds));
+            } else {
+              requestsAPI.setBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+              billingAddressIds.push(newAddressData.id);
+              localStorage.setItem('billingAddressIds', JSON.stringify(shippingAddressesIds));
+            }
 
-          if (isShippingAddress) {
-            requestsAPI.setDefShippingAddress(newAddressData.id, requestsAPI.customerData.id);
-            localStorage.setItem('defaultShippingAddressId', newAddressData.id);
-            addressBoxTitle.textContent = 'Default shipping address';
-          } else {
-            requestsAPI.setDefBillingAddress(newAddressData.id, requestsAPI.customerData.id);
-            localStorage.setItem('defaultBillingAddressId', newAddressData.id);
-            addressBoxTitle.textContent = 'Default billing address';
+            if (isShippingAddress) {
+              requestsAPI.setDefShippingAddress(newAddressData.id, requestsAPI.customerData.id);
+              localStorage.setItem('defaultShippingAddressId', newAddressData.id);
+              resetDefaultAddresses('shipping');
+              addressBoxTitle.textContent = 'Default shipping address';
+            } else {
+              requestsAPI.setDefBillingAddress(newAddressData.id, requestsAPI.customerData.id);
+              localStorage.setItem('defaultBillingAddressId', newAddressData.id);
+              resetDefaultAddresses('billing');
+              addressBoxTitle.textContent = 'Default billing address';
+            }
           }
         });
       }
@@ -201,6 +214,28 @@ function deleteAddressInLocalStorage(addressId: string, clickedBtn: HTMLButtonEl
   }
 }
 
+function resetDefaultAddresses(addressType: 'shipping' | 'billing') {
+  if (addressType === 'shipping') {
+    const defaultAddressesTitles = Array.from(
+      document.querySelectorAll('.shipping-address-box__title '),
+    ) as HTMLElement[];
+    defaultAddressesTitles.forEach((defaultAddressesTitle) => {
+      if (defaultAddressesTitle.textContent === 'Default shipping address') {
+        defaultAddressesTitle.textContent = 'Shipping address';
+      }
+    });
+  } else {
+    const defaultAddressesTitles = Array.from(
+      document.querySelectorAll('.billing-address-box__title '),
+    ) as HTMLElement[];
+    defaultAddressesTitles.forEach((defaultAddressesTitle) => {
+      if (defaultAddressesTitle.textContent === 'Default billing address') {
+        defaultAddressesTitle.textContent = 'Billing address';
+      }
+    });
+  }
+}
+
 function getUpdatedAddressData(editedForm: HTMLElement): IAddressObj {
   const addressId = editedForm.dataset.addressId as string;
   const countryInput = editedForm.querySelector('.country-input');
@@ -247,6 +282,11 @@ function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement, fo
   const inputs = Array.from(form.querySelectorAll('.user-profile-form__input')) as HTMLInputElement[];
   const saveChangesBtn = document.querySelector('.save-changes-btn');
   isNull<HTMLButtonElement>(saveChangesBtn);
+  const checkboxContainer = form.querySelector('.address-box__checkbox-container');
+  isNull<HTMLDivElement>(checkboxContainer);
+  const checkboxInput = checkboxContainer.querySelector('input');
+  isNull<HTMLInputElement>(checkboxInput);
+  const isAddressDefault = form.querySelector('.address-box__title')?.textContent?.includes('Default');
 
   inputs.forEach((input: HTMLInputElement | null) => {
     isNull<HTMLInputElement>(input);
@@ -256,12 +296,22 @@ function toggleMode(editBtn: HTMLButtonElement, editBtnText: HTMLSpanElement, fo
       editBtn.classList.add('read-form-btn');
       editBtnText.textContent = 'cancel';
       form.classList.add('form-in-edit-mode');
+      checkboxContainer.classList.remove('d-none');
+      if (isAddressDefault) {
+        checkboxInput.setAttribute('checked', '');
+      } else {
+        checkboxInput.removeAttribute('checked');
+      }
+      checkboxInput.addEventListener('change', () => {
+        saveChangesBtn.classList.remove('disabled');
+      });
     } else {
       input.setAttribute('readonly', '');
       saveChangesBtn.classList.add('d-none');
       editBtn.classList.remove('read-form-btn');
       editBtnText.textContent = 'edit';
       form.classList.remove('form-in-edit-mode');
+      checkboxContainer.classList.add('d-none');
     }
   });
 }
