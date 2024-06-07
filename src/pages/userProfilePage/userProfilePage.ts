@@ -564,7 +564,10 @@ function createEditBtn(): { editBtn: HTMLButtonElement; editBtnText: HTMLSpanEle
 function createAddressBoxBottomPart(): HTMLElement {
   const bottomPartContainer = Bootstrap.createElement('div', 'address-box__bottom-part d-flex justify-content-between');
 
-  const addressBoxCheckboxContainer = Bootstrap.createElement('div', 'address-box__checkbox-container form-check');
+  const addressBoxCheckboxContainer = Bootstrap.createElement(
+    'div',
+    'address-box__checkbox-container form-check d-none',
+  );
   const checkboxInput = Bootstrap.createElement('input', 'form-check-input address-box__checkbox');
   checkboxInput.type = 'checkbox';
   const checkboxLabel = Bootstrap.createElement(
@@ -572,6 +575,7 @@ function createAddressBoxBottomPart(): HTMLElement {
     'form-check-label address-box__checkbox-label',
     'Use by default',
   );
+
   addressBoxCheckboxContainer.append(checkboxInput, checkboxLabel);
 
   const deleteBtn = Bootstrap.createElement(
