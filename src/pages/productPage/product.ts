@@ -7,6 +7,7 @@ import { Pages, Product } from '../../elements/types';
 import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
+import cart from '../../elements/cart';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -120,6 +121,10 @@ function createRightColumn(response: Product) {
 
   const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
   const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
+  addCartBtn.addEventListener('click', () => {
+    console.log('try add product to cart');
+    cart.addProduct(response.id);
+  });
   const wrapperBtn = Bootstrap.createElement('div');
   wrapperBtn.append(buyBtn);
   wrapperBtn.append(addCartBtn);

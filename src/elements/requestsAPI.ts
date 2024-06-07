@@ -433,6 +433,7 @@ class RequestFetch {
         };
       }[] = obj.masterData.current.masterVariant.images;
       return {
+        id: obj.id,
         title: obj.masterData.current.name['en-US'],
         description:
           obj.masterData.current.description?.['en-US'] ?? getAttributesValue(attributes, 'description') ?? '',
