@@ -33,6 +33,7 @@ export function generateCards(
   }
 
   const containerForCard = createElement('div', 'catalog-page__cards-container');
+  const containerForBodyCard = createElement('div', '');
   const containerHover = createElement('div', 'catalog-page__cards-container_hover', shortDescription);
   const containerForBook = createElement('div', 'catalog-page__cards-body');
   const containerForCover = createElement('div', 'catalog-page__cards-cover');
@@ -41,7 +42,6 @@ export function generateCards(
   const containerForNameAndAuthor = createElement('div', 'catalog-page__cards-info');
   const name = createElement('div', 'catalog-page__cards-name', shortNameBook);
   const author = createElement('div', 'catalog-page__cards-name_author', authorBook);
-
   const containerForPrice = createElement('div', 'catalog-page__cards-price-container');
   const priceBook = createElement('div', 'catalog-page__cards-price', insertDotBeforeLastTwoChars(price.toString()));
   const containerForDiscountedPrice = createElement(
@@ -51,20 +51,32 @@ export function generateCards(
   );
   const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', '50%');
 
+  const containerForButtonAddToCart = createElement('div', 'd-flex catalog-page__container-button-cart');
+  const buttonAddToCart = createElement('div', 'catalog-page__button-cart', 'Add to cart');
+  buttonAddToCart.id = id;
+
   if (containerForDiscountedPrice.textContent !== '') {
     containerForCover.append(cardDiscounted);
     priceBook.textContent = insertDotBeforeLastTwoChars(discounted);
     containerForDiscountedPrice.textContent = insertDotBeforeLastTwoChars(price.toString());
   }
 
-  containerForCard.append(containerForBook, containerHover);
+  containerForCard.append(containerForBodyCard, containerForButtonAddToCart);
+  containerForBodyCard.append(containerForBook, containerHover);
   containerForBook.append(containerForCover, containerForDescription);
   containerForNameAndAuthor.append(name, author);
   containerForPrice.append(priceBook, containerForDiscountedPrice);
   containerForDescription.append(containerForNameAndAuthor, containerForPrice);
-  containerForCard.addEventListener('click', () => {
+  containerForButtonAddToCart.append(buttonAddToCart);
+
+  containerForBodyCard.addEventListener('click', () => {
     switchPage(Pages.Product, id);
   });
+
+  containerForButtonAddToCart.addEventListener('click', () => {
+    console.log(123);
+  });
+
   return containerForCard;
 }
 
