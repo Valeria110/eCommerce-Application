@@ -1,0 +1,70 @@
+.about-us-main {
+  gap: 144px;
+  margin-top: 144px;
+
+  .about-us__team-container {
+    width: 100%;
+    max-width: 1296px;
+    gap: 96px;
+
+    .about-us__team-cards-container {
+      gap: 24px;
+      flex-wrap: wrap;
+
+      .about-us__team-card {
+        width: 416px;
+        height: auto;
+        padding: 24px 48px;
+        justify-content: space-between;
+        gap: 24px;
+        box-shadow: 0 16px 20px 0 rgba(147, 147, 147, 0.2);
+
+        .about-us__team-card-desc {
+          gap: 40px;
+
+          .about-us__team-card-desc-top {
+            gap: 24px;
+
+            .about-us__team-card-img {
+              width: 221px;
+            }
+
+            .about-us__team-card-fullname {
+              font-weight: 600;
+            }
+
+            .about-us__team-card-role {
+              font-size: 19px;
+            }
+          }
+        }
+
+        .about-us__team-card-github-link {
+          align-items: center;
+          gap: 11px;
+          text-decoration: none;
+          color: #000;
+        }
+      }
+    }
+  }
+
+  .about-us__contributions-block {
+    gap: 96px;
+
+    .about-us__contributions-block-header {
+      font-size: 40px;
+      font-weight: 600;
+    }
+
+    .about-us__methods-block {
+      gap: 96px;
+
+      .about-us__method-block {
+        height: 58px;
+        width: fit-content;
+        padding: 16px 24px;
+      }
+    }
+  }
+}

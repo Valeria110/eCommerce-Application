@@ -3,7 +3,7 @@ import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
-import aboutUS from '../pages/aboutUs';
+import { aboutUsPage } from '../pages/aboutUsPage/aboutUsPage';
 import header from './header/header';
 import error404Page from '../pages/error404Page';
 import footer from './footer/footer';
@@ -50,7 +50,7 @@ function renderPage(newPage: Pages, productId: string | undefined) {
       document.body.append(generateCatalogPage());
       break;
     case Pages.AboutUS:
-      document.body.append(aboutUS());
+      document.body.append(aboutUsPage());
       break;
     case Pages.Product:
       document.body.append(product(productId ?? ''));
