@@ -18,7 +18,8 @@
 
       .about-us__team-card {
         width: 416px;
-        height: auto;
+        height: fit-content;
+        min-height: 1026px;
         padding: 24px 48px;
         justify-content: space-between;
         gap: 24px;
@@ -47,9 +48,13 @@
 
             .about-us__team-card-img {
               width: 221px;
+              height: 221px;
+              object-fit: cover;
 
               @media screen and (max-width: 576px) {
                 width: 180px;
+                height: 180px;
+                object-fit: cover;
               }
             }
 
@@ -60,6 +65,15 @@
             .about-us__team-card-role {
               font-size: 19px;
             }
+          }
+        }
+
+        .about-us-accordion {
+          width: 100%;
+          margin-bottom: auto;
+
+          .accordion-button {
+            font-weight: 600;
           }
         }
 
