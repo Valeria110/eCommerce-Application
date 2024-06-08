@@ -209,7 +209,6 @@ async function handleSort(sortType: string, isCategory: boolean) {
     );
 
     CACHED_BOOKS = resultBooks.results;
-    console.log(CACHED_BOOKS);
     localStorage.setItem('numberPageBooks', '0');
     PAGES_CREATED = false;
     extractBookInfo(

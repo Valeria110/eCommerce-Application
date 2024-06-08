@@ -14,6 +14,18 @@ $border-color: #dee2e6;
     justify-content: space-between;
   }
 
+  &__button-reset-sort {
+    background-color: #fc7e14;
+    color: white;
+    width: 50px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+  }
+
   &__input-price {
     width: 100px;
     height: 36px;
@@ -35,10 +47,10 @@ $border-color: #dee2e6;
   }
 
   &__button-cart {
-    border-radius: 6px;
-    border: 1px solid $focus-color;
+    border-radius: 6px !important;
+    border: 1px solid $focus-color !important;
     width: 100%;
-    padding: 6px 12px;
+    padding: 6px 12px !important;
     cursor: pointer;
     text-align: center;
     margin-left: 5px;
@@ -47,9 +59,14 @@ $border-color: #dee2e6;
     transition: 0.2s;
 
     &:hover {
-      color:white;
-      background-color: $focus-color;
+      color:white !important;
+      background-color: $focus-color !important;
     }
+  }
+
+  &__button-cart_inactive {
+    color:white !important;
+    background-color: $focus-color !important;
   }
 
   &__input-price_from {

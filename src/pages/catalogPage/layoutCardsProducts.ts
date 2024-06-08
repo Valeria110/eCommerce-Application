@@ -1,4 +1,5 @@
 import createElement from '../../elements/bootstrap/createElement';
+import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
 import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
@@ -54,7 +55,7 @@ export function generateCards(
   const cardDiscounted = createElement('div', 'catalog-page__cards-discounted', '50%');
 
   const containerForButtonAddToCart = createElement('div', 'd-flex catalog-page__container-button-cart');
-  const buttonAddToCart = createElement('div', 'catalog-page__button-cart', 'Add to cart');
+  const buttonAddToCart = createElement('button', 'catalog-page__button-cart btn', 'Add to cart');
   buttonAddToCart.id = id;
 
   if (containerForDiscountedPrice.textContent !== '') {
@@ -75,11 +76,37 @@ export function generateCards(
     switchPage(Pages.Product, id);
   });
 
-  containerForButtonAddToCart.addEventListener('click', () => {
-    console.log(123);
+  buttonAddToCart.addEventListener('click', async () => {
+    const responseInfo = await requestsAPI.getInfoCart();
+    if (responseInfo.results.length === 0) {
+      const response = await requestsAPI.createCart();
+      console.log(response);
+    } else {
+      localStorage.setItem('idCart', responseInfo.results[0].id);
+      localStorage.setItem('versionForCart', `${responseInfo.results[0].version}`);
+      await requestsAPI.addProductInCart(localStorage.getItem('idCart') as string, buttonAddToCart.id);
+      buttonAddToCart.textContent = 'In the cart';
+      buttonAddToCart.classList.add('disabled');
+      buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
+    }
   });
 
   return containerForCard;
+}
+
+export async function textButton() {
+  const responseInfo = await requestsAPI.getInfoCart();
+  if (responseInfo.results.length !== 0) {
+    document.querySelectorAll('.catalog-page__button-cart').forEach((button) => {
+      responseInfo.results[0].lineItems.forEach((item: { productId: string }) => {
+        if (item.productId === button.id) {
+          button.textContent = 'In the cart';
+          button.classList.add('disabled');
+          button.classList.add('catalog-page__button-cart_inactive');
+        }
+      });
+    });
+  }
 }
 
 export function insertDotBeforeLastTwoChars(str: string) {
@@ -99,6 +126,7 @@ export function extractBookInfo(
   container: HTMLDivElement,
 ) {
   variablesCatalogPage.containerForAllBooks.innerHTML = '';
+  textButton();
 
   if (array.length === 0) {
     handleSearchError();
