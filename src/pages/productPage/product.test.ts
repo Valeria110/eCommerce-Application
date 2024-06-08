@@ -14,6 +14,7 @@ jest.mock('../../elements/requestsAPI', () => ({
 describe('Product', () => {
   it('should call getProductsByID with the correct id', async () => {
     const mockProduct: Product = {
+      id: '00000000-0000-0000-0000-0000000000000',
       title: 'Test title',
       description: 'Test description',
       slug: 'test-slug',

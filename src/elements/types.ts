@@ -12,9 +12,11 @@ export enum Pages {
 export enum AppEvents {
   switchPage = 'switchPage',
   updateUserName = 'updateUserName',
+  updateCounterCart = 'updateCounterCart',
 }
 
 export interface Product {
+  id: string;
   title: string;
   description: string;
   slug: string;
