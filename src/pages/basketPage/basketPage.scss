@@ -78,4 +78,21 @@
     padding-right: 5px;
     user-select: none;
   }
+
+  &__removeLink {
+    color: rgb(153, 153, 153);
+    font-family: Mulish;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: -1px;
+    letter-spacing: 0.15px;
+    text-decoration: none;
+    cursor: pointer;
+    align-self: center;
+  }
+
+  &__cardButtons {
+    display: flex;
+    gap: 20px;
+  }
 }

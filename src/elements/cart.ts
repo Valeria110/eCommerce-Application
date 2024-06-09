@@ -255,6 +255,15 @@ class Cart {
     await this.changeProductQuantity(lineItemId, newQuantity);
   }
 
+  async removeProduct(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    await this.changeProductQuantity(lineItemId, 0);
+  }
+
   async changeProductQuantity(lineItemId: string, newQuantity: number) {
     const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
       method: 'POST',

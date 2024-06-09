@@ -37,7 +37,17 @@ function createProductCard(product: ProductCart) {
   rightColumn.append(
     Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
   );
-  rightColumn.append(createQuantityInput(product, container));
+
+  const cardButtons = Bootstrap.createElement('div', 'basketProduct__cardButtons');
+
+  const removeLink = Bootstrap.createElement('a', 'basketProduct__removeLink', 'remove');
+  removeLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    cart.removeProduct(product.id).then(() => container.classList.add('d-none'));
+  });
+  cardButtons.append(createQuantityInput(product, container), removeLink);
+
+  rightColumn.append(cardButtons);
 
   container.append(leftColumn, rightColumn);
   return container;
