@@ -33,10 +33,9 @@ export default function header(currentPage: Pages): HTMLElement {
   const menuLinks = createLinksMenu(currentPage, 'header__linkCollapse');
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
+  cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
-  profileBtn.addEventListener('click', () => {
-    switchPage(Pages.UserProfile);
-  });
+  profileBtn.addEventListener('click', () => switchPage(Pages.UserProfile));
   if (!requestsAPI.isLogined) {
     profileBtn.classList.add('d-none');
   }
