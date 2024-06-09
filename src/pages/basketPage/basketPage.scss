@@ -44,4 +44,38 @@
     font-weight: 600;
     line-height: 29px;
   }
+
+  &__quantityInput {
+    font-family: 'Mulish', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: -1px;
+    letter-spacing: 0.15px;
+    text-align: left;
+    text-transform: lowercase;
+
+    box-sizing: border-box;
+    border: 2px solid rgb(253, 126, 20);
+    border-radius: 6px;
+
+    padding: 9px 10px 9px 10px;
+
+    width: 120px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  &__quantityInputButton {
+    padding-left: 5px;
+    padding-right: 5px;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  &__quantityInputNumber {
+    padding-left: 5px;
+    padding-right: 5px;
+    user-select: none;
+  }
 }

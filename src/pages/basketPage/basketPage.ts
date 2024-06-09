@@ -37,7 +37,33 @@ function createProductCard(product: ProductCart) {
   rightColumn.append(
     Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
   );
+  rightColumn.append(createQuantityInput(product, container));
 
   container.append(leftColumn, rightColumn);
+  return container;
+}
+
+function createQuantityInput(product: ProductCart, card: HTMLDivElement): HTMLDivElement {
+  const container = Bootstrap.createElement('div', 'basketProduct__quantityInput');
+
+  const decrease = Bootstrap.createElement('div', 'basketProduct__quantityInputButton', '-');
+  const value = Bootstrap.createElement('div', 'basketProduct__quantityInputNumber', String(product.quantity));
+  const increase = Bootstrap.createElement('div', 'basketProduct__quantityInputButton', '+');
+
+  const updateValue = () => {
+    const updateCard = cart.products.find((item) => item.id === product.id);
+    if (updateCard) {
+      value.textContent = String(updateCard.quantity);
+    } else {
+      // decrease by 0
+      card.classList.add('d-none');
+    }
+  };
+
+  decrease.addEventListener('click', () => cart.decreaseProductQuantity(product.id).then(() => updateValue()));
+  increase.addEventListener('click', () => cart.increaseProductQuantity(product.id).then(() => updateValue()));
+
+  container.append(decrease, value, increase);
+
   return container;
 }

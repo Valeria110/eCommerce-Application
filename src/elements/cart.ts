@@ -230,6 +230,56 @@ class Cart {
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
     console.log(data);
   }
+
+  async increaseProductQuantity(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    const newQuantity = lineItem.quantity + 1;
+    await this.changeProductQuantity(lineItemId, newQuantity);
+  }
+
+  async decreaseProductQuantity(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    const newQuantity = lineItem.quantity - 1;
+    if (newQuantity < 0) {
+      console.error(`Cannot decrease quantity below 0`);
+      return;
+    }
+    await this.changeProductQuantity(lineItemId, newQuantity);
+  }
+
+  async changeProductQuantity(lineItemId: string, newQuantity: number) {
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: this.version,
+        actions: [
+          {
+            action: 'changeLineItemQuantity',
+            lineItemId: lineItemId,
+            quantity: newQuantity,
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    this.version = data.version;
+    this.lineItems = data.lineItems;
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    console.log(data);
+  }
 }
 
 document.body.addEventListener(AppEvents.updateUserName, () => {
