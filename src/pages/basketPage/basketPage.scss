@@ -1,0 +1,47 @@
+.basketProductList {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.basketProduct {
+  display: flex;
+  gap: 32px;
+
+  &__leftColumn {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__rightColumn {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__image {
+    width: 196px;
+    height: 294px;
+    object-fit: cover;
+  }
+
+  &__title {
+    color: rgb(0, 0, 0);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
+  }
+
+  &__author {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  &__price {
+    color: rgb(0, 0, 0);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 29px;
+  }
+}

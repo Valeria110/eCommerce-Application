@@ -8,6 +8,7 @@ import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
 import cart from '../../elements/cart';
+import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -130,11 +131,6 @@ function createRightColumn(response: Product) {
 
   column.append(prices, wrapperBtn);
   return column;
-}
-
-function convertCentsToDollars(cents: number) {
-  const dollars = cents / 100;
-  return (dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2)) + '$';
 }
 
 function getProcentDiscount(response: Product) {
