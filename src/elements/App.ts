@@ -10,6 +10,7 @@ import footer from './footer/footer';
 import product from '../pages/productPage/product';
 import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
+import basketPage from '../pages/basketPage/basketPage';
 
 export default class App {
   start(): void {
@@ -67,7 +68,7 @@ function renderPage(newPage: Pages, productId: string | undefined) {
       document.body.append(userProfilePage());
       break;
     case Pages.Basket:
-      // append the basket page
+      document.body.append(basketPage());
       break;
     default:
       document.body.append(error404Page());

@@ -1,8 +1,88 @@
 import requestsAPI from './requestsAPI';
-import { AppEvents } from './types';
+import { AppEvents, ProductCart } from './types';
+
+interface Attribute {
+  name: string;
+  value: string;
+}
+
+function getAttributesValue(
+  attributes: Attribute[],
+  name: 'title' | 'author' | 'description' | 'year' | 'publishingHouse',
+): string | null {
+  for (const attribute of attributes) {
+    if (attribute.name === name) {
+      return attribute.value;
+    }
+  }
+  return null; // возвращает null, если имя не найдено
+}
 
 type LineItem = {
   quantity: number;
+  id: string;
+  productId: string;
+  price: {
+    id: string;
+    value: {
+      type: string;
+      currencyCode: string;
+      centAmount: number;
+      fractionDigits: number;
+    };
+    discounted?: {
+      value: {
+        type: string;
+        currencyCode: string;
+        centAmount: number;
+        fractionDigits: number;
+      };
+      discount: {
+        typeId: string;
+        id: string;
+      };
+    };
+  };
+  productSlug: {
+    [key: string]: string;
+  };
+  variant: {
+    id: number;
+    sku: string;
+    key: string;
+    prices: Array<{
+      id: string;
+      value: {
+        type: string;
+        currencyCode: string;
+        centAmount: number;
+        fractionDigits: number;
+      };
+      discounted?: {
+        value: {
+          type: string;
+          currencyCode: string;
+          centAmount: number;
+          fractionDigits: number;
+        };
+        discount: {
+          typeId: string;
+          id: string;
+        };
+      };
+    }>;
+    images: Array<{
+      url: string;
+      dimensions: {
+        w: number;
+        h: number;
+      };
+    }>;
+    attributes: Array<{
+      name: string;
+      value: string | number;
+    }>;
+  };
   // ...
 };
 
@@ -33,6 +113,31 @@ class Cart {
       totalQuantity += item.quantity;
     }
     return totalQuantity;
+  }
+
+  get products(): ProductCart[] {
+    return this.lineItems.map((item) => {
+      // const attributes = item.variant.attributes;
+
+      const title = String(item.variant.attributes.find((attr) => attr.name === 'title')?.value ?? '');
+      const regularPrice = item.price.value.centAmount;
+      const discountedPrice = item.price.discounted?.value.centAmount ?? regularPrice;
+      const author = String(item.variant.attributes.find((attr) => attr.name === 'author')?.value ?? '');
+      const images = item.variant.images.map((image) => image.url);
+
+      return {
+        id: item.id,
+        productId: item.productId,
+        title,
+        author,
+        prices: {
+          regular: regularPrice,
+          discounted: discountedPrice,
+        },
+        images,
+        quantity: item.quantity,
+      };
+    });
   }
 
   private isReadyProjectToken() {
@@ -98,6 +203,7 @@ class Cart {
   }
 
   async addProduct(productId: string) {
+    console.log(`try add product ${productId}`); // TODO: del
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }

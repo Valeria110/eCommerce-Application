@@ -94,6 +94,9 @@ function handleLocation() {
       case '/product':
         switchPage(Pages.Product, productId);
         break;
+      case '/basket':
+        switchPage(Pages.Basket);
+        break;
     }
   }
 }
