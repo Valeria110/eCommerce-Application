@@ -1,21 +1,19 @@
 import requestsAPI from './requestsAPI';
 import { AppEvents, ProductCart } from './types';
 
-interface Attribute {
-  name: string;
-  value: string;
-}
-
 function getAttributesValue(
-  attributes: Attribute[],
-  name: 'title' | 'author' | 'description' | 'year' | 'publishingHouse',
+  attributes: {
+    name: string;
+    value: string | number;
+  }[],
+  name: 'title' | 'author',
 ): string | null {
   for (const attribute of attributes) {
     if (attribute.name === name) {
-      return attribute.value;
+      return String(attribute.value);
     }
   }
-  return null; // возвращает null, если имя не найдено
+  return null;
 }
 
 type LineItem = {
@@ -117,12 +115,12 @@ class Cart {
 
   get products(): ProductCart[] {
     return this.lineItems.map((item) => {
-      // const attributes = item.variant.attributes;
+      const attributes = item.variant.attributes;
 
-      const title = String(item.variant.attributes.find((attr) => attr.name === 'title')?.value ?? '');
+      const title = getAttributesValue(attributes, 'title') ?? '';
       const regularPrice = item.price.value.centAmount;
       const discountedPrice = item.price.discounted?.value.centAmount ?? regularPrice;
-      const author = String(item.variant.attributes.find((attr) => attr.name === 'author')?.value ?? '');
+      const author = getAttributesValue(attributes, 'author') ?? '';
       const images = item.variant.images.map((image) => image.url);
 
       return {
