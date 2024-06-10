@@ -11,6 +11,7 @@ import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
 import cart from '../cart';
+import { isNull } from '../../utils/utils';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -19,6 +20,17 @@ enum UserAction {
 }
 
 let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
+
+document.body.addEventListener(AppEvents.updateCounterCart, () => {
+  const cartBtnBadge = document.querySelector('.header__cart-btn-badge');
+  isNull<HTMLSpanElement>(cartBtnBadge);
+  const itemsInCart = cart.counter;
+  console.log(itemsInCart);
+
+  if (itemsInCart) {
+    cartBtnBadge.textContent = `${cart.counter}+`;
+  }
+});
 
 export default function header(currentPage: Pages): HTMLElement {
   defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
