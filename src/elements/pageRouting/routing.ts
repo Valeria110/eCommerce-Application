@@ -36,12 +36,15 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
     case Pages.AboutUS:
       history.pushState({ state: 'about us' }, 'About us', '/about_us');
       break;
+    case Pages.Basket:
+      history.pushState({ state: 'basket' }, 'Basket', '/basket');
+      break;
     default:
       console.error('configure routing in changePageRoute()');
   }
 }
 
-const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page', '/product'];
+const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page', '/product', '/basket'];
 
 function handleLocation() {
   let pathname = window.location.pathname;

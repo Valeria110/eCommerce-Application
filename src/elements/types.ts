@@ -7,6 +7,7 @@ export enum Pages {
   AboutUS = 'About us',
   Product = 'Product',
   UserProfile = 'UserProfile',
+  Basket = 'Basket',
 }
 
 export enum AppEvents {
