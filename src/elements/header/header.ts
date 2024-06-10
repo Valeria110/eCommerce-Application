@@ -10,6 +10,8 @@ import logoSrc from './../../img/lithub-logo.svg';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
+import cart from '../cart';
+import { isNull } from '../../utils/utils';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -18,6 +20,17 @@ enum UserAction {
 }
 
 let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
+
+document.body.addEventListener(AppEvents.updateCounterCart, () => {
+  const cartBtnBadge = document.querySelector('.header__cart-btn-badge');
+  isNull<HTMLSpanElement>(cartBtnBadge);
+  const itemsInCart = cart.counter;
+  console.log(itemsInCart);
+
+  if (itemsInCart) {
+    cartBtnBadge.textContent = `${cart.counter}+`;
+  }
+});
 
 export default function header(currentPage: Pages): HTMLElement {
   defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
@@ -33,6 +46,12 @@ export default function header(currentPage: Pages): HTMLElement {
   const menuLinks = createLinksMenu(currentPage, 'header__linkCollapse');
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
+  const cartBadge = Bootstrap.createElement('span', 'header__cart-btn-badge badge rounded-pill bg-secondary');
+  const itemsInCart = cart.counter;
+  if (itemsInCart) {
+    cartBadge.textContent = `${cart.counter}+`;
+  }
+  cartBtn.appendChild(cartBadge);
   cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
   profileBtn.addEventListener('click', () => switchPage(Pages.UserProfile));
