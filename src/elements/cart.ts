@@ -1,3 +1,4 @@
+import { isNull } from '../utils/utils';
 import requestsAPI from './requestsAPI';
 import { AppEvents } from './types';
 
@@ -133,6 +134,17 @@ document.body.addEventListener(AppEvents.updateUserName, () => {
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
   console.log('customerData', requestsAPI.customerData);
   cart.customerId = requestsAPI.customerData.id;
+});
+
+document.body.addEventListener(AppEvents.updateCounterCart, () => {
+  const cartBtnBadge = document.querySelector('.header__cart-btn-badge');
+  isNull<HTMLSpanElement>(cartBtnBadge);
+  const itemsInCart = cart.counter;
+  console.log(itemsInCart);
+
+  if (itemsInCart) {
+    cartBtnBadge.textContent = `${cart.counter}+`;
+  }
 });
 
 const cart = new Cart();
