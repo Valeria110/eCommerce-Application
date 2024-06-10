@@ -52,10 +52,9 @@ export default function header(currentPage: Pages): HTMLElement {
     cartBadge.textContent = `${cart.counter}+`;
   }
   cartBtn.appendChild(cartBadge);
+  cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
-  profileBtn.addEventListener('click', () => {
-    switchPage(Pages.UserProfile);
-  });
+  profileBtn.addEventListener('click', () => switchPage(Pages.UserProfile));
   if (!requestsAPI.isLogined) {
     profileBtn.classList.add('d-none');
   }
