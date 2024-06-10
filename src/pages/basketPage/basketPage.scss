@@ -18,6 +18,49 @@
   margin-bottom: 100px;
 }
 
+
+.emptyBasketWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.emptyBasket {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+
+
+  &__img {
+    width: 145px;
+    height: 145px;
+    object-fit: cover;
+  }
+
+  &__text {
+    color: rgb(153, 153, 153);
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+
+    margin-bottom: 22px;
+  }
+
+  &__btn {
+    padding: 16px 24px 16px 24px !important;
+
+    width: min(80vw, 400px);
+
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 18px !important;
+  }
+}
+
 .basketSummary {
   display: flex;
   flex-direction: column;
@@ -134,7 +177,6 @@
     margin-bottom: 20px;
   }
 
-
   &__pricePrevios {
     // TODO: update this
     color: gray;
@@ -146,7 +188,6 @@
     margin-bottom: 20px;
     margin-left: 16px;
   }
-
 
   &__quantityInput {
     font-family: 'Mulish', sans-serif;

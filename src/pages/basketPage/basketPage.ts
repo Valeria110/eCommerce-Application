@@ -1,13 +1,13 @@
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import cart from '../../elements/cart';
-import cartTempControlPanel from '../../elements/cartTempControlPanel';
 import switchPage from '../../elements/switchPage';
 import { AppEvents, Pages, ProductCart } from '../../elements/types';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
+import emojiSadSrc from './../../img/emoji-sad.png';
 import './basketPage.scss';
 
 export default function basketPage() {
-  const container = Bootstrap.createElement('div', 'basketPage', 'Basket');
+  const container = Bootstrap.createElement('div', 'basketPage');
 
   const productList = Bootstrap.createElement('div', 'basketProductList');
   const renderProductList = () => {
@@ -20,15 +20,46 @@ export default function basketPage() {
   renderProductList();
   document.body.addEventListener(AppEvents.createCart, () => renderProductList());
 
-  const generateBtn = Bootstrap.createButton('generate', 'btn-orange border-0 m-1');
-  generateBtn.addEventListener('click', () => renderProductList());
-
   const productSummary = Bootstrap.createElement('div', 'd-flex justify-content-between');
   productSummary.append(productList, createSummary());
 
-  container.append(cartTempControlPanel(), generateBtn, productSummary);
+  const emptyBasket = createEmptyBasket();
+
+  const switchBetwenEmptyOrNotBacket = () => {
+    spiner.classList.add('d-none');
+    if (cart.counter) {
+      emptyBasket.classList.add('d-none');
+      productSummary.classList.remove('d-none');
+    } else {
+      emptyBasket.classList.remove('d-none');
+      productSummary.classList.add('d-none');
+    }
+  };
+  const spiner = Bootstrap.createLoadingSpiner();
+  emptyBasket.classList.add('d-none');
+  productSummary.classList.add('d-none');
+  document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
+
+  container.append(spiner, productSummary, emptyBasket);
 
   return container;
+}
+
+function createEmptyBasket() {
+  const wrapper = Bootstrap.createElement('div', 'emptyBasketWrapper');
+  const container = Bootstrap.createElement('div', 'emptyBasket');
+
+  const img = Bootstrap.createElement('img', 'emptyBasket__img');
+  img.src = emojiSadSrc as string;
+
+  const text = Bootstrap.createElement('div', 'emptyBasket__text', 'the cart is empty');
+
+  const goShoppingBtn = Bootstrap.createButton('Go to shoping', 'btn-orange border-0 emptyBasket__btn');
+  goShoppingBtn.addEventListener('click', () => switchPage(Pages.Catalog));
+
+  container.append(img, text, goShoppingBtn);
+  wrapper.append(container);
+  return wrapper;
 }
 
 function createSummary() {
