@@ -1,4 +1,15 @@
 @import './../../breakpoints.scss';
+
+.basketPage {
+  margin: 30px 62px;
+  @media (width <= $screen-width-tablet) {
+    margin: 22px 56px;
+  }
+  @media (width <= $screen-width-mobile) {
+    margin: 22px 12px;
+  }
+}
+
 .basketProductList {
   display: flex;
   flex-direction: column;
@@ -7,13 +18,73 @@
   margin-bottom: 100px;
 }
 
-.basketPage{
-  margin-left: 62px;
-  @media (width <= $screen-width-tablet) {
-    margin-left: 56px;
+.basketSummary {
+  display: flex;
+  flex-direction: column;
+  width: 364px;
+
+  margin: 48px;
+
+  &__title {
+    color: rgb(0, 0, 0);
+    font-family: Inter;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 140%;
+
+    margin-bottom: 32px;
   }
-  @media (width <= $screen-width-mobile) {
-    margin-left: 12px;
+
+  &__titlePromo{
+    color: rgb(0, 0, 0);
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 20px;
+
+    margin-bottom: 20px;
+  }
+
+  &__linesWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+
+  &__boldLine {
+    color: rgb(0, 0, 0);
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  &__grayLine {
+    color: rgb(173, 181, 189);
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+
+  &__btnCheckOut,
+  .btn {
+    padding: 16px 24px 16px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
+  }
+
+  &__apply,
+  .btn {
+    padding: 16px 24px 16px 24px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 18px;
   }
 }
 
