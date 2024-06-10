@@ -1,7 +1,20 @@
+@import './../../breakpoints.scss';
 .basketProductList {
   display: flex;
   flex-direction: column;
   gap: 44px;
+
+  margin-bottom: 100px;
+}
+
+.basketPage{
+  margin-left: 62px;
+  @media (width <= $screen-width-tablet) {
+    margin-left: 56px;
+  }
+  @media (width <= $screen-width-mobile) {
+    margin-left: 12px;
+  }
 }
 
 .basketProduct {
@@ -29,6 +42,8 @@
     font-size: 24px;
     font-weight: 600;
     line-height: 29px;
+
+    margin-bottom: 20px;
   }
 
   &__author {
@@ -43,6 +58,8 @@
     font-size: 24px;
     font-weight: 600;
     line-height: 29px;
+
+    margin-bottom: 20px;
   }
 
   &__quantityInput {
@@ -60,7 +77,7 @@
 
     padding: 9px 10px 9px 10px;
 
-    width: 120px;
+    // width: 120px;
 
     display: flex;
     justify-content: space-between;

@@ -6,7 +6,7 @@ import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import './basketPage.scss';
 
 export default function basketPage() {
-  const container = Bootstrap.createElement('div', '', 'Basket');
+  const container = Bootstrap.createElement('div', 'basketPage', 'Basket');
 
   const products = Bootstrap.createElement('div', 'basketProductList');
 

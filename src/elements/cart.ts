@@ -99,6 +99,8 @@ class Cart {
 
   lineItems: LineItem[] = [];
 
+  totalPriceCentAmount: number = 0;
+
   constructor() {
     this.host = process.env.CTP_API_URL ?? '';
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
@@ -198,6 +200,7 @@ class Cart {
     this.lineItems = data.lineItems;
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
     this.version = data.version;
+    this.totalPriceCentAmount = data.totalPrice.centAmount;
   }
 
   async addProduct(productId: string) {
@@ -227,6 +230,7 @@ class Cart {
     const data = await response.json();
     this.version = data.version;
     this.lineItems = data.lineItems;
+    this.totalPriceCentAmount = data.totalPrice.centAmount;
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
     console.log(data);
   }
@@ -286,6 +290,7 @@ class Cart {
     const data = await response.json();
     this.version = data.version;
     this.lineItems = data.lineItems;
+    this.totalPriceCentAmount = data.totalPrice.centAmount;
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
     console.log(data);
   }
