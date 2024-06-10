@@ -1,25 +1,30 @@
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
 import cart from '../../elements/cart';
 import cartTempControlPanel from '../../elements/cartTempControlPanel';
-import { ProductCart } from '../../elements/types';
+import switchPage from '../../elements/switchPage';
+import { AppEvents, Pages, ProductCart } from '../../elements/types';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import './basketPage.scss';
 
 export default function basketPage() {
   const container = Bootstrap.createElement('div', 'basketPage', 'Basket');
 
-  const products = Bootstrap.createElement('div', 'basketProductList');
+  const productList = Bootstrap.createElement('div', 'basketProductList');
+  const renderProductList = () => {
+    console.log('render product list'); // TODO
+    productList.innerHTML = '';
+    cart.products.forEach((product) => {
+      productList.append(createProductCard(product));
+    });
+  };
+  renderProductList();
+  document.body.addEventListener(AppEvents.createCart, () => renderProductList());
 
   const generateBtn = Bootstrap.createButton('generate', 'btn-orange border-0 m-1');
-  generateBtn.addEventListener('click', () => {
-    products.innerHTML = '';
-    cart.products.forEach((product) => {
-      products.append(createProductCard(product));
-    });
-  });
+  generateBtn.addEventListener('click', () => renderProductList());
 
   const productSummary = Bootstrap.createElement('div', 'd-flex justify-content-between');
-  productSummary.append(products, createSummary());
+  productSummary.append(productList, createSummary());
 
   container.append(cartTempControlPanel(), generateBtn, productSummary);
 
@@ -51,24 +56,35 @@ function createSummary() {
   const checkOutBtn = Bootstrap.createButton('Check out', 'btn-orange border-0 basketSummary__btnCheckOut');
 
   const createPriceLine = (
-    text: string,
-    price: string,
+    textLeft: string,
+    textRight: string,
     style: 'basketSummary__boldLine' | 'basketSummary__grayLine',
   ) => {
-    const line1 = Bootstrap.createElement('div', 'd-flex justify-content-between');
-    line1.classList.add(style);
-    const text1 = Bootstrap.createElement('span', '', text);
-    const price1 = Bootstrap.createElement('span', '', price);
-    line1.append(text1, price1);
-    return line1;
+    const line = Bootstrap.createElement('div', 'd-flex justify-content-between');
+    line.classList.add(style);
+    const text = Bootstrap.createElement('span', '', textLeft);
+    const price = Bootstrap.createElement('span', '', textRight);
+    line.append(text, price);
+    return { line, text, price };
   };
 
-  const line1 = createPriceLine('The amount without discount', '52$', 'basketSummary__grayLine');
+  const line1 = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
   const line2 = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
-  const line3 = createPriceLine('Promocode', '5$', 'basketSummary__grayLine');
-  const line4 = createPriceLine('Total', '47$', 'basketSummary__boldLine');
+  const line3 = createPriceLine('Promocode', '0$', 'basketSummary__grayLine');
+  const line4 = createPriceLine('Total', '0$', 'basketSummary__boldLine');
   const lines = Bootstrap.createElement('div', 'basketSummary__linesWrapper');
-  lines.append(line1, line2, line3, line4);
+
+  const recalculateLinePrices = () => {
+    line1.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
+    line2.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
+    line4.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
+    console.log(`totalPriceCentAmount = ${cart.totalPriceCentAmount}`);
+  };
+  recalculateLinePrices();
+
+  document.body.addEventListener(AppEvents.updateCounterCart, () => recalculateLinePrices());
+
+  lines.append(line1.line, line2.line, line3.line, line4.line);
 
   container.append(title, titlePromo, promoGroup, lines, checkOutBtn);
   return container;
@@ -83,11 +99,25 @@ function createProductCard(product: ProductCart) {
   leftColumn.append(imageElement);
 
   const rightColumn = Bootstrap.createElement('div', 'basketProduct__rightColumn');
-  rightColumn.append(Bootstrap.createElement('h2', 'basketProduct__title', product.title));
+  const title = Bootstrap.createElement('h2', 'basketProduct__title', product.title);
+  rightColumn.append(title);
   rightColumn.append(Bootstrap.createElement('h3', 'basketProduct__author', product.author));
-  rightColumn.append(
-    Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
-  );
+
+  const pricesWraper = Bootstrap.createElement('div', 'd-flex');
+  console.log(product.prices.discounted);
+  if (product.prices.regular !== product.prices.discounted) {
+    pricesWraper.append(
+      Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.discounted ?? 0)),
+    );
+    pricesWraper.append(
+      Bootstrap.createElement('div', 'basketProduct__pricePrevios', convertCentsToDollars(product.prices.regular)),
+    );
+  } else {
+    pricesWraper.append(
+      Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
+    );
+  }
+  rightColumn.append(pricesWraper);
 
   const cardButtons = Bootstrap.createElement('div', 'basketProduct__cardButtons');
 
@@ -99,6 +129,9 @@ function createProductCard(product: ProductCart) {
   cardButtons.append(createQuantityInput(product, container), removeLink);
 
   rightColumn.append(cardButtons);
+
+  imageElement.addEventListener('click', () => switchPage(Pages.Product, product.productId));
+  title.addEventListener('click', () => switchPage(Pages.Product, product.productId));
 
   container.append(leftColumn, rightColumn);
   return container;

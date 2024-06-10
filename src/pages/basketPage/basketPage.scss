@@ -35,7 +35,7 @@
     margin-bottom: 32px;
   }
 
-  &__titlePromo{
+  &__titlePromo {
     color: rgb(0, 0, 0);
     font-family: Inter;
     font-size: 20px;
@@ -69,7 +69,6 @@
     font-weight: 400;
     line-height: 20px;
   }
-
 
   &__btnCheckOut,
   .btn {
@@ -106,6 +105,7 @@
     width: 196px;
     height: 294px;
     object-fit: cover;
+    cursor: pointer;
   }
 
   &__title {
@@ -115,6 +115,7 @@
     line-height: 29px;
 
     margin-bottom: 20px;
+    cursor: pointer;
   }
 
   &__author {
@@ -132,6 +133,20 @@
 
     margin-bottom: 20px;
   }
+
+
+  &__pricePrevios {
+    // TODO: update this
+    color: gray;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 29px;
+    text-decoration-line: line-through;
+
+    margin-bottom: 20px;
+    margin-left: 16px;
+  }
+
 
   &__quantityInput {
     font-family: 'Mulish', sans-serif;

@@ -115,6 +115,10 @@ class Cart {
     return totalQuantity;
   }
 
+  get regularPriceCentAmount() {
+    return this.products.reduce((sum, product) => sum + product.prices.regular, 0);
+  }
+
   get products(): ProductCart[] {
     return this.lineItems.map((item) => {
       const attributes = item.variant.attributes;
@@ -301,6 +305,10 @@ document.body.addEventListener(AppEvents.updateUserName, () => {
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
   console.log('customerData', requestsAPI.customerData);
   cart.customerId = requestsAPI.customerData.id;
+  cart.getCartId().then(() => {
+    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+  });
 });
 
 const cart = new Cart();
