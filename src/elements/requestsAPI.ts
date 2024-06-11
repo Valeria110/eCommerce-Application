@@ -414,6 +414,7 @@ class RequestFetch {
       } else {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
       }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -428,87 +429,13 @@ class RequestFetch {
     }
   }
 
-  async createCart() {
-    const url = `${this.host}/${this.projectKey}/me/carts`;
-    const bodyRequest = {
-      currency: 'USD',
-    };
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyRequest),
-      });
-      const result = await response.json();
-      console.log(result);
-    } catch (error) {
-      console.error('API error:', (error as Error).message);
-    }
-  }
-
-  async getInfoCart() {
-    const url = `${this.host}/${this.projectKey}/me/carts`;
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error('API error:', (error as Error).message);
-    }
-  }
-
-  async addProductInCart(idCart: string, idProduct: string) {
-    const url = `${this.host}/${this.projectKey}/me/carts/${idCart}`;
-    const bodyRequest = {
-      version: Number(localStorage.getItem('versionForCart')),
-      actions: [
-        {
-          action: 'addLineItem',
-          productId: idProduct,
-          variantId: 1,
-          quantity: 1,
-        },
-      ],
-    };
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyRequest),
-      });
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error('API error:', (error as Error).message);
-    }
-  }
-
   async getProductsByID(productID: string): Promise<Product | undefined> {
     try {
-      // now - always use project token, but in Sprint 4, replace on #customerToken for logined user
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
           Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         },
       });
-
-      // const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
-      //   },
-      // });
 
       await this.checkResponse(response);
 
@@ -528,6 +455,7 @@ class RequestFetch {
         };
       }[] = obj.masterData.current.masterVariant.images;
       return {
+        id: obj.id,
         title: obj.masterData.current.name['en-US'],
         description:
           obj.masterData.current.description?.['en-US'] ?? getAttributesValue(attributes, 'description') ?? '',

@@ -135,6 +135,13 @@ export function extractBookInfo(
     toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
   }
 
+  if (array.length === 0) {
+    handleSearchError();
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, false);
+  } else {
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
+  }
+
   if (countPages === 1) {
     variablesCatalogPage.iconArrowLeft.disabled = true;
     variablesCatalogPage.iconArrowRight.disabled = true;

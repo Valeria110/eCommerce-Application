@@ -30,7 +30,7 @@ export default function findYourBook() {
   containerTop.append(divText, bookImg);
 
   const containerBottom = Bootstrap.createElement('div', 'findYourBookBottom');
-  const text3 = createSmallOrangeBlackText('10+', 'bestsellers'); // TODO: fetch real after catalogs API
+  const text3 = createSmallOrangeBlackText('10+', 'bestsellers');
   const text4 = createSmallOrangeBlackText('10%', 'off on the first book');
   containerBottom.append(text3, text4);
 

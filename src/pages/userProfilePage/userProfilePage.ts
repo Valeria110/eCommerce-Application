@@ -259,7 +259,7 @@ function createPasswordBox(): HTMLElement {
 
   document.body.addEventListener(AppEvents.updateUserName, () => {
     if (requestsAPI.customerData.password === '') {
-      requestsAPI.getCustomer().then((data) => (passwordInput.value = data ? data.password : ''));
+      // requestsAPI.getCustomer().then((data) => (passwordInput.value = data ? data.password : ''));
     } else {
       passwordInput.value = `${requestsAPI.customerData.password}`;
     }
@@ -575,6 +575,7 @@ function createAddressBoxBottomPart(): HTMLElement {
     'form-check-label address-box__checkbox-label',
     'Use by default',
   );
+
   addressBoxCheckboxContainer.append(checkboxInput, checkboxLabel);
 
   const deleteBtn = Bootstrap.createElement(

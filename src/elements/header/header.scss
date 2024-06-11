@@ -65,12 +65,20 @@ $screen-burger: $screen-width-tablet - 80px;
 
     // without figma - add hover, active - color
     .header__btnImg {
+      position: relative;
+
       &:hover {
         background-color: $gray-200;
       }
 
       &:active {
         background-color: $gray-300;
+      }
+
+      .header__cart-btn-badge {
+        position: relative;
+        top: -11px;
+        right: -1px;
       }
     }
 
