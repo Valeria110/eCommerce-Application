@@ -11,7 +11,6 @@ export default function basketPage() {
 
   const productList = Bootstrap.createElement('div', 'basketProductList');
   const renderProductList = () => {
-    console.log('render product list'); // TODO
     productList.innerHTML = '';
     cart.products.forEach((product) => {
       productList.append(createProductCard(product));

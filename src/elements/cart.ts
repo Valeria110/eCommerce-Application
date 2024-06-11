@@ -177,7 +177,7 @@ class Cart {
     this.lineItems = data.lineItems;
     this.totalPriceCentAmount = data.totalPrice.centAmount;
 
-    console.log(data); // TODO: del
+    console.log(data);
   }
 
   async createCart() {
