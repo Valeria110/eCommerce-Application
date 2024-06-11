@@ -116,7 +116,7 @@ class Cart {
   }
 
   get regularPriceCentAmount() {
-    return this.products.reduce((sum, product) => sum + product.prices.regular, 0);
+    return this.products.reduce((sum, product) => sum + product.prices.regular * product.quantity, 0);
   }
 
   get products(): ProductCart[] {
@@ -164,6 +164,22 @@ class Cart {
     this.projectToken = projectToken;
   }
 
+  private updateCacheAfterFetch(data: {
+    id: string;
+    version: number;
+    lineItems: LineItem[];
+    totalPrice: {
+      centAmount: number;
+    };
+  }) {
+    this.id = data.id;
+    this.version = data.version;
+    this.lineItems = data.lineItems;
+    this.totalPriceCentAmount = data.totalPrice.centAmount;
+
+    console.log(data); // TODO: del
+  }
+
   async createCart() {
     if (!this.isReadyProjectToken()) {
       return;
@@ -181,9 +197,7 @@ class Cart {
     });
 
     const data = await response.json();
-    console.log(data);
-    this.id = data.id;
-    this.version = data.version;
+    this.updateCacheAfterFetch(data);
   }
 
   async getCartId() {
@@ -199,12 +213,8 @@ class Cart {
     });
 
     const data = await response.json();
-    console.log(data);
-    this.id = data.id;
-    this.lineItems = data.lineItems;
+    this.updateCacheAfterFetch(data);
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-    this.version = data.version;
-    this.totalPriceCentAmount = data.totalPrice.centAmount;
   }
 
   async addProduct(productId: string) {
@@ -232,11 +242,8 @@ class Cart {
     });
 
     const data = await response.json();
-    this.version = data.version;
-    this.lineItems = data.lineItems;
-    this.totalPriceCentAmount = data.totalPrice.centAmount;
+    this.updateCacheAfterFetch(data);
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-    console.log(data);
   }
 
   async increaseProductQuantity(lineItemId: string) {
@@ -292,18 +299,13 @@ class Cart {
     });
 
     const data = await response.json();
-    this.version = data.version;
-    this.lineItems = data.lineItems;
-    this.totalPriceCentAmount = data.totalPrice.centAmount;
+    this.updateCacheAfterFetch(data);
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-    console.log(data);
   }
 }
 
 document.body.addEventListener(AppEvents.updateUserName, () => {
-  console.log('update project token for cart');
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
-  console.log('customerData', requestsAPI.customerData);
   cart.customerId = requestsAPI.customerData.id;
   cart.getCartId().then(() => {
     document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));

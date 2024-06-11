@@ -20,27 +20,28 @@ export default function basketPage() {
   renderProductList();
   document.body.addEventListener(AppEvents.createCart, () => renderProductList());
 
-  const productSummary = Bootstrap.createElement('div', 'd-flex justify-content-between');
-  productSummary.append(productList, createSummary());
+  const productAndSummary = Bootstrap.createElement('div', 'productAndSummary');
+  productAndSummary.append(productList, createSummary());
 
   const emptyBasket = createEmptyBasket();
 
-  const switchBetwenEmptyOrNotBacket = () => {
-    spiner.classList.add('d-none');
-    if (cart.counter) {
-      emptyBasket.classList.add('d-none');
-      productSummary.classList.remove('d-none');
-    } else {
-      emptyBasket.classList.remove('d-none');
-      productSummary.classList.add('d-none');
-    }
-  };
   const spiner = Bootstrap.createLoadingSpiner();
   emptyBasket.classList.add('d-none');
-  productSummary.classList.add('d-none');
+  productAndSummary.classList.add('d-none');
+  const switchBetwenEmptyOrNotBacket = () => {
+    if (cart.counter) {
+      spiner.classList.add('d-none');
+      emptyBasket.classList.add('d-none');
+      productAndSummary.classList.remove('d-none');
+    } else {
+      emptyBasket.classList.remove('d-none');
+      productAndSummary.classList.add('d-none');
+    }
+  };
+  switchBetwenEmptyOrNotBacket();
   document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
 
-  container.append(spiner, productSummary, emptyBasket);
+  container.append(spiner, productAndSummary, emptyBasket);
 
   return container;
 }
