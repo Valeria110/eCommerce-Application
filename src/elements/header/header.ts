@@ -11,7 +11,6 @@ import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
 import cart from '../cart';
-import { isNull } from '../../utils/utils';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -20,17 +19,6 @@ enum UserAction {
 }
 
 let defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
-
-document.body.addEventListener(AppEvents.updateCounterCart, () => {
-  const cartBtnBadge = document.querySelector('.header__cart-btn-badge');
-  isNull<HTMLSpanElement>(cartBtnBadge);
-  const itemsInCart = cart.counter;
-  console.log(itemsInCart);
-
-  if (itemsInCart) {
-    cartBtnBadge.textContent = `${cart.counter}+`;
-  }
-});
 
 export default function header(currentPage: Pages): HTMLElement {
   defaultAction = requestsAPI.isLogined ? UserAction.LogOut : UserAction.LogIn;
@@ -47,10 +35,8 @@ export default function header(currentPage: Pages): HTMLElement {
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
   const cartBadge = Bootstrap.createElement('span', 'header__cart-btn-badge badge rounded-pill bg-secondary');
-  const itemsInCart = cart.counter;
-  if (itemsInCart) {
-    cartBadge.textContent = `${cart.counter}+`;
-  }
+  updateCartBadge(cartBadge);
+  document.body.addEventListener(AppEvents.updateCounterCart, () => updateCartBadge(cartBadge));
   cartBtn.appendChild(cartBadge);
   cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
@@ -76,6 +62,14 @@ export default function header(currentPage: Pages): HTMLElement {
   headerContainer.append(brand, menuLinks, buttonWrapper, offCanvasRightPanel);
   headerElement.append(headerContainer);
   return headerElement;
+}
+
+function updateCartBadge(cartBtnBadge: HTMLElement) {
+  if (cart.counter) {
+    cartBtnBadge.textContent = cart.counter > 100 ? '99+' : String(cart.counter);
+  } else {
+    cartBtnBadge.textContent = '';
+  }
 }
 
 function createRightPanel(currentPage: Pages) {

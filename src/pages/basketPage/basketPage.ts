@@ -25,22 +25,21 @@ export default function basketPage() {
   const emptyBasket = createEmptyBasket();
 
   const spiner = Bootstrap.createLoadingSpiner();
-  emptyBasket.classList.add('d-none');
-  productAndSummary.classList.add('d-none');
   const switchBetwenEmptyOrNotBacket = () => {
-    if (cart.counter) {
-      spiner.classList.add('d-none');
-      emptyBasket.classList.add('d-none');
-      productAndSummary.classList.remove('d-none');
+    container.innerHTML = '';
+
+    if (!cart.counter) {
+      container.append(emptyBasket);
     } else {
-      emptyBasket.classList.remove('d-none');
-      productAndSummary.classList.add('d-none');
+      container.append(productAndSummary);
     }
   };
-  switchBetwenEmptyOrNotBacket();
+  if (!cart.id) {
+    container.append(spiner);
+  } else {
+    switchBetwenEmptyOrNotBacket();
+  }
   document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
-
-  container.append(spiner, productAndSummary, emptyBasket);
 
   return container;
 }
@@ -109,7 +108,6 @@ function createSummary() {
     line1.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
     line2.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
     line4.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
-    console.log(`totalPriceCentAmount = ${cart.totalPriceCentAmount}`);
   };
   recalculateLinePrices();
 
