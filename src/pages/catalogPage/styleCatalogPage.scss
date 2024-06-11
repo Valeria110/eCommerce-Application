@@ -41,7 +41,7 @@ $border-color: #dee2e6;
       z-index: 3;
     }
   }
-  
+
   &__container-button-cart {
     justify-content: center;
   }
@@ -59,13 +59,13 @@ $border-color: #dee2e6;
     transition: 0.2s;
 
     &:hover {
-      color:white !important;
+      color: white !important;
       background-color: $focus-color !important;
     }
   }
 
   &__button-cart_inactive {
-    color:white !important;
+    color: white !important;
     background-color: $focus-color !important;
   }
 

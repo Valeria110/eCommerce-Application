@@ -43,6 +43,12 @@ export interface ProductCart {
   quantity: number;
 }
 
+export interface InfoCart {
+  cartState: string;
+  id: string;
+  lineItems: [object];
+}
+
 export interface InfoBook {
   id: string;
   masterData: {
