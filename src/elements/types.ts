@@ -14,6 +14,7 @@ export enum AppEvents {
   switchPage = 'switchPage',
   updateUserName = 'updateUserName',
   updateCounterCart = 'updateCounterCart',
+  createCart = 'createCart',
 }
 
 export interface Product {
@@ -27,6 +28,19 @@ export interface Product {
     regular: number;
     discounted: number | undefined;
   };
+}
+
+export interface ProductCart {
+  id: string;
+  productId: string;
+  title: string;
+  author: string;
+  images: string[];
+  prices: {
+    regular: number;
+    discounted: number | undefined;
+  };
+  quantity: number;
 }
 
 export interface InfoBook {

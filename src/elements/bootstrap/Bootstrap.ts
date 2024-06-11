@@ -109,4 +109,18 @@ export default class Bootstrap {
 
     return offcanvas;
   }
+
+  static createLoadingSpiner(): HTMLDivElement {
+    const container = Bootstrap.createElement('div', 'loadingSpiner');
+
+    const status = Bootstrap.createElement('strong', '', 'Loading...');
+    status.setAttribute('role', 'status');
+    container.appendChild(status);
+
+    const spinner = Bootstrap.createElement('div', 'spinner-border loadingSpiner__spiner');
+    spinner.setAttribute('aria-hidden', 'true');
+    container.appendChild(spinner);
+
+    return container;
+  }
 }

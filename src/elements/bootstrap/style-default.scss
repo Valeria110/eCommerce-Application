@@ -9,3 +9,30 @@ button.btn.btn-style-default {
 li.dropdown-item.dropdown-item-style-default {
   padding: 10px 16px 10px 16px;
 }
+
+.loadingSpiner {
+  color: rgb(153, 153, 153);
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  @media (width < 500px) {
+    flex-direction: column;
+  }
+
+  font-family: Inter;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 48px;
+
+  height: 400px;
+
+  &__spiner {
+    margin-left: auto;
+    @media (width < 500px) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
