@@ -474,8 +474,10 @@ class RequestFetch {
 
   private async checkResponse(response: Response) {
     if (!response.ok) {
-      if (response.status === 401) {
-        console.error('We should update token');
+      if (response.status === 401 && this.isLogined) {
+        console.error('User should login again');
+        this.authCustomersLogout();
+        switchPage(Pages.LogIn);
       } else {
         console.error(`Error HTTP: ${response.status}`);
       }
