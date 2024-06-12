@@ -1,8 +1,86 @@
 import requestsAPI from './requestsAPI';
-import { AppEvents } from './types';
+import { AppEvents, ProductCart } from './types';
+
+function getAttributesValue(
+  attributes: {
+    name: string;
+    value: string | number;
+  }[],
+  name: 'title' | 'author',
+): string | null {
+  for (const attribute of attributes) {
+    if (attribute.name === name) {
+      return String(attribute.value);
+    }
+  }
+  return null;
+}
 
 type LineItem = {
   quantity: number;
+  id: string;
+  productId: string;
+  price: {
+    id: string;
+    value: {
+      type: string;
+      currencyCode: string;
+      centAmount: number;
+      fractionDigits: number;
+    };
+    discounted?: {
+      value: {
+        type: string;
+        currencyCode: string;
+        centAmount: number;
+        fractionDigits: number;
+      };
+      discount: {
+        typeId: string;
+        id: string;
+      };
+    };
+  };
+  productSlug: {
+    [key: string]: string;
+  };
+  variant: {
+    id: number;
+    sku: string;
+    key: string;
+    prices: Array<{
+      id: string;
+      value: {
+        type: string;
+        currencyCode: string;
+        centAmount: number;
+        fractionDigits: number;
+      };
+      discounted?: {
+        value: {
+          type: string;
+          currencyCode: string;
+          centAmount: number;
+          fractionDigits: number;
+        };
+        discount: {
+          typeId: string;
+          id: string;
+        };
+      };
+    }>;
+    images: Array<{
+      url: string;
+      dimensions: {
+        w: number;
+        h: number;
+      };
+    }>;
+    attributes: Array<{
+      name: string;
+      value: string | number;
+    }>;
+  };
   // ...
 };
 
@@ -21,6 +99,8 @@ class Cart {
 
   lineItems: LineItem[] = [];
 
+  totalPriceCentAmount: number = 0;
+
   constructor() {
     this.host = process.env.CTP_API_URL ?? '';
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
@@ -33,6 +113,35 @@ class Cart {
       totalQuantity += item.quantity;
     }
     return totalQuantity;
+  }
+
+  get regularPriceCentAmount() {
+    return this.products.reduce((sum, product) => sum + product.prices.regular * product.quantity, 0);
+  }
+
+  get products(): ProductCart[] {
+    return this.lineItems.map((item) => {
+      const attributes = item.variant.attributes;
+
+      const title = getAttributesValue(attributes, 'title') ?? '';
+      const regularPrice = item.price.value.centAmount;
+      const discountedPrice = item.price.discounted?.value.centAmount ?? regularPrice;
+      const author = getAttributesValue(attributes, 'author') ?? '';
+      const images = item.variant.images.map((image) => image.url);
+
+      return {
+        id: item.id,
+        productId: item.productId,
+        title,
+        author,
+        prices: {
+          regular: regularPrice,
+          discounted: discountedPrice,
+        },
+        images,
+        quantity: item.quantity,
+      };
+    });
   }
 
   private isReadyProjectToken() {
@@ -55,6 +164,22 @@ class Cart {
     this.projectToken = projectToken;
   }
 
+  private updateCacheAfterFetch(data: {
+    id: string;
+    version: number;
+    lineItems: LineItem[];
+    totalPrice: {
+      centAmount: number;
+    };
+  }) {
+    this.id = data.id;
+    this.version = data.version;
+    this.lineItems = data.lineItems;
+    this.totalPriceCentAmount = data.totalPrice.centAmount;
+
+    console.log(data);
+  }
+
   async createCart() {
     if (!this.isReadyProjectToken()) {
       return;
@@ -72,9 +197,7 @@ class Cart {
     });
 
     const data = await response.json();
-    console.log(data);
-    this.id = data.id;
-    this.version = data.version;
+    this.updateCacheAfterFetch(data);
   }
 
   async getCartId() {
@@ -90,14 +213,12 @@ class Cart {
     });
 
     const data = await response.json();
-    console.log(data);
-    this.id = data.id;
-    this.lineItems = data.lineItems;
+    this.updateCacheAfterFetch(data);
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-    this.version = data.version;
   }
 
   async addProduct(productId: string) {
+    console.log(`try add product ${productId}`); // TODO: del
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
@@ -121,18 +242,75 @@ class Cart {
     });
 
     const data = await response.json();
-    this.version = data.version;
-    this.lineItems = data.lineItems;
+    this.updateCacheAfterFetch(data);
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-    console.log(data);
+  }
+
+  async increaseProductQuantity(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    const newQuantity = lineItem.quantity + 1;
+    await this.changeProductQuantity(lineItemId, newQuantity);
+  }
+
+  async decreaseProductQuantity(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    const newQuantity = lineItem.quantity - 1;
+    if (newQuantity < 0) {
+      console.error(`Cannot decrease quantity below 0`);
+      return;
+    }
+    await this.changeProductQuantity(lineItemId, newQuantity);
+  }
+
+  async removeProduct(lineItemId: string) {
+    const lineItem = this.lineItems.find((item) => item.id === lineItemId);
+    if (!lineItem) {
+      console.error(`Line item ${lineItemId} not found`);
+      return;
+    }
+    await this.changeProductQuantity(lineItemId, 0);
+  }
+
+  async changeProductQuantity(lineItemId: string, newQuantity: number) {
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: this.version,
+        actions: [
+          {
+            action: 'changeLineItemQuantity',
+            lineItemId: lineItemId,
+            quantity: newQuantity,
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    this.updateCacheAfterFetch(data);
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 }
 
 document.body.addEventListener(AppEvents.updateUserName, () => {
-  console.log('update project token for cart');
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
-  console.log('customerData', requestsAPI.customerData);
   cart.customerId = requestsAPI.customerData.id;
+  cart.getCartId().then(() => {
+    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+  });
 });
 
 const cart = new Cart();

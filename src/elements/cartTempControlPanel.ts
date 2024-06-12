@@ -16,6 +16,9 @@ export default function cartTempControlPanel() {
   const showCart = Bootstrap.createButton('show products in cart', 'btn-white m-1');
   showCart.addEventListener('click', () => console.log(cart.lineItems));
 
-  container.append(createCart, getCartId, getCounter, showCart);
+  const productCarts = Bootstrap.createButton('product cart', 'btn-white m-1');
+  productCarts.addEventListener('click', () => console.log(cart.products));
+
+  container.append(createCart, getCartId, getCounter, showCart, productCarts);
   return container;
 }

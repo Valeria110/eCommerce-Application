@@ -8,6 +8,7 @@ import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
 import cart from '../../elements/cart';
+import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -30,7 +31,7 @@ const updateLinkMainImg = (response: Product, index: number) => {
 
 export default function product(id: string) {
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
-  const spinerElement = createLoadingSpiner();
+  const spinerElement = Bootstrap.createLoadingSpiner();
   page.append(spinerElement);
 
   (async () => {
@@ -130,11 +131,6 @@ function createRightColumn(response: Product) {
 
   column.append(prices, wrapperBtn);
   return column;
-}
-
-function convertCentsToDollars(cents: number) {
-  const dollars = cents / 100;
-  return (dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2)) + '$';
 }
 
 function getProcentDiscount(response: Product) {
@@ -333,19 +329,4 @@ function showModalWithCarousel(index: number) {
 
   const bsCarousel = new Carousel(carousel);
   bsCarousel.to(index);
-}
-
-function createLoadingSpiner(): HTMLDivElement {
-  const container = Bootstrap.createElement('div', 'productSpiner d-flex align-items-center');
-
-  const status = Bootstrap.createElement('strong', '', 'Loading...');
-  status.setAttribute('role', 'status');
-  container.appendChild(status);
-
-  const spinner = Bootstrap.createElement('div', 'spinner-border ms-auto');
-  spinner.className = 'spinner-border ms-auto';
-  spinner.setAttribute('aria-hidden', 'true');
-  container.appendChild(spinner);
-
-  return container;
 }

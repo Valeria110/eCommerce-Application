@@ -10,6 +10,7 @@ import footer from './footer/footer';
 import product from '../pages/productPage/product';
 import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
+import basketPage from '../pages/basketPage/basketPage';
 
 export default class App {
   start(): void {
@@ -29,8 +30,16 @@ function renderPage(newPage: Pages, productId: string | undefined) {
   document.body.className = '';
   resetStyleAfterBurger();
 
-  const pagesWithHeader = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Error404, Pages.Product, Pages.UserProfile];
-  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product, Pages.UserProfile];
+  const pagesWithHeader = [
+    Pages.Main,
+    Pages.Catalog,
+    Pages.AboutUS,
+    Pages.Error404,
+    Pages.Product,
+    Pages.UserProfile,
+    Pages.Basket,
+  ];
+  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product, Pages.UserProfile, Pages.Basket];
 
   if (pagesWithHeader.includes(newPage)) {
     document.body.append(header(newPage));
@@ -57,6 +66,9 @@ function renderPage(newPage: Pages, productId: string | undefined) {
       break;
     case Pages.UserProfile:
       document.body.append(userProfilePage());
+      break;
+    case Pages.Basket:
+      document.body.append(basketPage());
       break;
     default:
       document.body.append(error404Page());
