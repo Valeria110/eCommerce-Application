@@ -6,7 +6,7 @@ import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import emojiSadSrc from './../../img/emoji-sad.png';
 import './basketPage.scss';
 
-export default function basketPage() {
+export default function basketPage(): HTMLElement {
   const container = Bootstrap.createElement('div', 'basketPage');
 
   const productList = Bootstrap.createElement('div', 'basketProductList');

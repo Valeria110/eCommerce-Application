@@ -1,7 +1,7 @@
 import requestsAPI from './requestsAPI';
 import { AppEvents, ProductCart } from './types';
 
-function getAttributesValue(
+export function getAttributesValue(
   attributes: {
     name: string;
     value: string | number;
@@ -84,7 +84,7 @@ type LineItem = {
   // ...
 };
 
-class Cart {
+export class Cart {
   private host: string;
 
   private projectKey: string;
