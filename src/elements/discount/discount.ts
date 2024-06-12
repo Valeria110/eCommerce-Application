@@ -11,7 +11,7 @@ export default function discount() {
   const paragraph = Bootstrap.createElement('p', 'discount__text');
 
   const text1 = document.createTextNode('Get a 5% discount on any book');
-  const text2 = document.createTextNode('book with a promo code ');
+  const text2 = document.createTextNode('with a promo code ');
 
   const textPromoCode = Bootstrap.createElement('span', 'discount__text-promoCode', 'Lithub2024');
 

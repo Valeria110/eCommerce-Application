@@ -16,6 +16,14 @@ function getAttributesValue(
   return null;
 }
 
+type DiscountCode = {
+  discountCode: {
+    typeId: string;
+    id: string;
+  };
+  state: string;
+};
+
 type LineItem = {
   quantity: number;
   id: string;
@@ -110,6 +118,7 @@ type LineItem = {
 interface CartData {
   id: string;
   version: number;
+  discountCodes?: DiscountCode[];
   lineItems: LineItem[];
   totalPrice: {
     centAmount: number;
@@ -138,7 +147,9 @@ class Cart {
 
   totalPriceCentAmount: number = 0;
 
-  discountedCentAmount: number = 0;
+  discountCodes: string[] = [];
+
+  discountIdName = new Map();
 
   constructor() {
     this.host = process.env.CTP_API_URL ?? '';
@@ -210,8 +221,9 @@ class Cart {
     this.version = data.version;
     this.lineItems = data.lineItems;
     this.totalPriceCentAmount = data.totalPrice.centAmount;
-    this.discountedCentAmount = data.discountOnTotalPrice?.discountedAmount.centAmount ?? 0;
-
+    if (data.discountCodes) {
+      this.discountCodes = data.discountCodes.map((item) => item.discountCode.id);
+    }
     console.log(data);
   }
 
@@ -283,7 +295,6 @@ class Cart {
   }
 
   async addProduct(productId: string) {
-    console.log(`try add product ${productId}`); // TODO: del
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
@@ -372,9 +383,9 @@ class Cart {
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 
-  async applyDiscountCode(discountCode: string) {
+  async applyDiscountCode(discountCode: string): Promise<{ status: boolean; message: string }> {
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
-      return;
+      return { status: false, message: '' };
     }
 
     const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
@@ -400,12 +411,39 @@ class Cart {
       this.updateCacheAfterFetch(data);
     }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    return {
+      status: response.ok,
+      message: response.ok ? '' : data.message.replace('discount code', 'promocode'),
+    };
+  }
+
+  async updateDiscountCodes() {
+    if (!this.isReadyProjectToken()) {
+      return;
+    }
+
+    const response = await fetch(`${this.host}/${this.projectKey}/discount-codes`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    console.log('updateDiscountCodes', data);
+    if (response.ok) {
+      data.results.forEach((element: { id: string; code: string }) => {
+        this.discountIdName.set(element.id, element.code);
+      });
+    }
   }
 }
 
 document.body.addEventListener(AppEvents.updateUserName, () => {
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
   cart.customerId = requestsAPI.customerData.id;
+  cart.updateDiscountCodes();
   cart.getCartId().then(() => {
     document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));

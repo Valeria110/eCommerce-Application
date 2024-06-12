@@ -76,7 +76,7 @@ function createSummary() {
 
   const titlePromo = Bootstrap.createElement('h4', 'basketSummary__titlePromo', 'Promocode');
 
-  const promoGroup = Bootstrap.createElement('div', 'input-group mb-3');
+  const promoGroup = Bootstrap.createElement('div', 'input-group has-validation mb-1');
   const promoGroupId = 'basketPromoInput';
 
   const promoInput = Bootstrap.createElement('input', 'form-control');
@@ -85,15 +85,46 @@ function createSummary() {
   promoInput.setAttribute('aria-label', 'Promocode');
   promoInput.setAttribute('aria-describedby', promoGroupId);
 
+  const promoInputInvalidFeedback = Bootstrap.createElement('div', 'invalid-feedback');
+
   const promoButton = Bootstrap.createElement('button', 'btn btn-orange basketSummary__apply', 'Apply');
   promoButton.setAttribute('type', 'button');
   promoButton.setAttribute('id', promoGroupId);
+
+  promoInput.addEventListener('input', () => {
+    promoInput.classList.remove('is-valid', 'is-invalid');
+  });
   promoButton.addEventListener('click', () => {
-    console.log(`try use promo ${promoInput.value}`);
-    cart.applyDiscountCode(promoInput.value.trim());
+    if (!promoInput.value.trim()) {
+      return;
+    }
+    cart.applyDiscountCode(promoInput.value.trim()).then(({ status, message }) => {
+      if (status) {
+        promoInput.classList.add('is-valid');
+        setTimeout(() => {
+          promoInput.value = '';
+          promoInput.classList.remove('is-valid');
+        }, 2000);
+      } else {
+        promoInput.classList.add('is-invalid');
+        promoInputInvalidFeedback.textContent = message;
+      }
+    });
   });
 
-  promoGroup.append(promoInput, promoButton);
+  const promocodeList = Bootstrap.createElement('div', 'basketSummary__promocodeList');
+  const updatePromocodeBadges = () => {
+    promocodeList.innerHTML = '';
+    cart.discountCodes.forEach((id) => {
+      console.log(cart.discountIdName.get(id));
+      promocodeList.append(
+        Bootstrap.createElement('span', 'badge rounded-pill text-bg-warning', cart.discountIdName.get(id)),
+      );
+    });
+  };
+  updatePromocodeBadges();
+
+  promoGroup.append(promoInput, promoButton, promoInputInvalidFeedback);
 
   const checkOutBtn = Bootstrap.createButton('Check out', 'btn-orange border-0 basketSummary__btnCheckOut');
 
@@ -110,24 +141,26 @@ function createSummary() {
     return { line, text, price };
   };
 
-  const line1 = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
-  const line2 = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
-  // const line3 = createPriceLine('Promocode', '0$', 'basketSummary__grayLine');
-  const line4 = createPriceLine('Total', '0$', 'basketSummary__boldLine');
+  const lineRegular = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
+  const lineDiscount = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
+  const lineTotal = createPriceLine('Total', '0$', 'basketSummary__boldLine');
   const lines = Bootstrap.createElement('div', 'basketSummary__linesWrapper');
 
   const recalculateLinePrices = () => {
-    line1.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
-    line2.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
-    line4.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
+    lineRegular.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
+    lineDiscount.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
+    lineTotal.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
   };
   recalculateLinePrices();
 
-  document.body.addEventListener(AppEvents.updateCounterCart, () => recalculateLinePrices());
+  document.body.addEventListener(AppEvents.updateCounterCart, () => {
+    recalculateLinePrices();
+    updatePromocodeBadges();
+  });
 
-  lines.append(line1.line, line2.line, line4.line);
+  lines.append(lineRegular.line, lineDiscount.line, lineTotal.line);
 
-  container.append(title, titlePromo, promoGroup, lines, checkOutBtn);
+  container.append(title, titlePromo, promoGroup, promocodeList, lines, checkOutBtn);
   return container;
 }
 

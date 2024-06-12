@@ -126,6 +126,12 @@
     margin-bottom: 20px;
   }
 
+  &__promocodeList {
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   &__linesWrapper {
     display: flex;
     flex-direction: column;
