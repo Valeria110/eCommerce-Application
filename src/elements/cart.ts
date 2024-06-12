@@ -41,6 +41,29 @@ type LineItem = {
       };
     };
   };
+  discountedPricePerQuantity?: {
+    quantity: number;
+    discountedPrice: {
+      value: {
+        type: string;
+        currencyCode: string;
+        centAmount: number;
+        fractionDigits: number;
+      };
+      includedDiscounts: Array<{
+        discount: {
+          typeId: string;
+          id: string;
+        };
+        discountedAmount: {
+          type: string;
+          currencyCode: string;
+          centAmount: number;
+          fractionDigits: number;
+        };
+      }>;
+    };
+  }[];
   productSlug: {
     [key: string]: string;
   };
@@ -84,6 +107,20 @@ type LineItem = {
   // ...
 };
 
+interface CartData {
+  id: string;
+  version: number;
+  lineItems: LineItem[];
+  totalPrice: {
+    centAmount: number;
+  };
+  discountOnTotalPrice?: {
+    discountedAmount: {
+      centAmount: number;
+    };
+  };
+}
+
 class Cart {
   private host: string;
 
@@ -100,6 +137,8 @@ class Cart {
   lineItems: LineItem[] = [];
 
   totalPriceCentAmount: number = 0;
+
+  discountedCentAmount: number = 0;
 
   constructor() {
     this.host = process.env.CTP_API_URL ?? '';
@@ -126,6 +165,7 @@ class Cart {
       const title = getAttributesValue(attributes, 'title') ?? '';
       const regularPrice = item.price.value.centAmount;
       const discountedPrice = item.price.discounted?.value.centAmount ?? regularPrice;
+      const discountedPromo = item.discountedPricePerQuantity?.[0]?.discountedPrice.value.centAmount ?? regularPrice;
       const author = getAttributesValue(attributes, 'author') ?? '';
       const images = item.variant.images.map((image) => image.url);
 
@@ -137,6 +177,7 @@ class Cart {
         prices: {
           regular: regularPrice,
           discounted: discountedPrice,
+          discountedPromo,
         },
         images,
         quantity: item.quantity,
@@ -164,18 +205,12 @@ class Cart {
     this.projectToken = projectToken;
   }
 
-  private updateCacheAfterFetch(data: {
-    id: string;
-    version: number;
-    lineItems: LineItem[];
-    totalPrice: {
-      centAmount: number;
-    };
-  }) {
+  private updateCacheAfterFetch(data: CartData) {
     this.id = data.id;
     this.version = data.version;
     this.lineItems = data.lineItems;
     this.totalPriceCentAmount = data.totalPrice.centAmount;
+    this.discountedCentAmount = data.discountOnTotalPrice?.discountedAmount.centAmount ?? 0;
 
     console.log(data);
   }
@@ -241,7 +276,9 @@ class Cart {
     });
 
     const data = await response.json();
-    this.updateCacheAfterFetch(data);
+    if (response.ok) {
+      this.updateCacheAfterFetch(data);
+    }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 
@@ -270,7 +307,9 @@ class Cart {
     });
 
     const data = await response.json();
-    this.updateCacheAfterFetch(data);
+    if (response.ok) {
+      this.updateCacheAfterFetch(data);
+    }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 
@@ -327,7 +366,39 @@ class Cart {
     });
 
     const data = await response.json();
-    this.updateCacheAfterFetch(data);
+    if (response.ok) {
+      this.updateCacheAfterFetch(data);
+    }
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+  }
+
+  async applyDiscountCode(discountCode: string) {
+    if (!this.isReadyProjectToken() || !this.isExistCartId()) {
+      return;
+    }
+
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: this.version,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code: discountCode,
+          },
+        ],
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    if (response.ok) {
+      this.updateCacheAfterFetch(data);
+    }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 }

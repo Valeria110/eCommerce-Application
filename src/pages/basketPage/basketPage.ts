@@ -88,6 +88,10 @@ function createSummary() {
   const promoButton = Bootstrap.createElement('button', 'btn btn-orange basketSummary__apply', 'Apply');
   promoButton.setAttribute('type', 'button');
   promoButton.setAttribute('id', promoGroupId);
+  promoButton.addEventListener('click', () => {
+    console.log(`try use promo ${promoInput.value}`);
+    cart.applyDiscountCode(promoInput.value.trim());
+  });
 
   promoGroup.append(promoInput, promoButton);
 
@@ -108,7 +112,7 @@ function createSummary() {
 
   const line1 = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
   const line2 = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
-  const line3 = createPriceLine('Promocode', '0$', 'basketSummary__grayLine');
+  // const line3 = createPriceLine('Promocode', '0$', 'basketSummary__grayLine');
   const line4 = createPriceLine('Total', '0$', 'basketSummary__boldLine');
   const lines = Bootstrap.createElement('div', 'basketSummary__linesWrapper');
 
@@ -121,7 +125,7 @@ function createSummary() {
 
   document.body.addEventListener(AppEvents.updateCounterCart, () => recalculateLinePrices());
 
-  lines.append(line1.line, line2.line, line3.line, line4.line);
+  lines.append(line1.line, line2.line, line4.line);
 
   container.append(title, titlePromo, promoGroup, lines, checkOutBtn);
   return container;
@@ -141,10 +145,10 @@ function createProductCard(product: ProductCart) {
   rightColumn.append(Bootstrap.createElement('h3', 'basketProduct__author', product.author));
 
   const pricesWraper = Bootstrap.createElement('div', 'd-flex');
-  if (product.prices.regular !== product.prices.discounted) {
-    pricesWraper.append(
-      Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.discounted ?? 0)),
-    );
+
+  const minPrice = Math.min(...Object.values(product.prices));
+  if (product.prices.regular !== minPrice) {
+    pricesWraper.append(Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(minPrice)));
     pricesWraper.append(
       Bootstrap.createElement('div', 'basketProduct__pricePrevios', convertCentsToDollars(product.prices.regular)),
     );
