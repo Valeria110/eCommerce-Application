@@ -5,6 +5,7 @@ import { AppEvents, Pages, ProductCart } from '../../elements/types';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import emojiSadSrc from './../../img/emoji-sad.png';
 import './basketPage.scss';
+import Modal from 'bootstrap/js/dist/modal';
 
 export default function basketPage() {
   const container = Bootstrap.createElement('div', 'basketPage');
@@ -22,8 +23,15 @@ export default function basketPage() {
   const productAndSummary = Bootstrap.createElement('div', 'productAndSummary');
   productAndSummary.append(productList, createSummary());
 
-  const emptyBasket = createEmptyBasket();
+  const modalWarning = createModalWarning();
+  const bootstrapModal = new Modal(modalWarning.modal);
+  const clearShoppingCartBtn = Bootstrap.createButton('Clear Shoping Cart', 'btn-danger basketPage__clearBtn');
+  clearShoppingCartBtn.addEventListener('click', () => bootstrapModal.show());
+  modalWarning.activeBtn.addEventListener('click', () => {
+    cart.clearCart().then(() => bootstrapModal.hide());
+  });
 
+  const emptyBasket = createEmptyBasket();
   const spiner = Bootstrap.createLoadingSpiner();
   const switchBetwenEmptyOrNotBacket = () => {
     container.innerHTML = '';
@@ -31,7 +39,7 @@ export default function basketPage() {
     if (!cart.counter) {
       container.append(emptyBasket);
     } else {
-      container.append(productAndSummary);
+      container.append(productAndSummary, clearShoppingCartBtn, modalWarning.modal);
     }
   };
   if (!cart.id) {
@@ -133,7 +141,6 @@ function createProductCard(product: ProductCart) {
   rightColumn.append(Bootstrap.createElement('h3', 'basketProduct__author', product.author));
 
   const pricesWraper = Bootstrap.createElement('div', 'd-flex');
-  console.log(product.prices.discounted);
   if (product.prices.regular !== product.prices.discounted) {
     pricesWraper.append(
       Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.discounted ?? 0)),
@@ -189,4 +196,47 @@ function createQuantityInput(product: ProductCart, card: HTMLDivElement): HTMLDi
   container.append(decrease, value, increase);
 
   return container;
+}
+
+function createModalWarning() {
+  const modal = Bootstrap.createElement('div', 'modal');
+  modal.setAttribute('tabindex', '-1');
+
+  const dialog = Bootstrap.createElement('div', 'modal-dialog');
+  modal.append(dialog);
+
+  const content = Bootstrap.createElement('div', 'modal-content');
+  dialog.append(content);
+
+  const header = Bootstrap.createElement('div', 'modal-header');
+  content.append(header);
+
+  const title = Bootstrap.createElement('h5', 'modal-title', 'Warning');
+  header.append(title);
+
+  const closeButton = Bootstrap.createElement('button', 'btn-close');
+  closeButton.setAttribute('data-bs-dismiss', 'modal');
+  header.append(closeButton);
+  header.append(closeButton);
+
+  const body = Bootstrap.createElement('div', 'modal-body');
+  const bodyText = Bootstrap.createElement(
+    'p',
+    '',
+    'Warning! Proceeding will empty your cart and the characters from these books might forget their stories. Are you sure you want to risk it?',
+  );
+  body.append(bodyText);
+  content.append(body);
+
+  const footer = Bootstrap.createElement('div', 'modal-footer');
+  content.append(footer);
+
+  const closeFooterBtn = Bootstrap.createElement('button', 'btn btn-secondary', 'Close');
+  closeFooterBtn.setAttribute('data-bs-dismiss', 'modal');
+  footer.append(closeFooterBtn);
+
+  const activeBtn = Bootstrap.createElement('button', 'btn btn-danger', 'Clear');
+  footer.append(activeBtn);
+
+  return { modal, activeBtn };
 }

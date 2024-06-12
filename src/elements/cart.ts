@@ -180,6 +180,34 @@ class Cart {
     console.log(data);
   }
 
+  async clearCart() {
+    if (!this.isReadyProjectToken() || !this.isExistCartId()) {
+      return;
+    }
+
+    const actions = this.lineItems.map((item) => ({
+      action: 'changeLineItemQuantity',
+      lineItemId: item.id,
+      quantity: 0,
+    }));
+
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: this.version,
+        actions,
+      }),
+    });
+
+    const data = await response.json();
+    this.updateCacheAfterFetch(data);
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+  }
+
   async createCart() {
     if (!this.isReadyProjectToken()) {
       return;

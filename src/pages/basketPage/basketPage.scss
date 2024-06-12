@@ -1,12 +1,30 @@
 @import './../../breakpoints.scss';
 
 .basketPage {
+  display: flex;
+  flex-direction: column;
   margin: 30px 62px;
   @media (width <= $screen-width-tablet) {
     margin: 22px 56px;
   }
   @media (width <= $screen-width-mobile) {
     margin: 22px 12px;
+  }
+
+  &__clearBtn {
+    width: min(80vw, 400px);
+
+    align-self: center;
+
+    padding: 14px 24px !important;
+
+    font-family: Inter !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: 18px !important;
+
+    margin-top: 52px;
+    margin-bottom: 92px;
   }
 }
 
@@ -16,9 +34,6 @@
   gap: 44px;
 
   margin-bottom: 100px;
-  // @media (width < 900px) {
-  //   margin-bottom: 20px;
-  // }
 }
 
 .productAndSummary {
