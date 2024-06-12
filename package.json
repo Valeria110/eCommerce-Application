@@ -22,7 +22,8 @@
     "moduleNameMapper": {
       "\\.(scss)$": "<rootDir>/src/mocks/styleMock.ts",
       "\\.(svg)$": "<rootDir>/src/mocks/svgMock.ts",
-      "\\.(png)$": "<rootDir>/src/mocks/svgMock.ts"
+      "\\.(png)$": "<rootDir>/src/mocks/svgMock.ts",
+      "\\.(jpg)$": "<rootDir>/src/mocks/svgMock.ts"
     }
   },
   "repository": {

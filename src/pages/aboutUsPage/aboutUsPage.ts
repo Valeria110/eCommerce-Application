@@ -18,7 +18,6 @@ function aboutUsPage(): HTMLElement {
   rssLogoIcon.src = rssLogo as string;
   RSLogoLink.append(rssLogoIcon);
   main.append(teamContainer, contributionsBlock, RSLogoLink);
-  // create page
   return main;
 }
 
@@ -166,7 +165,6 @@ function generateAccordion(cardNumber: number) {
     const accordionButton = Bootstrap.createElement('button', 'accordion-button collapsed');
     accordionButton.setAttribute('type', 'button');
     accordionButton.setAttribute('data-bs-toggle', 'collapse');
-    console.log(i);
 
     accordionButton.setAttribute('data-bs-target', `#collapse${cardNumber}-${i}`);
     accordionButton.setAttribute('aria-expanded', `${i === 1 ? 'true' : 'false'}`);
@@ -230,4 +228,4 @@ function generateAccordion(cardNumber: number) {
   return accordion;
 }
 
-export { aboutUsPage };
+export { aboutUsPage, createTeamBlock };
