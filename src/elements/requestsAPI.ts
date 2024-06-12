@@ -1,7 +1,8 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { reversedCountriesList } from '../utils/utils';
-import { AppEvents, Product, IAddressObj, IUserData } from './types';
+import switchPage from './switchPage';
+import { AppEvents, Product, IAddressObj, IUserData, Pages } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 

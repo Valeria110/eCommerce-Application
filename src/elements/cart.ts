@@ -216,7 +216,7 @@ class Cart {
     this.projectToken = projectToken;
   }
 
-  private updateCacheAfterFetch(data: CartData) {
+  private updateCacheAfterFetch(response: Response, data: CartData) {
     this.id = data.id;
     this.version = data.version;
     this.lineItems = data.lineItems;
@@ -224,7 +224,13 @@ class Cart {
     if (data.discountCodes) {
       this.discountCodes = data.discountCodes.map((item) => item.discountCode.id);
     }
-    console.log(data);
+
+    if (!response.ok) {
+      console.error(data);
+    } else {
+      console.log(data);
+    }
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 
   async clearCart() {
@@ -251,8 +257,7 @@ class Cart {
     });
 
     const data = await response.json();
-    this.updateCacheAfterFetch(data);
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    this.updateCacheAfterFetch(response, data);
   }
 
   async createCart() {
@@ -272,7 +277,7 @@ class Cart {
     });
 
     const data = await response.json();
-    this.updateCacheAfterFetch(data);
+    this.updateCacheAfterFetch(response, data);
   }
 
   async getCartId() {
@@ -288,10 +293,7 @@ class Cart {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      this.updateCacheAfterFetch(data);
-    }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    this.updateCacheAfterFetch(response, data);
   }
 
   async addProduct(productId: string) {
@@ -318,10 +320,7 @@ class Cart {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      this.updateCacheAfterFetch(data);
-    }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    this.updateCacheAfterFetch(response, data);
   }
 
   async increaseProductQuantity(lineItemId: string) {
@@ -377,10 +376,7 @@ class Cart {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      this.updateCacheAfterFetch(data);
-    }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    this.updateCacheAfterFetch(response, data);
   }
 
   async applyDiscountCode(discountCode: string): Promise<{ status: boolean; message: string }> {
@@ -406,11 +402,7 @@ class Cart {
     });
 
     const data = await response.json();
-    console.log(data);
-    if (response.ok) {
-      this.updateCacheAfterFetch(data);
-    }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    this.updateCacheAfterFetch(response, data);
     return {
       status: response.ok,
       message: response.ok ? '' : data.message.replace('discount code', 'promocode'),

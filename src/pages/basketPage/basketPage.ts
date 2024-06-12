@@ -116,7 +116,6 @@ function createSummary() {
   const updatePromocodeBadges = () => {
     promocodeList.innerHTML = '';
     cart.discountCodes.forEach((id) => {
-      console.log(cart.discountIdName.get(id));
       promocodeList.append(
         Bootstrap.createElement('span', 'badge rounded-pill text-bg-warning', cart.discountIdName.get(id)),
       );
