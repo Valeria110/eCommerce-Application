@@ -90,4 +90,24 @@ export const containerForTextToTrySearch = createElement(
   'Try changing your search criteria',
 );
 
-export const buttonClearSorting = createElement('div', 'catalog-page__button-reset-sort', 'Clear');
+export const buttonClearSorting = createElement('div', 'catalog-page__button-reset-sort', 'Clear filters');
+export const containerForSearchAndButtonClearFilters = createElement('div', 'catalog-page__container-reset-filters');
+
+export const shadowButtonOpenWindow = createElement('button', 'btn btn-primary d-none');
+shadowButtonOpenWindow.setAttribute('data-bs-toggle', 'modal');
+shadowButtonOpenWindow.setAttribute('data-bs-target', '#newCart');
+
+export const containerForModalWindowInfoCart = createElement('div', 'modal fade modal_registration_successful');
+containerForModalWindowInfoCart.id = 'newCart';
+containerForModalWindowInfoCart.setAttribute('tabindex', '-1');
+containerForModalWindowInfoCart.setAttribute('aria-hidden', 'true');
+export const modalWindowInfoCart = createElement('div', 'modal-dialog');
+export const contentModalWindowInfoCart = createElement('div', 'modal-content');
+export const headerModalWindowInfoCart = createElement('div', 'modal-header');
+export const titleModalWindowInfoCart = createElement('h6', 'modal-title');
+export const buttonCloseModalWindowInfoCart = createElement('button', 'btn-close');
+buttonCloseModalWindowInfoCart.setAttribute('data-bs-dismiss', 'modal');
+export const bodyModalWindowInfoCart = createElement('div', 'modal-body');
+export const textbodyModalWindowInfoCart = createElement('div');
+export const buttonCart = createElement('div', 'btn catalog-page__button-cart_open', 'Go to the cart');
+buttonCart.setAttribute('data-bs-dismiss', 'modal');

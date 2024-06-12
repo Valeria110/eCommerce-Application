@@ -24,7 +24,7 @@ export function generateCatalogPage() {
 
   setTimeout(async () => {
     await getBooks();
-  }, 500);
+  }, 900);
 
   CACHED_BOOKS = [];
   PAGES_CREATED = false;
@@ -230,8 +230,6 @@ export async function getBooks() {
       getAllCategories();
       CACHED_BOOKS = resultBooks.results;
       if (resultBooks) {
-        document.querySelector('.loadingSpiner')?.remove();
-        toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
         buildCatalogStructure();
         attachCatalogEventListeners();
         attachCategoryAndSortListeners();

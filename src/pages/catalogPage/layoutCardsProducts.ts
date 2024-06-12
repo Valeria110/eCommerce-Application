@@ -83,8 +83,24 @@ export function generateCards(
       buttonAddToCart.textContent = 'In the cart';
       buttonAddToCart.classList.add('disabled');
       buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
+      variablesCatalogPage.titleModalWindowInfoCart.textContent = `Product "${name.textContent}" (1 pc.) has been successfully added to the cart.`;
+      variablesCatalogPage.textbodyModalWindowInfoCart.innerHTML =
+        'You can continue shopping or proceed to checkout. 🛍️✨';
+      document.body.classList.add('catalog-page__active-modal');
+      variablesCatalogPage.shadowButtonOpenWindow.click();
+      document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
     } else {
       await cart.createCart();
+      cart.addProduct(buttonAddToCart.id);
+      buttonAddToCart.textContent = 'In the cart';
+      buttonAddToCart.classList.add('disabled');
+      buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
+      variablesCatalogPage.titleModalWindowInfoCart.textContent = `Your cart has been successfully created, and the item "${name.textContent}" (1 pc.) has been added to it.`;
+      variablesCatalogPage.textbodyModalWindowInfoCart.innerHTML =
+        'You can continue shopping or proceed to checkout. 🛍️✨';
+      document.body.classList.add('catalog-page__active-modal');
+      variablesCatalogPage.shadowButtonOpenWindow.click();
+      document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
     }
   });
 
@@ -92,14 +108,16 @@ export function generateCards(
 }
 
 export async function textButton(button: HTMLButtonElement) {
-  if ((await cart.lineItems.length) !== 0) {
-    await cart.lineItems.forEach((item) => {
-      if (item.productId === button.id) {
-        button.textContent = 'In the cart';
-        button.classList.add('disabled');
-        button.classList.add('catalog-page__button-cart_inactive');
-      }
-    });
+  if ((await cart.lineItems) !== undefined) {
+    if ((await cart.lineItems.length) !== 0) {
+      await cart.lineItems.forEach((item) => {
+        if (item.productId === button.id) {
+          button.textContent = 'In the cart';
+          button.classList.add('disabled');
+          button.classList.add('catalog-page__button-cart_inactive');
+        }
+      });
+    }
   }
 }
 
