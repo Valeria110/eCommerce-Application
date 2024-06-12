@@ -44,7 +44,16 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
   }
 }
 
-const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page', '/product', '/basket'];
+export const routes = [
+  '/login',
+  '/main',
+  '/sign_up',
+  '/catalog',
+  '/about_us',
+  '/user_profile_page',
+  '/product',
+  '/basket',
+];
 
 function handleLocation() {
   let pathname = window.location.pathname;
@@ -110,4 +119,4 @@ function isUserLogined() {
   return requestsAPI.isLogined;
 }
 
-export { changePageRoute, handleLocation };
+export { changePageRoute, handleLocation, retrieveProductId, isUserLogined };

@@ -18,7 +18,6 @@ function aboutUsPage(): HTMLElement {
   rssLogoIcon.src = rssLogo as string;
   RSLogoLink.append(rssLogoIcon);
   main.append(teamContainer, contributionsBlock, RSLogoLink);
-  // create page
   return main;
 }
 
@@ -229,4 +228,4 @@ function generateAccordion(cardNumber: number) {
   return accordion;
 }
 
-export { aboutUsPage };
+export { aboutUsPage, createTeamBlock };
