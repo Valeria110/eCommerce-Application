@@ -161,6 +161,8 @@ export class Cart {
     this.customerId = undefined;
     this.lineItems = [];
     this.discountCodes = [];
+
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
 
   // now many items in cart
@@ -287,8 +289,8 @@ export class Cart {
     this.updateCacheAfterFetch(response, data);
   }
 
-  async getCartId() {
-    if (!this.isReadyProjectToken() || !this.customerId) {
+  async updateCartIdByCustomerId() {
+    if (!this.isReadyProjectToken()) {
       console.error("Cart or Customer ID doesn't exist yet");
       return;
     }
@@ -439,14 +441,18 @@ export class Cart {
   }
 }
 
-document.body.addEventListener(AppEvents.updateUserName, () => {
+document.body.addEventListener(AppEvents.updateUserName, async () => {
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
   cart.customerId = requestsAPI.customerData.id;
   cart.updateDiscountCodes();
-  cart.getCartId().then(() => {
-    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
-  });
+  if (cart.customerId) {
+    console.log('~ user login update customer cart');
+    await cart.updateCartIdByCustomerId();
+  } else {
+    console.log('~ should create anonim cart');
+  }
+
+  document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
 });
 
 const cart = new Cart();
