@@ -35,6 +35,11 @@ export default function product(id: string) {
   page.append(spinerElement);
 
   (async () => {
+    // if F5 on product page, somethimes projectToken doesn't download yet
+    if (!requestsAPI.projectToken) {
+      await requestsAPI.authProjectToken();
+    }
+
     const response = await requestsAPI.getProductsByID(id);
     if (response) {
       spinerElement.classList.add('d-none');

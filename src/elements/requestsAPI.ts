@@ -124,7 +124,7 @@ class RequestFetch {
     }
   }
 
-  private async authProjectToken() {
+  async authProjectToken() {
     const response = await fetch(`${this.authUrl}/oauth/token`, {
       method: 'POST',
       headers: {
@@ -436,6 +436,7 @@ class RequestFetch {
   }
 
   async getProductsByID(productID: string): Promise<Product | undefined> {
+    console.log('@ getProductsByID', this.isLogined, this.#customerToken, this.projectToken); // TODO
     try {
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
