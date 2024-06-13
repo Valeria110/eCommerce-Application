@@ -10,9 +10,9 @@ jest.mock('./requestsAPI', () => ({
 }));
 
 describe('cart object', () => {
-  it('should contain the following methods: createCart, getCartId, addProduct, increaseProductQuantity,decreaseProductQuantity, removeProduct, changeProductQuantity', () => {
+  it('should contain the following methods: createCart, updateCart, addProduct, increaseProductQuantity,decreaseProductQuantity, removeProduct, changeProductQuantity', () => {
     expect(cart).toHaveProperty('createCart');
-    expect(cart).toHaveProperty('getCartId');
+    expect(cart).toHaveProperty('updateCart');
     expect(cart).toHaveProperty('addProduct');
     expect(cart).toHaveProperty('increaseProductQuantity');
     expect(cart).toHaveProperty('decreaseProductQuantity');

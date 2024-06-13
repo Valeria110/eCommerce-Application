@@ -1,6 +1,7 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { reversedCountriesList } from '../utils/utils';
+import cart from './cart';
 import switchPage from './switchPage';
 import { AppEvents, Product, IAddressObj, IUserData, Pages } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
@@ -121,7 +122,7 @@ class RequestFetch {
     }
   }
 
-  private async authProjectToken() {
+  async authProjectToken() {
     const response = await fetch(`${this.authUrl}/oauth/token`, {
       method: 'POST',
       headers: {
@@ -180,6 +181,7 @@ class RequestFetch {
       this.customerToken = obj.access_token;
       this.updateUserEmail(email);
       await this.updateUserData();
+      document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     }
 
     return { isOk: response.ok, field, message };
@@ -189,6 +191,7 @@ class RequestFetch {
     this.customerToken = undefined;
     this.updateUserEmail(undefined);
     localStorage.clear();
+    cart.clearCacheWhenLogOut();
   }
 
   async isExistCustomer(email: string): Promise<boolean> {
