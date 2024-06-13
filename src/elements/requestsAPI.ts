@@ -415,6 +415,7 @@ class RequestFetch {
       } else {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
       }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {

@@ -49,9 +49,14 @@ export function buildCatalogStructure() {
     containerForInputMaxPrice,
     clearInputMaxPrice,
     buttonClearSorting,
+    containerForModalWindowInfoCart,
+    shadowButtonOpenWindow,
+    containerForSearchAndButtonClearFilters,
   } = variablesCatalogPage;
 
   containerForCatalogPage.append(
+    containerForModalWindowInfoCart,
+    shadowButtonOpenWindow,
     containerForBreadcrumb,
     containerForBooksFilterPanel,
     containerForAllBooks,
@@ -60,18 +65,13 @@ export function buildCatalogStructure() {
 
   containerForBreadcrumb.append(linkMain, arrowToBreadcrumb, linkCatalog);
 
-  containerForBooksFilterPanel.append(containerForCategoryAndPrice, containerForInputSearchBooks);
+  containerForBooksFilterPanel.append(containerForCategoryAndPrice, containerForSearchAndButtonClearFilters);
 
   containerForCategoryAndPrice.append(containerforCategoryAndSort, containerForPriceAndCurrency);
 
   containerforCategoryAndSort.append(dropDownBooksCategories, listCategories, dropDownBooksSort, listSort);
 
-  containerForPriceAndCurrency.append(
-    containerForInputMinPrice,
-    containerForInputMaxPrice,
-    priceCurrency,
-    buttonClearSorting,
-  );
+  containerForPriceAndCurrency.append(containerForInputMinPrice, containerForInputMaxPrice, priceCurrency);
 
   containerForInputMinPrice.append(inputMinPrice, clearInputMinPrice);
   containerForInputMaxPrice.append(inputMaxPrice, clearInputMaxPrice);
@@ -91,6 +91,8 @@ export function buildCatalogStructure() {
 
   listSort.append(listItemNoSort, listItemCheap, listItemExpensive, listItemAlphabetically);
 
+  containerForSearchAndButtonClearFilters.append(containerForInputSearchBooks, buttonClearSorting);
+
   containerForInputSearchBooks.append(inputSearchBooks, iconForInputSearchBooks);
 
   containerForPagination.append(iconArrowLeft, containerForNumbersPages, iconArrowRight);
@@ -99,6 +101,23 @@ export function buildCatalogStructure() {
     newArrow.remove();
     nameCategory.remove();
   }
+
+  variablesCatalogPage.containerForModalWindowInfoCart.append(variablesCatalogPage.modalWindowInfoCart);
+  variablesCatalogPage.modalWindowInfoCart.append(variablesCatalogPage.contentModalWindowInfoCart);
+  variablesCatalogPage.contentModalWindowInfoCart.append(
+    variablesCatalogPage.headerModalWindowInfoCart,
+    variablesCatalogPage.bodyModalWindowInfoCart,
+  );
+
+  variablesCatalogPage.bodyModalWindowInfoCart.append(
+    variablesCatalogPage.textbodyModalWindowInfoCart,
+    variablesCatalogPage.buttonCart,
+  );
+
+  variablesCatalogPage.headerModalWindowInfoCart.append(
+    variablesCatalogPage.titleModalWindowInfoCart,
+    variablesCatalogPage.buttonCloseModalWindowInfoCart,
+  );
 }
 
 export function attachCatalogEventListeners() {
@@ -113,6 +132,7 @@ export function attachCatalogEventListeners() {
     clearInputMaxPrice,
     clearInputMinPrice,
     buttonClearSorting,
+    buttonCart,
   } = variablesCatalogPage;
 
   iconArrowRight.onclick = swapCatalogPages.bind(null, 'right');
@@ -141,6 +161,10 @@ export function attachCatalogEventListeners() {
 
   buttonClearSorting.addEventListener('click', () => {
     resetSorting();
+  });
+
+  buttonCart.addEventListener('click', () => {
+    switchPage(Pages.Basket);
   });
 
   inputMinPrice.addEventListener('input', handlePriceInputChange);

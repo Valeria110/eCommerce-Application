@@ -6,6 +6,7 @@ import { createCatalogPagination } from './createPaginationToCatalog';
 import { buildCatalogStructure, attachCatalogEventListeners } from './catalogStructure';
 import { resetActiveClasses, toggleElementVisibility } from './catalogPageUtils';
 import { handleSearchError } from './searchErrorHandler';
+import Bootstrap from '../../elements/bootstrap/Bootstrap';
 
 const COUNT_CHUNKS = 10;
 let COUNT_PAGES: number;
@@ -19,19 +20,20 @@ const SORT_TYPES: { [key: string]: string } = {
 };
 
 export function generateCatalogPage() {
-  buildCatalogStructure();
-  attachCatalogEventListeners();
+  variablesCatalogPage.containerForCatalogPage.innerHTML = '';
 
   setTimeout(async () => {
     await getBooks();
-    attachCategoryAndSortListeners();
-  }, 500);
+  }, 900);
 
   CACHED_BOOKS = [];
   PAGES_CREATED = false;
   localStorage.setItem('category', 'false');
   localStorage.setItem('sort', 'false');
   resetCatalog();
+
+  variablesCatalogPage.containerForCatalogPage.append(Bootstrap.createLoadingSpiner());
+
   return variablesCatalogPage.containerForCatalogPage;
 }
 
@@ -209,7 +211,6 @@ async function handleSort(sortType: string, isCategory: boolean) {
     );
 
     CACHED_BOOKS = resultBooks.results;
-    console.log(CACHED_BOOKS);
     localStorage.setItem('numberPageBooks', '0');
     PAGES_CREATED = false;
     extractBookInfo(
@@ -228,7 +229,14 @@ export async function getBooks() {
       const resultBooks = await requestsAPI.getProducts();
       getAllCategories();
       CACHED_BOOKS = resultBooks.results;
+      if (resultBooks) {
+        buildCatalogStructure();
+        attachCatalogEventListeners();
+        attachCategoryAndSortListeners();
+      }
     }
+    document.querySelector('.loadingSpiner')?.remove();
+    toggleElementVisibility(variablesCatalogPage.containerForPagination, true);
     extractBookInfo(
       splitArrayIntoChunks(CACHED_BOOKS, COUNT_CHUNKS, true),
       COUNT_PAGES,
