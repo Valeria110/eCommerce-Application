@@ -80,28 +80,19 @@ export function generateCards(
   buttonAddToCart.addEventListener('click', async () => {
     if (cart.id) {
       cart.addProduct(buttonAddToCart.id);
-      buttonAddToCart.textContent = 'In the cart';
-      buttonAddToCart.classList.add('disabled');
-      buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
       variablesCatalogPage.titleModalWindowInfoCart.textContent = `Product "${name.textContent}" (1 pc.) has been successfully added to the cart.`;
-      variablesCatalogPage.textbodyModalWindowInfoCart.innerHTML =
-        'You can continue shopping or proceed to checkout. 🛍️✨';
-      document.body.classList.add('catalog-page__active-modal');
-      variablesCatalogPage.shadowButtonOpenWindow.click();
-      document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
     } else {
       await cart.createCart();
       cart.addProduct(buttonAddToCart.id);
-      buttonAddToCart.textContent = 'In the cart';
-      buttonAddToCart.classList.add('disabled');
-      buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
       variablesCatalogPage.titleModalWindowInfoCart.textContent = `Your cart has been successfully created, and the item "${name.textContent}" (1 pc.) has been added to it.`;
-      variablesCatalogPage.textbodyModalWindowInfoCart.innerHTML =
-        'You can continue shopping or proceed to checkout. 🛍️✨';
-      document.body.classList.add('catalog-page__active-modal');
-      variablesCatalogPage.shadowButtonOpenWindow.click();
-      document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
     }
+
+    buttonAddToCart.textContent = 'In the cart';
+    buttonAddToCart.classList.add('disabled');
+    buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
+    document.body.classList.add('catalog-page__active-modal');
+    variablesCatalogPage.shadowButtonOpenWindow.click();
+    document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
   });
 
   return containerForCard;

@@ -180,7 +180,6 @@ function createButtonImg(imgSrc: string, classNameBtn = '') {
 
 function clickDefaultActionBtn(chosenActionAction: UserAction) {
   localStorage.setItem('version', '1');
-  localStorage.setItem('versionForCart', '1');
   if (chosenActionAction === UserAction.LogIn) {
     switchPage(Pages.LogIn);
   } else if (chosenActionAction === UserAction.SignUp) {

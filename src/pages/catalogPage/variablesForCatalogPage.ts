@@ -109,5 +109,6 @@ export const buttonCloseModalWindowInfoCart = createElement('button', 'btn-close
 buttonCloseModalWindowInfoCart.setAttribute('data-bs-dismiss', 'modal');
 export const bodyModalWindowInfoCart = createElement('div', 'modal-body');
 export const textbodyModalWindowInfoCart = createElement('div');
+textbodyModalWindowInfoCart.innerHTML = 'You can continue shopping or proceed to checkout. 🛍️✨';
 export const buttonCart = createElement('div', 'btn catalog-page__button-cart_open', 'Go to the cart');
 buttonCart.setAttribute('data-bs-dismiss', 'modal');
