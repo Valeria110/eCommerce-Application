@@ -302,30 +302,6 @@ export class Cart {
     this.updateCacheAfterFetch(response, data);
   }
 
-  async setCustomerId() {
-    console.log('try setCustomerId', this.id, this.customerId);
-    if (!this.isReadyProjectToken()) {
-      return;
-    }
-
-    const cartData = {
-      action: 'setCustomerId',
-      customerId: this.customerId,
-    };
-
-    const response = await fetch(`${this.host}/${this.projectKey}/carts`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.projectToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(cartData),
-    });
-
-    const data = await response.json();
-    this.updateCacheAfterFetch(response, data);
-  }
-
   async updateCart() {
     if (!this.isReadyProjectToken()) {
       console.error("Cart or Customer ID doesn't exist yet");
