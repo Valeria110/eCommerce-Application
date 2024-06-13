@@ -511,11 +511,11 @@ export class Cart {
       if (isShouldCreateCart) {
         await this.createCart();
       }
-      itemsInAnonimCart.forEach((item) => {
+      itemsInAnonimCart.forEach(async (item) => {
         console.log('добавим товары из анонимной корзины');
-        this.addProduct(item.productId, item.quantity);
-        localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
+        await this.addProduct(item.productId, item.quantity);
       });
+      localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
     };
 
     if (this.customerId) {
