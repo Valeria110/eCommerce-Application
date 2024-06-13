@@ -1,7 +1,8 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { reversedCountriesList } from '../utils/utils';
-import { AppEvents, Product, IAddressObj, IUserData } from './types';
+import switchPage from './switchPage';
+import { AppEvents, Product, IAddressObj, IUserData, Pages } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -474,8 +475,10 @@ class RequestFetch {
 
   private async checkResponse(response: Response) {
     if (!response.ok) {
-      if (response.status === 401) {
-        console.error('We should update token');
+      if (response.status === 401 && this.isLogined) {
+        console.error('User should login again');
+        this.authCustomersLogout();
+        switchPage(Pages.LogIn);
       } else {
         console.error(`Error HTTP: ${response.status}`);
       }

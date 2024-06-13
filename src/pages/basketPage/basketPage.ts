@@ -5,8 +5,9 @@ import { AppEvents, Pages, ProductCart } from '../../elements/types';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import emojiSadSrc from './../../img/emoji-sad.png';
 import './basketPage.scss';
+import Modal from 'bootstrap/js/dist/modal';
 
-export default function basketPage(): HTMLElement {
+export default function basketPage() {
   const container = Bootstrap.createElement('div', 'basketPage');
 
   const productList = Bootstrap.createElement('div', 'basketProductList');
@@ -22,8 +23,15 @@ export default function basketPage(): HTMLElement {
   const productAndSummary = Bootstrap.createElement('div', 'productAndSummary');
   productAndSummary.append(productList, createSummary());
 
-  const emptyBasket = createEmptyBasket();
+  const modalWarning = createModalWarning();
+  const bootstrapModal = new Modal(modalWarning.modal);
+  const clearShoppingCartBtn = Bootstrap.createButton('Clear Shoping Cart', 'btn-danger basketPage__clearBtn');
+  clearShoppingCartBtn.addEventListener('click', () => bootstrapModal.show());
+  modalWarning.activeBtn.addEventListener('click', () => {
+    cart.clearCart().then(() => bootstrapModal.hide());
+  });
 
+  const emptyBasket = createEmptyBasket();
   const spiner = Bootstrap.createLoadingSpiner();
   const switchBetwenEmptyOrNotBacket = () => {
     container.innerHTML = '';
@@ -31,7 +39,7 @@ export default function basketPage(): HTMLElement {
     if (!cart.counter) {
       container.append(emptyBasket);
     } else {
-      container.append(productAndSummary);
+      container.append(productAndSummary, clearShoppingCartBtn, modalWarning.modal);
     }
   };
   if (!cart.id) {
@@ -68,7 +76,7 @@ function createSummary() {
 
   const titlePromo = Bootstrap.createElement('h4', 'basketSummary__titlePromo', 'Promocode');
 
-  const promoGroup = Bootstrap.createElement('div', 'input-group mb-3');
+  const promoGroup = Bootstrap.createElement('div', 'input-group has-validation mb-1');
   const promoGroupId = 'basketPromoInput';
 
   const promoInput = Bootstrap.createElement('input', 'form-control');
@@ -77,11 +85,45 @@ function createSummary() {
   promoInput.setAttribute('aria-label', 'Promocode');
   promoInput.setAttribute('aria-describedby', promoGroupId);
 
+  const promoInputInvalidFeedback = Bootstrap.createElement('div', 'invalid-feedback');
+
   const promoButton = Bootstrap.createElement('button', 'btn btn-orange basketSummary__apply', 'Apply');
   promoButton.setAttribute('type', 'button');
   promoButton.setAttribute('id', promoGroupId);
 
-  promoGroup.append(promoInput, promoButton);
+  promoInput.addEventListener('input', () => {
+    promoInput.classList.remove('is-valid', 'is-invalid');
+  });
+  promoButton.addEventListener('click', () => {
+    if (!promoInput.value.trim()) {
+      return;
+    }
+    cart.applyDiscountCode(promoInput.value.trim()).then(({ status, message }) => {
+      if (status) {
+        promoInput.classList.add('is-valid');
+        setTimeout(() => {
+          promoInput.value = '';
+          promoInput.classList.remove('is-valid');
+        }, 2000);
+      } else {
+        promoInput.classList.add('is-invalid');
+        promoInputInvalidFeedback.textContent = message;
+      }
+    });
+  });
+
+  const promocodeList = Bootstrap.createElement('div', 'basketSummary__promocodeList');
+  const updatePromocodeBadges = () => {
+    promocodeList.innerHTML = '';
+    cart.discountCodes.forEach((id) => {
+      promocodeList.append(
+        Bootstrap.createElement('span', 'badge rounded-pill text-bg-warning', cart.discountIdName.get(id)),
+      );
+    });
+  };
+  updatePromocodeBadges();
+
+  promoGroup.append(promoInput, promoButton, promoInputInvalidFeedback);
 
   const checkOutBtn = Bootstrap.createButton('Check out', 'btn-orange border-0 basketSummary__btnCheckOut');
 
@@ -98,24 +140,26 @@ function createSummary() {
     return { line, text, price };
   };
 
-  const line1 = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
-  const line2 = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
-  const line3 = createPriceLine('Promocode', '0$', 'basketSummary__grayLine');
-  const line4 = createPriceLine('Total', '0$', 'basketSummary__boldLine');
+  const lineRegular = createPriceLine('The amount without discount', '0$', 'basketSummary__grayLine');
+  const lineDiscount = createPriceLine('Discount', '0$', 'basketSummary__grayLine');
+  const lineTotal = createPriceLine('Total', '0$', 'basketSummary__boldLine');
   const lines = Bootstrap.createElement('div', 'basketSummary__linesWrapper');
 
   const recalculateLinePrices = () => {
-    line1.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
-    line2.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
-    line4.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
+    lineRegular.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount);
+    lineDiscount.price.textContent = convertCentsToDollars(cart.regularPriceCentAmount - cart.totalPriceCentAmount);
+    lineTotal.price.textContent = convertCentsToDollars(cart.totalPriceCentAmount);
   };
   recalculateLinePrices();
 
-  document.body.addEventListener(AppEvents.updateCounterCart, () => recalculateLinePrices());
+  document.body.addEventListener(AppEvents.updateCounterCart, () => {
+    recalculateLinePrices();
+    updatePromocodeBadges();
+  });
 
-  lines.append(line1.line, line2.line, line3.line, line4.line);
+  lines.append(lineRegular.line, lineDiscount.line, lineTotal.line);
 
-  container.append(title, titlePromo, promoGroup, lines, checkOutBtn);
+  container.append(title, titlePromo, promoGroup, promocodeList, lines, checkOutBtn);
   return container;
 }
 
@@ -133,11 +177,10 @@ function createProductCard(product: ProductCart) {
   rightColumn.append(Bootstrap.createElement('h3', 'basketProduct__author', product.author));
 
   const pricesWraper = Bootstrap.createElement('div', 'd-flex');
-  console.log(product.prices.discounted);
-  if (product.prices.regular !== product.prices.discounted) {
-    pricesWraper.append(
-      Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.discounted ?? 0)),
-    );
+
+  const minPrice = Math.min(...Object.values(product.prices));
+  if (product.prices.regular !== minPrice) {
+    pricesWraper.append(Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(minPrice)));
     pricesWraper.append(
       Bootstrap.createElement('div', 'basketProduct__pricePrevios', convertCentsToDollars(product.prices.regular)),
     );
@@ -189,4 +232,47 @@ function createQuantityInput(product: ProductCart, card: HTMLDivElement): HTMLDi
   container.append(decrease, value, increase);
 
   return container;
+}
+
+function createModalWarning() {
+  const modal = Bootstrap.createElement('div', 'modal');
+  modal.setAttribute('tabindex', '-1');
+
+  const dialog = Bootstrap.createElement('div', 'modal-dialog');
+  modal.append(dialog);
+
+  const content = Bootstrap.createElement('div', 'modal-content');
+  dialog.append(content);
+
+  const header = Bootstrap.createElement('div', 'modal-header');
+  content.append(header);
+
+  const title = Bootstrap.createElement('h5', 'modal-title', 'Warning');
+  header.append(title);
+
+  const closeButton = Bootstrap.createElement('button', 'btn-close');
+  closeButton.setAttribute('data-bs-dismiss', 'modal');
+  header.append(closeButton);
+  header.append(closeButton);
+
+  const body = Bootstrap.createElement('div', 'modal-body');
+  const bodyText = Bootstrap.createElement(
+    'p',
+    '',
+    'Warning! Proceeding will empty your cart and the characters from these books might forget their stories. Are you sure you want to risk it?',
+  );
+  body.append(bodyText);
+  content.append(body);
+
+  const footer = Bootstrap.createElement('div', 'modal-footer');
+  content.append(footer);
+
+  const closeFooterBtn = Bootstrap.createElement('button', 'btn btn-secondary', 'Close');
+  closeFooterBtn.setAttribute('data-bs-dismiss', 'modal');
+  footer.append(closeFooterBtn);
+
+  const activeBtn = Bootstrap.createElement('button', 'btn btn-danger', 'Clear');
+  footer.append(activeBtn);
+
+  return { modal, activeBtn };
 }

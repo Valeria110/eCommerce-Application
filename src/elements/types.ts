@@ -38,7 +38,8 @@ export interface ProductCart {
   images: string[];
   prices: {
     regular: number;
-    discounted: number | undefined;
+    discounted: number;
+    discountedPromo: number;
   };
   quantity: number;
 }
