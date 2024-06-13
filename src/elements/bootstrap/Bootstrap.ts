@@ -112,14 +112,12 @@ export default class Bootstrap {
 
   static createLoadingSpiner(): HTMLDivElement {
     const container = Bootstrap.createElement('div', 'loadingSpiner');
-
-    const status = Bootstrap.createElement('strong', '', 'Loading...');
-    status.setAttribute('role', 'status');
-    container.appendChild(status);
-
-    const spinner = Bootstrap.createElement('div', 'spinner-border loadingSpiner__spiner');
-    spinner.setAttribute('aria-hidden', 'true');
-    container.appendChild(spinner);
+    const loadingText = Bootstrap.createElement('p', 'loader-text h3 mt-2', 'Loading...');
+    const loader = Bootstrap.createElement('div', 'loader d-flex justify-content-center align-items-center');
+    const loaderImg = Bootstrap.createElement('img', 'loader-img');
+    loaderImg.src = '../../img/lithub-logo.svg' as string;
+    loader.append(loaderImg);
+    container.append(loader, loadingText);
 
     return container;
   }

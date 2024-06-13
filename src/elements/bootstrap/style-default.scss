@@ -1,3 +1,6 @@
+$orange-500: #fd7e14;
+$orange-300: #feb272;
+
 button.btn.btn-style-default {
   font-size: 16px;
   font-weight: 400;
@@ -11,28 +14,35 @@ li.dropdown-item.dropdown-item-style-default {
 }
 
 .loadingSpiner {
-  color: rgb(153, 153, 153);
-
   display: flex;
-  justify-content: space-around;
   align-items: center;
-
-  @media (width < 500px) {
-    flex-direction: column;
-  }
-
-  font-family: Inter;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
+  justify-content: center;
+  flex-direction: column;
 
   height: 400px;
 
-  &__spiner {
-    margin-left: auto;
-    @media (width < 500px) {
-      margin-left: auto;
-      margin-right: auto;
+  .loader {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 6px solid $orange-300;
+    border-left: 6px solid $orange-500;
+    animation: loaderRotate 1.5s linear infinite;
+
+    @keyframes loaderRotate {
+      100% {
+        transform: rotate(360deg);
+      }
     }
+
+    .loader-img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  .loader-text {
+    color: $orange-500;
+    margin-top: 20px;
   }
 }
