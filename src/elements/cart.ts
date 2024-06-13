@@ -156,6 +156,13 @@ export class Cart {
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
   }
 
+  clearCacheWhenLogOut() {
+    this.id = undefined;
+    this.customerId = undefined;
+    this.lineItems = [];
+    this.discountCodes = [];
+  }
+
   // now many items in cart
   get counter() {
     let totalQuantity = 0;
