@@ -84,12 +84,10 @@ class RequestFetch {
     }
 
     (async () => {
-      console.log('async requestAPI'); // TODO
       await this.authProjectToken();
       if (this.#customerData.email) {
         await this.updateUserData();
       }
-      console.log('should work updateUserName'); // TODO
       document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     })();
   }
@@ -436,7 +434,6 @@ class RequestFetch {
   }
 
   async getProductsByID(productID: string): Promise<Product | undefined> {
-    console.log('@ getProductsByID', this.isLogined, this.#customerToken, this.projectToken); // TODO
     try {
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {

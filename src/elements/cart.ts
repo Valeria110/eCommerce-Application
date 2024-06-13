@@ -137,7 +137,7 @@ export class Cart {
 
   private projectKey: string;
 
-  customerId: string | undefined; // TODO: may be delate
+  customerId: string | undefined;
 
   id: string | undefined;
 
@@ -232,7 +232,7 @@ export class Cart {
       console.error(data);
       return;
     } else {
-      console.log(data);
+      // console.log(data);
     }
 
     this.id = data.id;
@@ -243,7 +243,6 @@ export class Cart {
       this.discountCodes = data.discountCodes.map((item) => item.discountCode.id);
     }
     if (!this.customerId && this.id) {
-      console.log('save anonim cart id LS'); // TODO: delate
       localStorage.setItem(LOCAL_STORAGE_ANONIM_CART, this.id);
     }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
@@ -308,16 +307,16 @@ export class Cart {
       return;
     }
 
-    let uid = '';
+    let urlId = '';
     if (this.customerId) {
-      uid = `customer-id=${this.customerId}`;
+      urlId = `customer-id=${this.customerId}`;
     } else if (this.id) {
-      uid = this.id;
+      urlId = this.id;
     } else {
       console.error('call updateCart() early then id');
     }
 
-    const response = await fetch(`${this.host}/${this.projectKey}/carts/${uid}`, {
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${urlId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.projectToken}`,
@@ -326,9 +325,8 @@ export class Cart {
 
     const data = await response.json();
     if (!response.ok && response.status === 404) {
-      // user doesn't have active cart
       if (data.message === `An active cart for the customer ${this.customerId} does not exist.`) {
-        console.log('No active cart for this customer. return'); // TODO
+        // user doesn't have active cart
         return;
       }
     }
@@ -339,7 +337,6 @@ export class Cart {
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
-    console.log('try addProduct ', productId); // TODO
     const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
       method: 'POST',
       headers: {
@@ -463,7 +460,6 @@ export class Cart {
     });
 
     const data = await response.json();
-    console.log('updateDiscountCodes', data);
     if (response.ok) {
       data.results.forEach((element: { id: string; code: string }) => {
         this.discountIdName.set(element.id, element.code);
@@ -477,8 +473,6 @@ export class Cart {
     const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
     this.updateDiscountCodes();
 
-    console.log(`anonimCartID = ${anonimCartID}`);
-
     const mergeCart = async (isShouldCreateCart: boolean) => {
       const itemsInAnonimCart: { productId: string; quantity: number }[] = [];
       this.products.forEach((item) => {
@@ -488,36 +482,26 @@ export class Cart {
         await this.createCart();
       }
       itemsInAnonimCart.forEach(async (item) => {
-        console.log('добавим товары из анонимной корзины');
         await this.addProduct(item.productId, item.quantity);
       });
-      localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
+      localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // remove after merge
     };
 
     if (this.customerId) {
-      console.log('~ user login update customer cart');
-
+      // user login, check and merge cart
       if (anonimCartID) {
-        console.log('пользователь вошел, теперь проверяем есть ли у него корзина');
         await this.updateCart();
         if (this.id === anonimCartID) {
-          console.log('корзины у него нет, создадим и добавим товары');
-          // this.setCustomerId();
           await mergeCart(true);
         } else {
-          console.log('корзины у него есть + есть анонимная нужно смерджить');
           await mergeCart(false);
         }
       } else {
-        console.log('анонимной корзины нет, просто подтянем онлайн если она есть');
         await this.updateCart();
       }
     } else {
-      // TODO: put this code in class
-      console.log('~ should create or upload anonim cart');
-
+      // should create or upload anonim car
       if (anonimCartID) {
-        console.log('upload  anonimCartID', anonimCartID);
         this.id = anonimCartID;
         await this.updateCart();
       }
