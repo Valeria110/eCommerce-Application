@@ -519,7 +519,7 @@ export class Cart {
       if (anonimCartID) {
         console.log('upload  anonimCartID', anonimCartID);
         this.id = anonimCartID;
-        this.updateCart();
+        await this.updateCart();
       }
     }
 
