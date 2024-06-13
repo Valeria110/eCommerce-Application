@@ -1,6 +1,8 @@
 import requestsAPI from './requestsAPI';
 import { AppEvents, ProductCart } from './types';
 
+const LOCAL_STORAGE_ANONIM_CART = 'anonimCart';
+
 export function getAttributesValue(
   attributes: {
     name: string;
@@ -135,7 +137,7 @@ export class Cart {
 
   private projectKey: string;
 
-  customerId: string | undefined;
+  customerId: string | undefined; // TODO: may be delate
 
   id: string | undefined;
 
@@ -226,6 +228,12 @@ export class Cart {
   }
 
   private updateCacheAfterFetch(response: Response, data: CartData) {
+    if (!response.ok) {
+      console.error(data);
+    } else {
+      console.log(data);
+    }
+
     this.id = data.id;
     this.version = data.version;
     this.lineItems = data.lineItems;
@@ -233,11 +241,9 @@ export class Cart {
     if (data.discountCodes) {
       this.discountCodes = data.discountCodes.map((item) => item.discountCode.id);
     }
-
-    if (!response.ok) {
-      console.error(data);
-    } else {
-      console.log(data);
+    if (!this.customerId && this.id) {
+      console.log('save anonim cart id LS'); // TODO: delate
+      localStorage.setItem(LOCAL_STORAGE_ANONIM_CART, this.id);
     }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
   }
@@ -273,28 +279,44 @@ export class Cart {
     if (!this.isReadyProjectToken()) {
       return;
     }
+
+    const cartData: { currency: string; customerId?: string } = {
+      currency: 'USD',
+    };
+
+    if (this.customerId) {
+      cartData.customerId = this.customerId;
+    }
+
     const response = await fetch(`${this.host}/${this.projectKey}/carts`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.projectToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        currency: 'USD',
-        customerId: this.customerId,
-      }),
+      body: JSON.stringify(cartData),
     });
 
     const data = await response.json();
     this.updateCacheAfterFetch(response, data);
   }
 
-  async updateCartIdByCustomerId() {
+  async updateCart() {
     if (!this.isReadyProjectToken()) {
       console.error("Cart or Customer ID doesn't exist yet");
       return;
     }
-    const response = await fetch(`${this.host}/${this.projectKey}/carts/customer-id=${this.customerId}`, {
+
+    let uid = '';
+    if (this.customerId) {
+      uid = `customer-id=${this.customerId}`;
+    } else if (this.id) {
+      uid = this.id;
+    } else {
+      console.error('call updateCart() early then id');
+    }
+
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${uid}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.projectToken}`,
@@ -309,6 +331,7 @@ export class Cart {
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
+    console.log('try addProduct ', productId); // TODO
     const response = await fetch(`${this.host}/${this.projectKey}/carts/${this.id}`, {
       method: 'POST',
       headers: {
@@ -447,9 +470,16 @@ document.body.addEventListener(AppEvents.updateUserName, async () => {
   cart.updateDiscountCodes();
   if (cart.customerId) {
     console.log('~ user login update customer cart');
-    await cart.updateCartIdByCustomerId();
+    await cart.updateCart();
   } else {
-    console.log('~ should create anonim cart');
+    // TODO: put this code in class
+    console.log('~ should create or upload anonim cart');
+    const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
+    if (anonimCartID) {
+      console.log('upload  anonimCartID', anonimCartID);
+      cart.id = anonimCartID;
+      cart.updateCart();
+    }
   }
 
   document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));

@@ -8,7 +8,7 @@ export default function cartTempControlPanel() {
   createCart.addEventListener('click', () => cart.createCart());
 
   const getCartId = Bootstrap.createButton('get cart id', 'btn-white m-1');
-  getCartId.addEventListener('click', () => cart.updateCartIdByCustomerId());
+  getCartId.addEventListener('click', () => cart.updateCart());
 
   const getCounter = Bootstrap.createButton('get counter', 'btn-white m-1');
   getCounter.addEventListener('click', () => console.log(cart.counter));
