@@ -29,14 +29,14 @@ const updateLinkMainImg = (response: Product, index: number) => {
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
 };
 
-export default function product(id: string) {
+export default function product(id: string, isTestMode = false) {
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
   const spinerElement = Bootstrap.createLoadingSpiner();
   page.append(spinerElement);
 
   (async () => {
     // if F5 on product page, somethimes projectToken doesn't download yet
-    if (!requestsAPI.projectToken) {
+    if (!requestsAPI.projectToken && !isTestMode) {
       await requestsAPI.authProjectToken();
     }
 

@@ -29,7 +29,7 @@ describe('Product', () => {
     requestsAPI.getProductsByID = jest.fn().mockResolvedValue(mockProduct);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const productPage = product(testId);
+    const productPage = product(testId, true);
 
     expect(requestsAPI.getProductsByID).toHaveBeenCalledWith(testId);
 
@@ -37,7 +37,7 @@ describe('Product', () => {
   });
 
   it('should create an element with the given tag name', () => {
-    const productPage = product('00000000-0000-0000-0000-0000000000000');
+    const productPage = product('00000000-0000-0000-0000-0000000000000', true);
     expect(productPage.tagName).toBe('DIV');
   });
 });
