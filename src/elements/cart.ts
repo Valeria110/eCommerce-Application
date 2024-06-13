@@ -230,6 +230,7 @@ export class Cart {
   private updateCacheAfterFetch(response: Response, data: CartData) {
     if (!response.ok) {
       console.error(data);
+      return;
     } else {
       console.log(data);
     }
@@ -301,6 +302,30 @@ export class Cart {
     this.updateCacheAfterFetch(response, data);
   }
 
+  async setCustomerId() {
+    console.log('try setCustomerId', this.id, this.customerId);
+    if (!this.isReadyProjectToken()) {
+      return;
+    }
+
+    const cartData = {
+      action: 'setCustomerId',
+      customerId: this.customerId,
+    };
+
+    const response = await fetch(`${this.host}/${this.projectKey}/carts`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.projectToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(cartData),
+    });
+
+    const data = await response.json();
+    this.updateCacheAfterFetch(response, data);
+  }
+
   async updateCart() {
     if (!this.isReadyProjectToken()) {
       console.error("Cart or Customer ID doesn't exist yet");
@@ -324,10 +349,17 @@ export class Cart {
     });
 
     const data = await response.json();
+    if (!response.ok && response.status === 404) {
+      // user doesn't have active cart
+      if (data.message === `An active cart for the customer ${this.customerId} does not exist.`) {
+        console.log('No active cart for this customer. return'); // TODO
+        return;
+      }
+    }
     this.updateCacheAfterFetch(response, data);
   }
 
-  async addProduct(productId: string) {
+  async addProduct(productId: string, quantity = 1) {
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
@@ -345,7 +377,7 @@ export class Cart {
             action: 'addLineItem',
             productId: productId,
             variantId: 1,
-            quantity: 1,
+            quantity,
           },
         ],
       }),
@@ -467,14 +499,41 @@ export class Cart {
 document.body.addEventListener(AppEvents.updateUserName, async () => {
   cart.updateProjectToken(requestsAPI.projectToken ?? '');
   cart.customerId = requestsAPI.customerData.id;
+  const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
   cart.updateDiscountCodes();
+
+  console.log(`anonimCartID = ${anonimCartID}`);
+
   if (cart.customerId) {
     console.log('~ user login update customer cart');
-    await cart.updateCart();
+
+    if (anonimCartID) {
+      console.log('пользователь вошел, теперь проверяем есть ли у него корзина');
+      await cart.updateCart();
+      if (cart.id === anonimCartID) {
+        console.log('корзины у него нет, создадим и добавим товары');
+        // cart.setCustomerId();
+        const itemsInAnonimCart: { productId: string; quantity: number }[] = [];
+        cart.products.forEach((item) => {
+          itemsInAnonimCart.push({ productId: item.productId, quantity: item.quantity });
+        });
+        await cart.createCart();
+        itemsInAnonimCart.forEach((item) => {
+          console.log('добавим товары из анонимной корзины');
+          cart.addProduct(item.productId, item.quantity);
+          localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
+        });
+      } else {
+        console.log('корзины у него есть + есть анонимная нужно смерджить');
+      }
+    } else {
+      console.log('анонимной корзины нет, просто подтянем онлайн если она есть');
+      await cart.updateCart();
+    }
   } else {
     // TODO: put this code in class
     console.log('~ should create or upload anonim cart');
-    const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
+
     if (anonimCartID) {
       console.log('upload  anonimCartID', anonimCartID);
       cart.id = anonimCartID;
