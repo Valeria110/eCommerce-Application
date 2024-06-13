@@ -11,6 +11,7 @@ import product from '../pages/productPage/product';
 import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
 import basketPage from '../pages/basketPage/basketPage';
+import loader from './loader/loader';
 
 export default class App {
   start(): void {
@@ -77,6 +78,11 @@ function renderPage(newPage: Pages, productId: string | undefined) {
 
   if (pagesWithFooter.includes(newPage)) {
     document.body.append(footer());
+  }
+
+  const loaderMask = document.querySelector('.loader-mask');
+  if (!loaderMask) {
+    document.body.append(loader());
   }
 }
 
