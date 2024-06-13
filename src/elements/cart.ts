@@ -494,55 +494,64 @@ export class Cart {
       });
     }
   }
-}
 
-document.body.addEventListener(AppEvents.updateUserName, async () => {
-  cart.updateProjectToken(requestsAPI.projectToken ?? '');
-  cart.customerId = requestsAPI.customerData.id;
-  const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
-  cart.updateDiscountCodes();
+  async afterUpdateUserName() {
+    this.updateProjectToken(requestsAPI.projectToken ?? '');
+    this.customerId = requestsAPI.customerData.id;
+    const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
+    this.updateDiscountCodes();
 
-  console.log(`anonimCartID = ${anonimCartID}`);
+    console.log(`anonimCartID = ${anonimCartID}`);
 
-  if (cart.customerId) {
-    console.log('~ user login update customer cart');
+    const mergeCart = async (isShouldCreateCart: boolean) => {
+      const itemsInAnonimCart: { productId: string; quantity: number }[] = [];
+      this.products.forEach((item) => {
+        itemsInAnonimCart.push({ productId: item.productId, quantity: item.quantity });
+      });
+      if (isShouldCreateCart) {
+        await this.createCart();
+      }
+      itemsInAnonimCart.forEach((item) => {
+        console.log('добавим товары из анонимной корзины');
+        this.addProduct(item.productId, item.quantity);
+        localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
+      });
+    };
 
-    if (anonimCartID) {
-      console.log('пользователь вошел, теперь проверяем есть ли у него корзина');
-      await cart.updateCart();
-      if (cart.id === anonimCartID) {
-        console.log('корзины у него нет, создадим и добавим товары');
-        // cart.setCustomerId();
-        const itemsInAnonimCart: { productId: string; quantity: number }[] = [];
-        cart.products.forEach((item) => {
-          itemsInAnonimCart.push({ productId: item.productId, quantity: item.quantity });
-        });
-        await cart.createCart();
-        itemsInAnonimCart.forEach((item) => {
-          console.log('добавим товары из анонимной корзины');
-          cart.addProduct(item.productId, item.quantity);
-          localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // она больше не нужна
-        });
+    if (this.customerId) {
+      console.log('~ user login update customer cart');
+
+      if (anonimCartID) {
+        console.log('пользователь вошел, теперь проверяем есть ли у него корзина');
+        await this.updateCart();
+        if (this.id === anonimCartID) {
+          console.log('корзины у него нет, создадим и добавим товары');
+          // this.setCustomerId();
+          await mergeCart(true);
+        } else {
+          console.log('корзины у него есть + есть анонимная нужно смерджить');
+          await mergeCart(false);
+        }
       } else {
-        console.log('корзины у него есть + есть анонимная нужно смерджить');
+        console.log('анонимной корзины нет, просто подтянем онлайн если она есть');
+        await this.updateCart();
       }
     } else {
-      console.log('анонимной корзины нет, просто подтянем онлайн если она есть');
-      await cart.updateCart();
-    }
-  } else {
-    // TODO: put this code in class
-    console.log('~ should create or upload anonim cart');
+      // TODO: put this code in class
+      console.log('~ should create or upload anonim cart');
 
-    if (anonimCartID) {
-      console.log('upload  anonimCartID', anonimCartID);
-      cart.id = anonimCartID;
-      cart.updateCart();
+      if (anonimCartID) {
+        console.log('upload  anonimCartID', anonimCartID);
+        this.id = anonimCartID;
+        this.updateCart();
+      }
     }
+
+    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
   }
+}
 
-  document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
-});
+document.body.addEventListener(AppEvents.updateUserName, async () => cart.afterUpdateUserName());
 
 const cart = new Cart();
 export default cart;
