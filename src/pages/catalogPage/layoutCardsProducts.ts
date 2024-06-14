@@ -98,17 +98,24 @@ export function generateCards(
   return containerForCard;
 }
 
-export async function textButton(button: HTMLButtonElement) {
-  if ((await cart.lineItems) !== undefined) {
-    if ((await cart.lineItems.length) !== 0) {
-      await cart.lineItems.forEach((item) => {
-        if (item.productId === button.id) {
-          button.textContent = 'In the cart';
-          button.classList.add('disabled');
-          button.classList.add('catalog-page__button-cart_inactive');
-        }
-      });
-    }
+export async function textButton(buttonAdd: HTMLButtonElement, buttonRemove?: HTMLButtonElement | null) {
+  const lineItems = await cart.lineItems;
+
+  let isInCart = false;
+
+  if (lineItems && lineItems.length !== 0) {
+    lineItems.forEach((item) => {
+      if (item.productId === buttonAdd.id) {
+        isInCart = true;
+        buttonAdd.textContent = 'In the cart';
+        buttonAdd.classList.add('disabled');
+        buttonAdd.classList.add('catalog-page__button-cart_inactive');
+      }
+    });
+  }
+
+  if (buttonRemove) {
+    buttonRemove.style.display = isInCart ? 'flex' : 'none';
   }
 }
 

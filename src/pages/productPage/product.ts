@@ -138,15 +138,18 @@ function createRightColumn(response: Product) {
 
   const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
   const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
+  const buttonDeleteProductFormCart = Bootstrap.createButton(
+    'Remove from cart',
+    'btn-orange border-0 m-1 product__btn product__buttonRemoveProduct',
+  );
   addCartBtn.id = response.id;
-  textButton(addCartBtn);
+  textButton(addCartBtn, buttonDeleteProductFormCart);
 
   addCartBtn.addEventListener('click', () => {
     cart.addProduct(response.id);
   });
-  const wrapperBtn = Bootstrap.createElement('div');
-  wrapperBtn.append(buyBtn);
-  wrapperBtn.append(addCartBtn);
+  const wrapperBtn = Bootstrap.createElement('div', 'd-flex flex-wrap');
+  wrapperBtn.append(buyBtn, addCartBtn, buttonDeleteProductFormCart);
 
   column.append(prices, wrapperBtn);
   return column;

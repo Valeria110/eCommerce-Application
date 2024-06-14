@@ -135,6 +135,10 @@ $width_change_preview: ($screen-width-tablet + 116px);
     padding: 16px 24px 16px 24px;
     width: clamp(100px, 40%, 304px) !important;
   }
+
+  &__buttonRemoveProduct {
+    justify-content: center;
+  }
 }
 
 .productPage {
