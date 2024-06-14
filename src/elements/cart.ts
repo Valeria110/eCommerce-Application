@@ -481,9 +481,9 @@ export class Cart {
       if (isShouldCreateCart) {
         await this.createCart();
       }
-      itemsInAnonimCart.forEach(async (item) => {
+      for (const item of itemsInAnonimCart) {
         await this.addProduct(item.productId, item.quantity);
-      });
+      }
       localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // remove after merge
     };
 
