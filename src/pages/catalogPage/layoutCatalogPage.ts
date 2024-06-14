@@ -29,13 +29,13 @@ export function generateCatalogPage() {
     await getBooks();
   };
 
-  document.body.addEventListener(AppEvents.updateCounterCart, eventListener);
+  document.body.addEventListener(AppEvents.updateCart, eventListener);
 
   setTimeout(async () => {
     if (!eventTriggered) {
       await getBooks();
     }
-    document.body.removeEventListener(AppEvents.updateCounterCart, eventListener);
+    document.body.removeEventListener(AppEvents.updateCart, eventListener);
   }, 1000);
 
   CACHED_BOOKS = [];

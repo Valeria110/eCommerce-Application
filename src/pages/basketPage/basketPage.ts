@@ -47,7 +47,7 @@ export default function basketPage() {
   } else {
     switchBetwenEmptyOrNotBacket();
   }
-  document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
+  document.body.addEventListener(AppEvents.updateCart, () => switchBetwenEmptyOrNotBacket());
 
   return container;
 }
@@ -152,7 +152,7 @@ function createSummary() {
   };
   recalculateLinePrices();
 
-  document.body.addEventListener(AppEvents.updateCounterCart, () => {
+  document.body.addEventListener(AppEvents.updateCart, () => {
     recalculateLinePrices();
     updatePromocodeBadges();
   });

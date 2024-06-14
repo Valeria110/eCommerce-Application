@@ -10,6 +10,22 @@ import Carousel from 'bootstrap/js/dist/carousel';
 import cart from '../../elements/cart';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
 import { textButton } from '../catalogPage/layoutCardsProducts';
+import {
+  containerForModalWindowProductPage,
+  modalWindowProductPage,
+  contentModalWindowProductPage,
+  headerModalWindowProductPage,
+  bodyModalWindowProductPage,
+  textbodyModalWindowProductPage,
+  titleModalWindowProductPage,
+  buttonCloseModalWindowProductPage,
+  shadowButtonProductPage,
+  buttonCartProductPage,
+} from './modalWindowForProductPage';
+import {
+  buttonAndModalStateAtAddProductInCart,
+  buttonAndModalStateAtRemoveProductInCart,
+} from './buttonStateAfterAddingAndRemovingProductFromBasket';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -33,9 +49,25 @@ const updateLinkMainImg = (response: Product, index: number) => {
 export default function product(id: string) {
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
   const spinerElement = Bootstrap.createLoadingSpiner();
-  page.append(spinerElement);
+
+  containerForModalWindowProductPage.append(modalWindowProductPage);
+  modalWindowProductPage.append(contentModalWindowProductPage);
+  contentModalWindowProductPage.append(headerModalWindowProductPage, bodyModalWindowProductPage);
+  bodyModalWindowProductPage.append(textbodyModalWindowProductPage, buttonCartProductPage);
+  headerModalWindowProductPage.append(titleModalWindowProductPage, buttonCloseModalWindowProductPage);
+
+  page.append(spinerElement, containerForModalWindowProductPage, shadowButtonProductPage);
+
+  buttonCartProductPage.addEventListener('click', () => {
+    switchPage(Pages.Basket);
+  });
+
+  let eventTriggered = false;
 
   async function loadAndDisplayProduct() {
+    if (eventTriggered) return;
+    eventTriggered = true;
+
     const response = await requestsAPI.getProductsByID(id);
     if (response) {
       spinerElement.classList.add('d-none');
@@ -43,21 +75,19 @@ export default function product(id: string) {
     } else {
       switchPage(Pages.Error404);
     }
+    document.body.removeEventListener(AppEvents.updateCart, eventListener);
   }
 
-  let eventTriggered = false;
   const eventListener = async () => {
-    eventTriggered = true;
     await loadAndDisplayProduct();
   };
 
-  document.body.addEventListener(AppEvents.updateCounterCart, eventListener);
+  document.body.addEventListener(AppEvents.updateCart, eventListener);
 
   setTimeout(async () => {
     if (!eventTriggered) {
       await loadAndDisplayProduct();
     }
-    document.body.removeEventListener(AppEvents.updateCounterCart, eventListener);
   }, 1000);
 
   return page;
@@ -145,9 +175,40 @@ function createRightColumn(response: Product) {
   addCartBtn.id = response.id;
   textButton(addCartBtn, buttonDeleteProductFormCart);
 
-  addCartBtn.addEventListener('click', () => {
-    cart.addProduct(response.id);
+  cart.products.forEach((productCart) => {
+    if (productCart.productId === response.id) {
+      buttonDeleteProductFormCart.id = productCart.id;
+    }
   });
+
+  addCartBtn.addEventListener('click', () => {
+    buttonAndModalStateAtAddProductInCart(
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+    buttonDeleteProductFormCart.style.display = 'flex';
+  });
+
+  buttonDeleteProductFormCart.addEventListener('click', () => {
+    buttonAndModalStateAtRemoveProductInCart(
+      buttonDeleteProductFormCart,
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+  });
+
+  document.body.addEventListener(AppEvents.updateCart, () => {
+    cart.products.forEach((productCart) => {
+      if (productCart.productId === response.id) {
+        buttonDeleteProductFormCart.id = productCart.id;
+      }
+    });
+  });
+
   const wrapperBtn = Bootstrap.createElement('div', 'd-flex flex-wrap');
   wrapperBtn.append(buyBtn, addCartBtn, buttonDeleteProductFormCart);
 

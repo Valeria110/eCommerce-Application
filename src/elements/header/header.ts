@@ -36,7 +36,7 @@ export default function header(currentPage: Pages): HTMLElement {
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
   const cartBadge = Bootstrap.createElement('span', 'header__cart-btn-badge badge rounded-pill bg-secondary');
   updateCartBadge(cartBadge);
-  document.body.addEventListener(AppEvents.updateCounterCart, () => updateCartBadge(cartBadge));
+  document.body.addEventListener(AppEvents.updateCart, () => updateCartBadge(cartBadge));
   cartBtn.appendChild(cartBadge);
   cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');

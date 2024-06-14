@@ -230,7 +230,7 @@ export class Cart {
     } else {
       console.log(data);
     }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
   }
 
   async clearCart() {
@@ -438,7 +438,7 @@ document.body.addEventListener(AppEvents.updateUserName, () => {
   cart.updateDiscountCodes();
   cart.getCartId().then(() => {
     document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
   });
 });
 

@@ -3,6 +3,7 @@ import cart from '../../elements/cart';
 import switchPage from '../../elements/switchPage';
 import { InfoBook, InfoBookCategory, Pages } from '../../elements/types';
 import * as variablesCatalogPage from '../catalogPage/variablesForCatalogPage';
+import { buttonAndModalStateAtAddProductInCart } from '../productPage/buttonStateAfterAddingAndRemovingProductFromBasket';
 import { toggleElementVisibility } from './catalogPageUtils';
 import { handleSearchError } from './searchErrorHandler';
 
@@ -78,21 +79,12 @@ export function generateCards(
   });
 
   buttonAddToCart.addEventListener('click', async () => {
-    if (cart.id) {
-      cart.addProduct(buttonAddToCart.id);
-      variablesCatalogPage.titleModalWindowInfoCart.textContent = `Product "${name.textContent}" (1 pc.) has been successfully added to the cart.`;
-    } else {
-      await cart.createCart();
-      cart.addProduct(buttonAddToCart.id);
-      variablesCatalogPage.titleModalWindowInfoCart.textContent = `Your cart has been successfully created, and the item "${name.textContent}" (1 pc.) has been added to it.`;
-    }
-
-    buttonAddToCart.textContent = 'In the cart';
-    buttonAddToCart.classList.add('disabled');
-    buttonAddToCart.classList.add('catalog-page__button-cart_inactive');
-    document.body.classList.add('catalog-page__active-modal');
-    variablesCatalogPage.shadowButtonOpenWindow.click();
-    document.querySelectorAll('.modal-backdrop').forEach((item) => item.classList.add('custom-modal-backdrop'));
+    buttonAndModalStateAtAddProductInCart(
+      buttonAddToCart,
+      shortNameBook,
+      variablesCatalogPage.titleModalWindowInfoCart,
+      variablesCatalogPage.shadowButtonOpenWindow,
+    );
   });
 
   return containerForCard;

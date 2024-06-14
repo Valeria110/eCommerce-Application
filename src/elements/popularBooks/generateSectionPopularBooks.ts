@@ -17,10 +17,13 @@ export function generateSectionPopularBooks(textTitle: string) {
       const resultBooks = await requestsAPI.getProducts();
       POPULAR_BOOKS = resultBooks.results;
       extractBookInfo(splitArrayIntoChunks(POPULAR_BOOKS, COUNT_CHUNKS, false), COUNT_PAGES, containerForBooks);
+      document.querySelectorAll('.catalog-page__button-cart').forEach((button) => {
+        button.classList.add('d-none');
+      });
     } catch (error) {
       console.error('API error:', (error as Error).message);
     }
-  }, 400);
+  }, 500);
 
   containerForSectionPopularBook.append(titleSectionPopularBook, containerForBooks);
   return containerForSectionPopularBook;
