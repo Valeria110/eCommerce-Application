@@ -7,6 +7,7 @@ import { buildCatalogStructure, attachCatalogEventListeners } from './catalogStr
 import { resetActiveClasses, toggleElementVisibility } from './catalogPageUtils';
 import { handleSearchError } from './searchErrorHandler';
 import Bootstrap from '../../elements/bootstrap/Bootstrap';
+import { AppEvents } from '../../elements/types';
 
 const COUNT_CHUNKS = 10;
 let COUNT_PAGES: number;
@@ -22,9 +23,20 @@ const SORT_TYPES: { [key: string]: string } = {
 export function generateCatalogPage() {
   variablesCatalogPage.containerForCatalogPage.innerHTML = '';
 
-  setTimeout(async () => {
+  let eventTriggered = false;
+  const eventListener = async () => {
+    eventTriggered = true;
     await getBooks();
-  }, 900);
+  };
+
+  document.body.addEventListener(AppEvents.updateCart, eventListener);
+
+  setTimeout(async () => {
+    if (!eventTriggered) {
+      await getBooks();
+    }
+    document.body.removeEventListener(AppEvents.updateCart, eventListener);
+  }, 1000);
 
   CACHED_BOOKS = [];
   PAGES_CREATED = false;

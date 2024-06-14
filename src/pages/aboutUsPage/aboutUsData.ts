@@ -50,11 +50,7 @@ export const aboutUsData = [
       'Set up commerceTools project and API client',
       'Checking PRs and clear feedback',
     ],
-    education: [
-      'Medical college',
-      'RS Schools Course «JavaScript/Front-end. Stage 0» 2023',
-      'RS Schools Course «JavaScript/Front-end. Stage 1-2» 2024',
-    ],
+    education: ['Medical college', 'RS Schools Course «JavaScript/Front-end. Stage 1-2» 2024'], // :D к сожалению, я на stage 0 не успела
     work: ['Currently, Vika is devoting all her free time to programming and taking the RS school front-end course'],
     languages: ['Russian - native', 'English - B1'],
   },

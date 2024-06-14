@@ -3,12 +3,29 @@ import createElement from '../../elements/bootstrap/createElement';
 import { generateSectionPopularBooks } from '../../elements/popularBooks/generateSectionPopularBooks';
 import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
-import { Pages, Product } from '../../elements/types';
+import { AppEvents, Pages, Product } from '../../elements/types';
 import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
 import cart from '../../elements/cart';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
+import { textButton } from '../catalogPage/layoutCardsProducts';
+import {
+  containerForModalWindowProductPage,
+  modalWindowProductPage,
+  contentModalWindowProductPage,
+  headerModalWindowProductPage,
+  bodyModalWindowProductPage,
+  textbodyModalWindowProductPage,
+  titleModalWindowProductPage,
+  buttonCloseModalWindowProductPage,
+  shadowButtonProductPage,
+  buttonCartProductPage,
+} from './modalWindowForProductPage';
+import {
+  buttonAndModalStateAtAddProductInCart,
+  buttonAndModalStateAtRemoveProductInCart,
+} from './buttonStateAfterAddingAndRemovingProductFromBasket';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -29,16 +46,27 @@ const updateLinkMainImg = (response: Product, index: number) => {
   linkMainImg.style.backgroundImage = `url(${response.images[index]})`;
 };
 
-export default function product(id: string, isTestMode = false) {
+export default function product(id: string) {
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
   const spinerElement = Bootstrap.createLoadingSpiner();
-  page.append(spinerElement);
 
-  (async () => {
-    // if F5 on product page, somethimes projectToken doesn't download yet
-    if (!requestsAPI.projectToken && !isTestMode) {
-      await requestsAPI.authProjectToken();
-    }
+  containerForModalWindowProductPage.append(modalWindowProductPage);
+  modalWindowProductPage.append(contentModalWindowProductPage);
+  contentModalWindowProductPage.append(headerModalWindowProductPage, bodyModalWindowProductPage);
+  bodyModalWindowProductPage.append(textbodyModalWindowProductPage, buttonCartProductPage);
+  headerModalWindowProductPage.append(titleModalWindowProductPage, buttonCloseModalWindowProductPage);
+
+  page.append(spinerElement, containerForModalWindowProductPage, shadowButtonProductPage);
+
+  buttonCartProductPage.addEventListener('click', () => {
+    switchPage(Pages.Basket);
+  });
+
+  let eventTriggered = false;
+
+  async function loadAndDisplayProduct() {
+    if (eventTriggered) return;
+    eventTriggered = true;
 
     const response = await requestsAPI.getProductsByID(id);
     if (response) {
@@ -47,7 +75,20 @@ export default function product(id: string, isTestMode = false) {
     } else {
       switchPage(Pages.Error404);
     }
-  })();
+    document.body.removeEventListener(AppEvents.updateCart, eventListener);
+  }
+
+  const eventListener = async () => {
+    await loadAndDisplayProduct();
+  };
+
+  document.body.addEventListener(AppEvents.updateCart, eventListener);
+
+  setTimeout(async () => {
+    if (!eventTriggered) {
+      await loadAndDisplayProduct();
+    }
+  }, 1000);
 
   return page;
 }
@@ -125,14 +166,50 @@ function createRightColumn(response: Product) {
     );
   }
 
-  const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
   const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
-  addCartBtn.addEventListener('click', () => {
-    cart.addProduct(response.id);
+  const buttonDeleteProductFormCart = Bootstrap.createButton(
+    'Remove from cart',
+    'btn-orange border-0 m-1 product__btn product__buttonRemoveProduct',
+  );
+  addCartBtn.id = response.id;
+  textButton(addCartBtn, buttonDeleteProductFormCart);
+
+  cart.products.forEach((productCart) => {
+    if (productCart.productId === response.id) {
+      buttonDeleteProductFormCart.id = productCart.id;
+    }
   });
-  const wrapperBtn = Bootstrap.createElement('div');
-  wrapperBtn.append(buyBtn);
-  wrapperBtn.append(addCartBtn);
+
+  addCartBtn.addEventListener('click', () => {
+    buttonAndModalStateAtAddProductInCart(
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+    buttonDeleteProductFormCart.style.display = 'flex';
+  });
+
+  buttonDeleteProductFormCart.addEventListener('click', () => {
+    buttonAndModalStateAtRemoveProductInCart(
+      buttonDeleteProductFormCart,
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+  });
+
+  document.body.addEventListener(AppEvents.updateCart, () => {
+    cart.products.forEach((productCart) => {
+      if (productCart.productId === response.id) {
+        buttonDeleteProductFormCart.id = productCart.id;
+      }
+    });
+  });
+
+  const wrapperBtn = Bootstrap.createElement('div', 'd-flex flex-wrap');
+  wrapperBtn.append(addCartBtn, buttonDeleteProductFormCart);
 
   column.append(prices, wrapperBtn);
   return column;

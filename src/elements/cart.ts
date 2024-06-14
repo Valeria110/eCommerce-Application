@@ -245,7 +245,7 @@ export class Cart {
     if (!this.customerId && this.id) {
       localStorage.setItem(LOCAL_STORAGE_ANONIM_CART, this.id);
     }
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
   }
 
   async clearCart() {

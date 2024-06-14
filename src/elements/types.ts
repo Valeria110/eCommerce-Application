@@ -13,8 +13,9 @@ export enum Pages {
 export enum AppEvents {
   switchPage = 'switchPage',
   updateUserName = 'updateUserName',
-  updateCounterCart = 'updateCounterCart',
+  updateCart = 'updateCart',
   createCart = 'createCart',
+  updateCounterCart = 'updateCounterCart',
 }
 
 export interface Product {
