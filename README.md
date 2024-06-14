@@ -64,4 +64,3 @@ npm run script:
     "format": "prettier --write .",
     "ci:format": "prettier --check ."
     }
-
