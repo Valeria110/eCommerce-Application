@@ -32,22 +32,17 @@ export default function basketPage() {
   });
 
   const emptyBasket = createEmptyBasket();
-  const spiner = Bootstrap.createLoadingSpiner();
+  // const spiner = Bootstrap.createLoadingSpiner();
   const switchBetwenEmptyOrNotBacket = () => {
     container.innerHTML = '';
-
     if (!cart.counter) {
       container.append(emptyBasket);
     } else {
       container.append(productAndSummary, clearShoppingCartBtn, modalWarning.modal);
     }
   };
-  if (!cart.id) {
-    container.append(spiner);
-  } else {
-    switchBetwenEmptyOrNotBacket();
-  }
-  document.body.addEventListener(AppEvents.updateCart, () => switchBetwenEmptyOrNotBacket());
+  switchBetwenEmptyOrNotBacket();
+  document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
 
   return container;
 }
@@ -271,7 +266,7 @@ function createModalWarning() {
   closeFooterBtn.setAttribute('data-bs-dismiss', 'modal');
   footer.append(closeFooterBtn);
 
-  const activeBtn = Bootstrap.createElement('button', 'btn btn-danger', 'Clear');
+  const activeBtn = Bootstrap.createElement('button', 'btn btn-danger', 'Yes, clear');
   footer.append(activeBtn);
 
   return { modal, activeBtn };

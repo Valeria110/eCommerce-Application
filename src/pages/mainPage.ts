@@ -1,5 +1,4 @@
 import Bootstrap from '../elements/bootstrap/Bootstrap';
-import cartTempControlPanel from '../elements/cartTempControlPanel';
 import discount from '../elements/discount/discount';
 import findYourBook from '../elements/findYourBook/findYourBook';
 import { generateSectionPopularBooks } from '../elements/popularBooks/generateSectionPopularBooks';
@@ -18,7 +17,6 @@ export default function mainPage() {
   const div = Bootstrap.createElement('div');
   div.append(containerForModalWindow, shadowButton);
   div.append(findYourBook());
-  div.append(cartTempControlPanel());
   div.append(discount());
   div.append(generateSectionPopularBooks('Popular books'));
 

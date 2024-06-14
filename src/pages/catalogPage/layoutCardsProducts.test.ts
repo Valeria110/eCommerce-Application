@@ -1,5 +1,14 @@
 import { generateCards, insertDotBeforeLastTwoChars, extractBookInfo } from './layoutCardsProducts';
 
+jest.mock('../../elements/requestsAPI', () => ({
+  isLogined: false,
+  customerData: {
+    firstName: 'Jon',
+    lastName: 'Smit',
+    email: 'test@test.com',
+  },
+}));
+
 describe('generateCards function', () => {
   const fakeData = {
     imgUrl: 'url',

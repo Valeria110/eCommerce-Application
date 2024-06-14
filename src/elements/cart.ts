@@ -1,6 +1,8 @@
 import requestsAPI from './requestsAPI';
 import { AppEvents, ProductCart } from './types';
 
+const LOCAL_STORAGE_ANONIM_CART = 'anonimCart';
+
 export function getAttributesValue(
   attributes: {
     name: string;
@@ -156,6 +158,15 @@ export class Cart {
     this.projectKey = process.env.CTP_PROJECT_KEY ?? '';
   }
 
+  clearCacheWhenLogOut() {
+    this.id = undefined;
+    this.customerId = undefined;
+    this.lineItems = [];
+    this.discountCodes = [];
+
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+  }
+
   // now many items in cart
   get counter() {
     let totalQuantity = 0;
@@ -217,6 +228,13 @@ export class Cart {
   }
 
   private updateCacheAfterFetch(response: Response, data: CartData) {
+    if (!response.ok) {
+      console.error(data);
+      return;
+    } else {
+      // console.log(data);
+    }
+
     this.id = data.id;
     this.version = data.version;
     this.lineItems = data.lineItems;
@@ -224,11 +242,8 @@ export class Cart {
     if (data.discountCodes) {
       this.discountCodes = data.discountCodes.map((item) => item.discountCode.id);
     }
-
-    if (!response.ok) {
-      console.error(data);
-    } else {
-      console.log(data);
+    if (!this.customerId && this.id) {
+      localStorage.setItem(LOCAL_STORAGE_ANONIM_CART, this.id);
     }
     document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
   }
@@ -264,28 +279,44 @@ export class Cart {
     if (!this.isReadyProjectToken()) {
       return;
     }
+
+    const cartData: { currency: string; customerId?: string } = {
+      currency: 'USD',
+    };
+
+    if (this.customerId) {
+      cartData.customerId = this.customerId;
+    }
+
     const response = await fetch(`${this.host}/${this.projectKey}/carts`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.projectToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        currency: 'USD',
-        customerId: this.customerId,
-      }),
+      body: JSON.stringify(cartData),
     });
 
     const data = await response.json();
     this.updateCacheAfterFetch(response, data);
   }
 
-  async getCartId() {
-    if (!this.isReadyProjectToken() || !this.customerId) {
+  async updateCart() {
+    if (!this.isReadyProjectToken()) {
       console.error("Cart or Customer ID doesn't exist yet");
       return;
     }
-    const response = await fetch(`${this.host}/${this.projectKey}/carts/customer-id=${this.customerId}`, {
+
+    let urlId = '';
+    if (this.customerId) {
+      urlId = `customer-id=${this.customerId}`;
+    } else if (this.id) {
+      urlId = this.id;
+    } else {
+      console.error('call updateCart() early then id');
+    }
+
+    const response = await fetch(`${this.host}/${this.projectKey}/carts/${urlId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${this.projectToken}`,
@@ -293,10 +324,16 @@ export class Cart {
     });
 
     const data = await response.json();
+    if (!response.ok && response.status === 404) {
+      if (data.message === `An active cart for the customer ${this.customerId} does not exist.`) {
+        // user doesn't have active cart
+        return;
+      }
+    }
     this.updateCacheAfterFetch(response, data);
   }
 
-  async addProduct(productId: string) {
+  async addProduct(productId: string, quantity = 1) {
     if (!this.isReadyProjectToken() || !this.isExistCartId()) {
       return;
     }
@@ -313,7 +350,7 @@ export class Cart {
             action: 'addLineItem',
             productId: productId,
             variantId: 1,
-            quantity: 1,
+            quantity,
           },
         ],
       }),
@@ -423,24 +460,58 @@ export class Cart {
     });
 
     const data = await response.json();
-    console.log('updateDiscountCodes', data);
     if (response.ok) {
       data.results.forEach((element: { id: string; code: string }) => {
         this.discountIdName.set(element.id, element.code);
       });
     }
   }
+
+  async afterUpdateUserName() {
+    this.updateProjectToken(requestsAPI.projectToken ?? '');
+    this.customerId = requestsAPI.customerData.id;
+    const anonimCartID = localStorage.getItem(LOCAL_STORAGE_ANONIM_CART);
+    this.updateDiscountCodes();
+
+    const mergeCart = async (isShouldCreateCart: boolean) => {
+      const itemsInAnonimCart: { productId: string; quantity: number }[] = [];
+      this.products.forEach((item) => {
+        itemsInAnonimCart.push({ productId: item.productId, quantity: item.quantity });
+      });
+      if (isShouldCreateCart) {
+        await this.createCart();
+      }
+      itemsInAnonimCart.forEach(async (item) => {
+        await this.addProduct(item.productId, item.quantity);
+      });
+      localStorage.removeItem(LOCAL_STORAGE_ANONIM_CART); // remove after merge
+    };
+
+    if (this.customerId) {
+      // user login, check and merge cart
+      if (anonimCartID) {
+        await this.updateCart();
+        if (this.id === anonimCartID) {
+          await mergeCart(true);
+        } else {
+          await mergeCart(false);
+        }
+      } else {
+        await this.updateCart();
+      }
+    } else {
+      // should create or upload anonim car
+      if (anonimCartID) {
+        this.id = anonimCartID;
+        await this.updateCart();
+      }
+    }
+
+    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
+  }
 }
 
-document.body.addEventListener(AppEvents.updateUserName, () => {
-  cart.updateProjectToken(requestsAPI.projectToken ?? '');
-  cart.customerId = requestsAPI.customerData.id;
-  cart.updateDiscountCodes();
-  cart.getCartId().then(() => {
-    document.body.dispatchEvent(new CustomEvent(AppEvents.createCart));
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
-  });
-});
+document.body.addEventListener(AppEvents.updateUserName, async () => cart.afterUpdateUserName());
 
 const cart = new Cart();
 export default cart;
