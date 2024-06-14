@@ -3,12 +3,13 @@ import createElement from '../../elements/bootstrap/createElement';
 import { generateSectionPopularBooks } from '../../elements/popularBooks/generateSectionPopularBooks';
 import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
-import { Pages, Product } from '../../elements/types';
+import { AppEvents, Pages, Product } from '../../elements/types';
 import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
 import cart from '../../elements/cart';
 import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
+import { textButton } from '../catalogPage/layoutCardsProducts';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -34,7 +35,7 @@ export default function product(id: string) {
   const spinerElement = Bootstrap.createLoadingSpiner();
   page.append(spinerElement);
 
-  (async () => {
+  async function loadAndDisplayProduct() {
     const response = await requestsAPI.getProductsByID(id);
     if (response) {
       spinerElement.classList.add('d-none');
@@ -42,7 +43,22 @@ export default function product(id: string) {
     } else {
       switchPage(Pages.Error404);
     }
-  })();
+  }
+
+  let eventTriggered = false;
+  const eventListener = async () => {
+    eventTriggered = true;
+    await loadAndDisplayProduct();
+  };
+
+  document.body.addEventListener(AppEvents.updateCounterCart, eventListener);
+
+  setTimeout(async () => {
+    if (!eventTriggered) {
+      await loadAndDisplayProduct();
+    }
+    document.body.removeEventListener(AppEvents.updateCounterCart, eventListener);
+  }, 1000);
 
   return page;
 }
@@ -122,6 +138,9 @@ function createRightColumn(response: Product) {
 
   const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
   const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
+  addCartBtn.id = response.id;
+  textButton(addCartBtn);
+
   addCartBtn.addEventListener('click', () => {
     cart.addProduct(response.id);
   });
