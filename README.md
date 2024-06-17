@@ -1,8 +1,8 @@
 # :books: LitHub — Online Book Store LitHub
 
-**Welcome to our eCommerce Application, an online book store "LitHub"!** Here you will find an analogue of the real shopping experience in a digital environment. :convenience_store: Our platform is a comprehensive online portal for purchasing books, providing users with an interactive and user-friendly interface. From product discovery to checkout, our app offers a seamless shopping path, increasing user engagement and confidence in every step. :blush:
+**Welcome to our eCommerce Application, an online book store "LitHub"!** Here you will find an analogue of the real shopping experience in a digital environment. 🏪 Our platform is a comprehensive online portal for purchasing books, providing users with an interactive and user-friendly interface. From product discovery to checkout, our app offers a seamless shopping path, increasing user engagement and confidence in every step. 😊
 
-Our users can enjoy _a wide range of books_ :book:, _view detailed descriptions_ :nerd*face:, \_add impressive finds to the cart* :shopping*cart: and \_effortlessly proceed to checkout*. :credit*card: Our application provides functionality for \_registration and login* :pencil::closed*lock_with_key:, \_instant product search* :mag:, as well as _convenient categorization and sorting_ to make the shopping process simple and enjoyable.
+Our users can enjoy _a wide range of books_ 📖, _view detailed descriptions_ 🤓, _add impressive finds to the cart_ 🛒 and _effortlessly proceed to checkout_. 💳 Our application provides functionality for _registration and login_ ✏️🔐, _instant product search_ :mag:, as well as _convenient categorization and sorting_ to make the shopping process simple and enjoyable.
 
 _One of the key factors that makes our application attractive is its adaptability_. This feature allows the application to function flawlessly on various devices with screen resolutions of 390 pixels and above. Such an approach guarantees that users can enjoy the convenience and functionality of shopping regardless of the device they prefer to use. :iphone::computer:
 

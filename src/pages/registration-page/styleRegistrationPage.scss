@@ -257,10 +257,6 @@ div .error-register {
 }
 
 .modal_registration_successful {
-  .modal-backdrop {
-    opacity: 0 !important;
-  }
-
   .modal-header,
   .modal-content {
     border-color: $checkboxs-buttons-color !important;
@@ -280,6 +276,12 @@ div .error-register {
   .modal-dialog {
     position: fixed !important;
     right: 25px !important;
+  }
+
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px !important;
   }
 }
 
@@ -307,7 +309,13 @@ div .error-register {
 }
 
 @media (max-width: 575px) {
-  .modal-dialog {
-    right: 0 !important;
+  .modal_registration_successful {
+    .modal-dialog {
+      right: 0 !important;
+    }
   }
+}
+
+.custom-modal-backdrop {
+  opacity: 0 !important;
 }

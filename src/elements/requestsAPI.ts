@@ -1,7 +1,9 @@
 import { splitCountry } from '../pages/registration-page/layoutRegistrationPage';
 import { splitStreetNameAndNumber } from '../pages/registration-page/validationInputsShippingAndBillingAddressForms';
 import { reversedCountriesList } from '../utils/utils';
-import { AppEvents, Product, IAddressObj, IUserData } from './types';
+import cart from './cart';
+import switchPage from './switchPage';
+import { AppEvents, Product, IAddressObj, IUserData, Pages } from './types';
 const LOCAL_STORAGE_CUSTOMER_TOKEN = 'customerToken';
 const LOCAL_STORAGE_EMAIL = 'customerEmail';
 
@@ -120,7 +122,7 @@ class RequestFetch {
     }
   }
 
-  private async authProjectToken() {
+  async authProjectToken() {
     const response = await fetch(`${this.authUrl}/oauth/token`, {
       method: 'POST',
       headers: {
@@ -179,6 +181,7 @@ class RequestFetch {
       this.customerToken = obj.access_token;
       this.updateUserEmail(email);
       await this.updateUserData();
+      document.body.dispatchEvent(new CustomEvent(AppEvents.updateUserName));
     }
 
     return { isOk: response.ok, field, message };
@@ -188,6 +191,7 @@ class RequestFetch {
     this.customerToken = undefined;
     this.updateUserEmail(undefined);
     localStorage.clear();
+    cart.clearCacheWhenLogOut();
   }
 
   async isExistCustomer(email: string): Promise<boolean> {
@@ -321,11 +325,18 @@ class RequestFetch {
     }
   }
 
-  async sortNameAndPriceWithCategory(id: string, typeSort: string, isCategory: boolean) {
+  async sortNameAndPriceWithCategory(
+    id: string,
+    typeSort: string,
+    isCategory: boolean,
+    fromPrice = '',
+    toPrice = '',
+    search = '',
+  ) {
     try {
       const limit = 100;
       let type;
-      let url;
+      let url: string;
       if (typeSort === 'Alphabetically') {
         type = 'name.en-US asc';
       } else if (typeSort === 'Cheap') {
@@ -334,10 +345,22 @@ class RequestFetch {
         type = 'price desc';
       }
 
-      if (isCategory === false) {
+      if (isCategory === false && fromPrice === '' && toPrice === '' && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?sort=${type}&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && fromPrice === '' && toPrice === '' && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice === '' && toPrice === '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&fuzzy=true&sort=${type}&limit=${limit}`;
+      } else if (isCategory === true && fromPrice === '' && toPrice === '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&text.en-US=${search}&fuzzy=true&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '' && search === '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else if (isCategory === true && fromPrice !== '' && toPrice !== '' && search === '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '' && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&fuzzy=true&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&text.en-US=${search}&fuzzy=true&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&sort=${type}&limit=${limit}`;
       }
 
       const response = await fetch(url, {
@@ -354,15 +377,20 @@ class RequestFetch {
     }
   }
 
-  async getBookWithSearch(searchTerm: string, id: string, isCategory: boolean) {
+  async getBookWithSearch(searchTerm: string, id: string, isCategory: boolean, fromPrice = '', toPrice = '') {
     try {
       let url;
       const limit = 100;
-      if (isCategory === false) {
+      if (isCategory === false && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&fuzzy=true&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && fromPrice === '' && toPrice === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&fuzzy=true&limit=${limit}`;
+      } else if (isCategory === false && fromPrice !== '' && toPrice !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&fuzzy=true&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${searchTerm}&filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&fuzzy=true&limit=${limit}`;
       }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -377,15 +405,20 @@ class RequestFetch {
     }
   }
 
-  async getBooksByPriceRange(fromPrice: string, toPrice: string, isCategory: boolean, id: string) {
+  async getBooksByPriceRange(fromPrice: string, toPrice: string, isCategory: boolean, id: string, search = '') {
     try {
       let url;
       const limit = 100;
-      if (isCategory === false) {
+      if (isCategory === false && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
-      } else {
+      } else if (isCategory === true && search === '') {
         url = `${this.host}/${this.projectKey}/product-projections/search?filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
+      } else if (isCategory === true && search !== '') {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=categories.id:${'"' + id + '"'}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
+      } else {
+        url = `${this.host}/${this.projectKey}/product-projections/search?text.en-US=${search}&filter=variants.price.centAmount:range (${fromPrice} to ${toPrice})&limit=${limit}`;
       }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -402,18 +435,11 @@ class RequestFetch {
 
   async getProductsByID(productID: string): Promise<Product | undefined> {
     try {
-      // now - always use project token, but in Sprint 4, replace on #customerToken for logined user
       const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
         headers: {
-          Authorization: `Bearer ${this.projectToken}`,
+          Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
         },
       });
-
-      // const response = await fetch(`${this.host}/${this.projectKey}/products/${productID}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${this.isLogined ? this.#customerToken : this.projectToken}`,
-      //   },
-      // });
 
       await this.checkResponse(response);
 
@@ -433,6 +459,7 @@ class RequestFetch {
         };
       }[] = obj.masterData.current.masterVariant.images;
       return {
+        id: obj.id,
         title: obj.masterData.current.name['en-US'],
         description:
           obj.masterData.current.description?.['en-US'] ?? getAttributesValue(attributes, 'description') ?? '',
@@ -452,8 +479,10 @@ class RequestFetch {
 
   private async checkResponse(response: Response) {
     if (!response.ok) {
-      if (response.status === 401) {
-        console.error('We should update token');
+      if (response.status === 401 && this.isLogined) {
+        console.error('User should login again');
+        this.authCustomersLogout();
+        switchPage(Pages.LogIn);
       } else {
         console.error(`Error HTTP: ${response.status}`);
       }
@@ -951,7 +980,8 @@ class RequestFetch {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('version', data.version);
-      return data.addresses[data.addresses.length - 1];
+      const newAddressData: IAddressObj = data.addresses[data.addresses.length - 1];
+      return newAddressData;
     }
   }
 

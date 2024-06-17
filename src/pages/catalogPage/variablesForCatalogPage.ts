@@ -3,9 +3,12 @@ import './styleCatalogPage.scss';
 
 export const containerForCatalogPage = createElement('div', 'catalog-page__container');
 
-export const containerForBooksFilterPanel = createElement('div', 'd-flex catalog-page__header');
+export const containerForBooksFilterPanel = createElement('div', 'd-flex catalog-page__header align-items-center');
 
-export const containerForCategoryAndPrice = createElement('div', 'd-flex catalog-page__header-container');
+export const containerForCategoryAndPrice = createElement(
+  'div',
+  'd-flex catalog-page__header-container align-items-center',
+);
 
 export const containerforCategoryAndSort = createElement('div', 'd-flex catalog-page__container-dropdown');
 export const dropDownBooksCategories = createElement(
@@ -49,7 +52,10 @@ inputMaxPrice.placeholder = 'to';
 export const clearInputMaxPrice = createElement('div', 'd-none catalog-page__input-price_reset');
 export const priceCurrency = createElement('div', 'd-flex align-items-center', '$');
 
-export const containerForInputSearchBooks = createElement('div', 'd-flex position-relative align-items-center');
+export const containerForInputSearchBooks = createElement(
+  'div',
+  'd-flex position-relative align-items-center catalog-page__container-input-search',
+);
 export const inputSearchBooks = createElement('input', 'catalog-page__input-search');
 inputSearchBooks.placeholder = 'Search';
 inputSearchBooks.style.height = '36px';
@@ -83,3 +89,26 @@ export const containerForTextToTrySearch = createElement(
   'catalog-page__search-text_try',
   'Try changing your search criteria',
 );
+
+export const buttonClearSorting = createElement('div', 'catalog-page__button-reset-sort', 'Clear filters');
+export const containerForSearchAndButtonClearFilters = createElement('div', 'catalog-page__container-reset-filters');
+
+export const shadowButtonOpenWindow = createElement('button', 'btn btn-primary d-none');
+shadowButtonOpenWindow.setAttribute('data-bs-toggle', 'modal');
+shadowButtonOpenWindow.setAttribute('data-bs-target', '#newCart');
+
+export const containerForModalWindowInfoCart = createElement('div', 'modal fade modal_registration_successful');
+containerForModalWindowInfoCart.id = 'newCart';
+containerForModalWindowInfoCart.setAttribute('tabindex', '-1');
+containerForModalWindowInfoCart.setAttribute('aria-hidden', 'true');
+export const modalWindowInfoCart = createElement('div', 'modal-dialog');
+export const contentModalWindowInfoCart = createElement('div', 'modal-content');
+export const headerModalWindowInfoCart = createElement('div', 'modal-header');
+export const titleModalWindowInfoCart = createElement('h6', 'modal-title');
+export const buttonCloseModalWindowInfoCart = createElement('button', 'btn-close');
+buttonCloseModalWindowInfoCart.setAttribute('data-bs-dismiss', 'modal');
+export const bodyModalWindowInfoCart = createElement('div', 'modal-body');
+export const textbodyModalWindowInfoCart = createElement('div');
+textbodyModalWindowInfoCart.innerHTML = 'You can continue shopping or proceed to checkout. 🛍️✨';
+export const buttonCart = createElement('div', 'btn catalog-page__button-cart_open', 'Go to the cart');
+buttonCart.setAttribute('data-bs-dismiss', 'modal');

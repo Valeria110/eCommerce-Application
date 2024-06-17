@@ -28,7 +28,7 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
       history.pushState({ state: 'error_404_page' }, 'Error 404 Page', '/error_404');
       break;
     case Pages.Product:
-      history.pushState({ state: 'product' }, 'Product', `/product/${productId ?? ''}`);
+      history.pushState({ state: 'product' }, 'Product', `/product-${productId ?? ''}`);
       break;
     case Pages.Catalog:
       history.pushState({ state: 'catalog' }, 'Catalog', '/catalog');
@@ -36,15 +36,33 @@ function changePageRoute(page: Pages, productId: string | undefined = undefined)
     case Pages.AboutUS:
       history.pushState({ state: 'about us' }, 'About us', '/about_us');
       break;
+    case Pages.Basket:
+      history.pushState({ state: 'basket' }, 'Basket', '/basket');
+      break;
     default:
       console.error('configure routing in changePageRoute()');
   }
 }
 
-const routes = ['/login', '/main', '/sign_up', '/catalog', '/about_us', '/user_profile_page'];
+export const routes = [
+  '/login',
+  '/main',
+  '/sign_up',
+  '/catalog',
+  '/about_us',
+  '/user_profile_page',
+  '/product',
+  '/basket',
+];
 
 function handleLocation() {
-  const pathname = window.location.pathname;
+  let pathname = window.location.pathname;
+  let productId = '';
+
+  if (pathname.startsWith('/product')) {
+    productId = retrieveProductId(pathname);
+    pathname = '/product';
+  }
 
   if (pathname === '/') {
     switchPage(Pages.Main);
@@ -82,12 +100,23 @@ function handleLocation() {
           switchPage(Pages.Main);
         }
         break;
+      case '/product':
+        switchPage(Pages.Product, productId);
+        break;
+      case '/basket':
+        switchPage(Pages.Basket);
+        break;
     }
   }
+}
+
+function retrieveProductId(pathname: string) {
+  const productId = pathname.slice(9);
+  return productId;
 }
 
 function isUserLogined() {
   return requestsAPI.isLogined;
 }
 
-export { changePageRoute, handleLocation };
+export { changePageRoute, handleLocation, retrieveProductId, isUserLogined };

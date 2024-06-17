@@ -3,10 +3,29 @@ import createElement from '../../elements/bootstrap/createElement';
 import { generateSectionPopularBooks } from '../../elements/popularBooks/generateSectionPopularBooks';
 import requestsAPI from '../../elements/requestsAPI';
 import switchPage from '../../elements/switchPage';
-import { Pages, Product } from '../../elements/types';
+import { AppEvents, Pages, Product } from '../../elements/types';
 import './product.scss';
 import Modal from 'bootstrap/js/dist/modal';
 import Carousel from 'bootstrap/js/dist/carousel';
+import cart from '../../elements/cart';
+import { convertCentsToDollars } from '../../libs/convertCentsToDollars';
+import { textButton } from '../catalogPage/layoutCardsProducts';
+import {
+  containerForModalWindowProductPage,
+  modalWindowProductPage,
+  contentModalWindowProductPage,
+  headerModalWindowProductPage,
+  bodyModalWindowProductPage,
+  textbodyModalWindowProductPage,
+  titleModalWindowProductPage,
+  buttonCloseModalWindowProductPage,
+  shadowButtonProductPage,
+  buttonCartProductPage,
+} from './modalWindowForProductPage';
+import {
+  buttonAndModalStateAtAddProductInCart,
+  buttonAndModalStateAtRemoveProductInCart,
+} from './buttonStateAfterAddingAndRemovingProductFromBasket';
 
 let linkMainImg: HTMLElement;
 let cardDiscounted: HTMLDivElement;
@@ -29,10 +48,26 @@ const updateLinkMainImg = (response: Product, index: number) => {
 
 export default function product(id: string) {
   const page = Bootstrap.createElement('div', 'd-flex flex-column productPage');
-  const spinerElement = createLoadingSpiner();
-  page.append(spinerElement);
+  const spinerElement = Bootstrap.createLoadingSpiner();
 
-  (async () => {
+  containerForModalWindowProductPage.append(modalWindowProductPage);
+  modalWindowProductPage.append(contentModalWindowProductPage);
+  contentModalWindowProductPage.append(headerModalWindowProductPage, bodyModalWindowProductPage);
+  bodyModalWindowProductPage.append(textbodyModalWindowProductPage, buttonCartProductPage);
+  headerModalWindowProductPage.append(titleModalWindowProductPage, buttonCloseModalWindowProductPage);
+
+  page.append(spinerElement, containerForModalWindowProductPage, shadowButtonProductPage);
+
+  buttonCartProductPage.addEventListener('click', () => {
+    switchPage(Pages.Basket);
+  });
+
+  let eventTriggered = false;
+
+  async function loadAndDisplayProduct() {
+    if (eventTriggered) return;
+    eventTriggered = true;
+
     const response = await requestsAPI.getProductsByID(id);
     if (response) {
       spinerElement.classList.add('d-none');
@@ -40,7 +75,20 @@ export default function product(id: string) {
     } else {
       switchPage(Pages.Error404);
     }
-  })();
+    document.body.removeEventListener(AppEvents.updateCart, eventListener);
+  }
+
+  const eventListener = async () => {
+    await loadAndDisplayProduct();
+  };
+
+  document.body.addEventListener(AppEvents.updateCart, eventListener);
+
+  setTimeout(async () => {
+    if (!eventTriggered) {
+      await loadAndDisplayProduct();
+    }
+  }, 1000);
 
   return page;
 }
@@ -118,19 +166,53 @@ function createRightColumn(response: Product) {
     );
   }
 
-  const buyBtn = Bootstrap.createButton('Buy', 'btn-orange border-0 m-1 product__btn product__btnBuy');
   const addCartBtn = Bootstrap.createButton('Add to card', 'btn-white m-1 product__btn product__btnAddToCard');
-  const wrapperBtn = Bootstrap.createElement('div');
-  wrapperBtn.append(buyBtn);
-  wrapperBtn.append(addCartBtn);
+  const buttonDeleteProductFormCart = Bootstrap.createButton(
+    'Remove from cart',
+    'btn-orange border-0 m-1 product__btn product__buttonRemoveProduct',
+  );
+  addCartBtn.id = response.id;
+  textButton(addCartBtn, buttonDeleteProductFormCart);
+
+  cart.products.forEach((productCart) => {
+    if (productCart.productId === response.id) {
+      buttonDeleteProductFormCart.id = productCart.id;
+    }
+  });
+
+  addCartBtn.addEventListener('click', () => {
+    buttonAndModalStateAtAddProductInCart(
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+    buttonDeleteProductFormCart.style.display = 'flex';
+  });
+
+  buttonDeleteProductFormCart.addEventListener('click', () => {
+    buttonAndModalStateAtRemoveProductInCart(
+      buttonDeleteProductFormCart,
+      addCartBtn,
+      response.title,
+      titleModalWindowProductPage,
+      shadowButtonProductPage,
+    );
+  });
+
+  document.body.addEventListener(AppEvents.updateCart, () => {
+    cart.products.forEach((productCart) => {
+      if (productCart.productId === response.id) {
+        buttonDeleteProductFormCart.id = productCart.id;
+      }
+    });
+  });
+
+  const wrapperBtn = Bootstrap.createElement('div', 'd-flex flex-wrap');
+  wrapperBtn.append(addCartBtn, buttonDeleteProductFormCart);
 
   column.append(prices, wrapperBtn);
   return column;
-}
-
-function convertCentsToDollars(cents: number) {
-  const dollars = cents / 100;
-  return (dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2)) + '$';
 }
 
 function getProcentDiscount(response: Product) {
@@ -329,19 +411,4 @@ function showModalWithCarousel(index: number) {
 
   const bsCarousel = new Carousel(carousel);
   bsCarousel.to(index);
-}
-
-function createLoadingSpiner(): HTMLDivElement {
-  const container = Bootstrap.createElement('div', 'productSpiner d-flex align-items-center');
-
-  const status = Bootstrap.createElement('strong', '', 'Loading...');
-  status.setAttribute('role', 'status');
-  container.appendChild(status);
-
-  const spinner = Bootstrap.createElement('div', 'spinner-border ms-auto');
-  spinner.className = 'spinner-border ms-auto';
-  spinner.setAttribute('aria-hidden', 'true');
-  container.appendChild(spinner);
-
-  return container;
 }

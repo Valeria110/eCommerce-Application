@@ -3,13 +3,15 @@ import { loginPage } from '../pages/loginPage';
 import mainPage from '../pages/mainPage';
 import { AppEvents, Pages } from './types';
 import { changePageRoute, handleLocation } from './pageRouting/routing';
-import aboutUS from '../pages/aboutUs';
+import { aboutUsPage } from '../pages/aboutUsPage/aboutUsPage';
 import header from './header/header';
 import error404Page from '../pages/error404Page';
 import footer from './footer/footer';
 import product from '../pages/productPage/product';
 import { generateCatalogPage } from '../pages/catalogPage/layoutCatalogPage';
 import { userProfilePage } from '../pages/userProfilePage/userProfilePage';
+import basketPage from '../pages/basketPage/basketPage';
+import loader from './loader/loader';
 
 export default class App {
   start(): void {
@@ -29,8 +31,16 @@ function renderPage(newPage: Pages, productId: string | undefined) {
   document.body.className = '';
   resetStyleAfterBurger();
 
-  const pagesWithHeader = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Error404, Pages.Product, Pages.UserProfile];
-  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product, Pages.UserProfile];
+  const pagesWithHeader = [
+    Pages.Main,
+    Pages.Catalog,
+    Pages.AboutUS,
+    Pages.Error404,
+    Pages.Product,
+    Pages.UserProfile,
+    Pages.Basket,
+  ];
+  const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product, Pages.UserProfile, Pages.Basket];
 
   if (pagesWithHeader.includes(newPage)) {
     document.body.append(header(newPage));
@@ -50,13 +60,16 @@ function renderPage(newPage: Pages, productId: string | undefined) {
       document.body.append(generateCatalogPage());
       break;
     case Pages.AboutUS:
-      document.body.append(aboutUS());
+      document.body.append(aboutUsPage());
       break;
     case Pages.Product:
       document.body.append(product(productId ?? ''));
       break;
     case Pages.UserProfile:
       document.body.append(userProfilePage());
+      break;
+    case Pages.Basket:
+      document.body.append(basketPage());
       break;
     default:
       document.body.append(error404Page());
@@ -65,6 +78,11 @@ function renderPage(newPage: Pages, productId: string | undefined) {
 
   if (pagesWithFooter.includes(newPage)) {
     document.body.append(footer());
+  }
+
+  const loaderMask = document.querySelector('.loader-mask');
+  if (!loaderMask) {
+    document.body.append(loader());
   }
 }
 

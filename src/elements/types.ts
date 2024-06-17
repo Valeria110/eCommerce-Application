@@ -7,14 +7,19 @@ export enum Pages {
   AboutUS = 'About us',
   Product = 'Product',
   UserProfile = 'UserProfile',
+  Basket = 'Basket',
 }
 
 export enum AppEvents {
   switchPage = 'switchPage',
   updateUserName = 'updateUserName',
+  updateCart = 'updateCart',
+  createCart = 'createCart',
+  updateCounterCart = 'updateCounterCart',
 }
 
 export interface Product {
+  id: string;
   title: string;
   description: string;
   slug: string;
@@ -24,6 +29,20 @@ export interface Product {
     regular: number;
     discounted: number | undefined;
   };
+}
+
+export interface ProductCart {
+  id: string;
+  productId: string;
+  title: string;
+  author: string;
+  images: string[];
+  prices: {
+    regular: number;
+    discounted: number;
+    discountedPromo: number;
+  };
+  quantity: number;
 }
 
 export interface InfoBook {

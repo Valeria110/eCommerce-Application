@@ -10,6 +10,7 @@ import logoSrc from './../../img/lithub-logo.svg';
 import userPhotoSrc from './../../img/placeholderUser.png';
 import editIconSrc from './../../img/edit-icon.svg';
 import exitIconSrc from './../../img/exit-icon.svg';
+import cart from '../cart';
 
 enum UserAction {
   LogIn = 'Log in',
@@ -33,10 +34,13 @@ export default function header(currentPage: Pages): HTMLElement {
   const menuLinks = createLinksMenu(currentPage, 'header__linkCollapse');
 
   const cartBtn = createButtonImg(cartSrc as string, 'header__btnImg me-1');
+  const cartBadge = Bootstrap.createElement('span', 'header__cart-btn-badge badge rounded-pill bg-secondary');
+  updateCartBadge(cartBadge);
+  document.body.addEventListener(AppEvents.updateCart, () => updateCartBadge(cartBadge));
+  cartBtn.appendChild(cartBadge);
+  cartBtn.addEventListener('click', () => switchPage(Pages.Basket));
   const profileBtn = createButtonImg(profileSrc as string, 'header__btnImg');
-  profileBtn.addEventListener('click', () => {
-    switchPage(Pages.UserProfile);
-  });
+  profileBtn.addEventListener('click', () => switchPage(Pages.UserProfile));
   if (!requestsAPI.isLogined) {
     profileBtn.classList.add('d-none');
   }
@@ -58,6 +62,14 @@ export default function header(currentPage: Pages): HTMLElement {
   headerContainer.append(brand, menuLinks, buttonWrapper, offCanvasRightPanel);
   headerElement.append(headerContainer);
   return headerElement;
+}
+
+function updateCartBadge(cartBtnBadge: HTMLElement) {
+  if (cart.counter) {
+    cartBtnBadge.textContent = cart.counter > 100 ? '99+' : String(cart.counter);
+  } else {
+    cartBtnBadge.textContent = '';
+  }
 }
 
 function createRightPanel(currentPage: Pages) {

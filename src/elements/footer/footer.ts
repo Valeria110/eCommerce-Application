@@ -53,3 +53,5 @@ function createContactLink(contactInfo: string, linkUrl: string) {
 
   return link;
 }
+
+export { createGithubCart, createContactLink };

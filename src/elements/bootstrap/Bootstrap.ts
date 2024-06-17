@@ -109,4 +109,16 @@ export default class Bootstrap {
 
     return offcanvas;
   }
+
+  static createLoadingSpiner(): HTMLDivElement {
+    const container = Bootstrap.createElement('div', 'loadingSpiner');
+    const loadingText = Bootstrap.createElement('p', 'loader-text h3 mt-2', 'Loading...');
+    const loader = Bootstrap.createElement('div', 'loader d-flex justify-content-center align-items-center');
+    const loaderImg = Bootstrap.createElement('img', 'loader-img');
+    loaderImg.src = '../../img/lithub-logo.svg' as string;
+    loader.append(loaderImg);
+    container.append(loader, loadingText);
+
+    return container;
+  }
 }
