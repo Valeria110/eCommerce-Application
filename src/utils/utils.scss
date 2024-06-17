@@ -1,0 +1,29 @@
+$btn-bgc: #fd7e14;
+$btn-bgc-hover: rgba(253, 126, 20, 0.6);
+$btn-bgc-active: #df741b;
+$body-regular-color: rgba(0, 0, 0, 0.4);
+
+@mixin btn-styles {
+  height: 50px;
+  color: #fff;
+  font-weight: 600;
+  background-color: $btn-bgc;
+  border: none;
+  transition: all 0.4s;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: $btn-bgc-hover !important;
+    }
+  }
+
+  &:active {
+    background-color: $btn-bgc-active !important;
+    color: #fff;
+  }
+}
+
+@mixin body-regular-text {
+  font-size: 16px;
+  color: $body-regular-color;
+}

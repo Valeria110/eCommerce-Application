@@ -1,0 +1,147 @@
+.about-us-main {
+  gap: 144px;
+  margin-top: 64px;
+  padding: 10px;
+
+  @media screen and (max-width: 768px) {
+    margin-top: 64px;
+  }
+
+  .about-us__team-container {
+    width: 100%;
+    max-width: 1296px;
+    gap: 96px;
+
+    .about-us__team-cards-container {
+      gap: 24px;
+      flex-wrap: wrap;
+
+      .about-us__team-card {
+        width: 416px;
+        height: fit-content;
+        min-height: 1026px;
+        padding: 24px 48px;
+        justify-content: space-between;
+        gap: 24px;
+        box-shadow: 0 16px 20px 0 rgba(147, 147, 147, 0.2);
+        transition: transform ease-in-out 0.4s;
+
+        @media screen and (max-width: 576px) {
+          width: 350px;
+        }
+
+        &:hover {
+          transform: scale(1.05);
+        }
+
+        @media (hover: hover) {
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+
+        .about-us__team-card-desc {
+          gap: 40px;
+
+          .about-us__team-card-desc-top {
+            gap: 24px;
+
+            .about-us__team-card-img {
+              width: 221px;
+              height: 221px;
+              object-fit: cover;
+
+              @media screen and (max-width: 576px) {
+                width: 180px;
+                height: 180px;
+                object-fit: cover;
+              }
+            }
+
+            .about-us__team-card-fullname {
+              font-weight: 600;
+            }
+
+            .about-us__team-card-role {
+              font-size: 19px;
+            }
+          }
+        }
+
+        .about-us-accordion {
+          width: 100%;
+          margin-bottom: auto;
+
+          .accordion-button {
+            font-weight: 600;
+          }
+        }
+
+        .about-us__team-card-github-link {
+          align-items: center;
+          gap: 11px;
+          text-decoration: none;
+          color: #000;
+        }
+      }
+    }
+  }
+
+  .about-us__contributions-block {
+    gap: 96px;
+
+    @media screen and (max-width: 576px) {
+      gap: 64px;
+    }
+
+    .about-us__contributions-block-header {
+      font-size: 40px;
+      font-weight: 600;
+
+      @media screen and (max-width: 768px) {
+        text-align: center;
+        font-size: 32px;
+      }
+    }
+
+    .about-us__methods-block {
+      gap: 96px;
+
+      @media screen and (max-width: 576px) {
+        gap: 64px;
+      }
+
+      .about-us__method-block {
+        height: auto;
+        width: fit-content;
+        padding: 16px 24px;
+        box-shadow: 0 10px 20px 0 rgba(228, 172, 125, 0.4);
+        transition: transform ease-in-out 0.4s;
+
+        @media screen and (max-width: 576px) {
+          width: 90vw;
+          text-align: center;
+        }
+
+        &:hover {
+          transform: scale(1.05);
+        }
+
+        @media (hover: hover) {
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+
+        .about-us__method-block-text {
+          font-size: 20px;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .about-us__rss-logo {
+    margin-bottom: 96px;
+  }
+}
