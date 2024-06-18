@@ -18,7 +18,6 @@ export default function () {
 
     setTimeout(() => {
       mask.classList.add('d-none');
-      console.log('loaded');
     }, 500);
   });
 

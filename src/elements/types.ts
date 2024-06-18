@@ -15,7 +15,6 @@ export enum AppEvents {
   updateUserName = 'updateUserName',
   updateCart = 'updateCart',
   createCart = 'createCart',
-  updateCounterCart = 'updateCounterCart',
 }
 
 export interface Product {

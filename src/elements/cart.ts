@@ -164,7 +164,7 @@ export class Cart {
     this.lineItems = [];
     this.discountCodes = [];
 
-    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCounterCart));
+    document.body.dispatchEvent(new CustomEvent(AppEvents.updateCart));
   }
 
   // now many items in cart

@@ -135,12 +135,6 @@ export const buttonToLoginPage = createElement(
   'Already have an account? Log in',
 );
 
-export const buttonToMainPage = createElement(
-  'div',
-  'registration-page__button-main my-3',
-  'Continue without registration',
-);
-
 export const shadowButton = createElement('button', 'btn btn-primary d-none');
 shadowButton.setAttribute('data-bs-toggle', 'modal');
 shadowButton.setAttribute('data-bs-target', '#1234');

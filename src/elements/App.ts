@@ -39,6 +39,8 @@ function renderPage(newPage: Pages, productId: string | undefined) {
     Pages.Product,
     Pages.UserProfile,
     Pages.Basket,
+    Pages.LogIn,
+    Pages.SignUp,
   ];
   const pagesWithFooter = [Pages.Main, Pages.Catalog, Pages.AboutUS, Pages.Product, Pages.UserProfile, Pages.Basket];
 
