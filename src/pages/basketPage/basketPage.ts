@@ -32,7 +32,7 @@ export default function basketPage() {
   });
 
   const emptyBasket = createEmptyBasket();
-  // const spiner = Bootstrap.createLoadingSpiner();
+
   const switchBetwenEmptyOrNotBacket = () => {
     container.innerHTML = '';
     if (!cart.counter) {
@@ -42,7 +42,7 @@ export default function basketPage() {
     }
   };
   switchBetwenEmptyOrNotBacket();
-  document.body.addEventListener(AppEvents.updateCounterCart, () => switchBetwenEmptyOrNotBacket());
+  document.body.addEventListener(AppEvents.updateCart, () => switchBetwenEmptyOrNotBacket());
 
   return container;
 }
