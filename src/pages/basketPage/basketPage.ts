@@ -187,7 +187,7 @@ function createProductCard(product: ProductCart) {
 
   const totalSum = Bootstrap.createElement('div', 'my-1');
   const updateTotalSum = (localProduct: ProductCart) => {
-    const min = Math.min(...Object.values(product.prices));
+    const min = Math.min(...Object.values(localProduct.prices));
     totalSum.textContent = `total: ${convertCentsToDollars(min * localProduct.quantity)}`;
   };
   updateTotalSum(product);
