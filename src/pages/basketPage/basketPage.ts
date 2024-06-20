@@ -184,7 +184,21 @@ function createProductCard(product: ProductCart) {
       Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
     );
   }
-  rightColumn.append(pricesWraper);
+
+  const totalSum = Bootstrap.createElement('div', 'my-1');
+  const updateTotalSum = (localProduct: ProductCart) => {
+    const min = Math.min(...Object.values(product.prices));
+    totalSum.textContent = `total: ${convertCentsToDollars(min * localProduct.quantity)}`;
+  };
+  updateTotalSum(product);
+  document.body.addEventListener(AppEvents.updateCart, () => {
+    const updateCard = cart.products.find((item) => item.id === product.id);
+    if (updateCard) {
+      updateTotalSum(updateCard);
+    }
+  });
+
+  rightColumn.append(pricesWraper, totalSum);
 
   const cardButtons = Bootstrap.createElement('div', 'basketProduct__cardButtons');
 
