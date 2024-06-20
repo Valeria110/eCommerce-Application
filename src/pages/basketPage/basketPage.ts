@@ -173,17 +173,25 @@ function createProductCard(product: ProductCart) {
 
   const pricesWraper = Bootstrap.createElement('div', 'd-flex');
 
-  const minPrice = Math.min(...Object.values(product.prices));
-  if (product.prices.regular !== minPrice) {
-    pricesWraper.append(Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(minPrice)));
-    pricesWraper.append(
-      Bootstrap.createElement('div', 'basketProduct__pricePrevios', convertCentsToDollars(product.prices.regular)),
-    );
-  } else {
-    pricesWraper.append(
-      Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(product.prices.regular)),
-    );
-  }
+  const updatePricesWraper = (localProduct: ProductCart) => {
+    const minPrice = Math.min(...Object.values(localProduct.prices));
+    pricesWraper.innerHTML = '';
+    if (localProduct.prices.regular !== minPrice) {
+      pricesWraper.append(Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(minPrice)));
+      pricesWraper.append(
+        Bootstrap.createElement(
+          'div',
+          'basketProduct__pricePrevios',
+          convertCentsToDollars(localProduct.prices.regular),
+        ),
+      );
+    } else {
+      pricesWraper.append(
+        Bootstrap.createElement('div', 'basketProduct__price', convertCentsToDollars(localProduct.prices.regular)),
+      );
+    }
+  };
+  updatePricesWraper(product);
 
   const totalSum = Bootstrap.createElement('div', 'my-1');
   const updateTotalSum = (localProduct: ProductCart) => {
@@ -192,9 +200,10 @@ function createProductCard(product: ProductCart) {
   };
   updateTotalSum(product);
   document.body.addEventListener(AppEvents.updateCart, () => {
-    const updateCard = cart.products.find((item) => item.id === product.id);
-    if (updateCard) {
-      updateTotalSum(updateCard);
+    const updateProduct = cart.products.find((item) => item.id === product.id);
+    if (updateProduct) {
+      updateTotalSum(updateProduct);
+      updatePricesWraper(updateProduct);
     }
   });
 
